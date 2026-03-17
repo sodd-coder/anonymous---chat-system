@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AnonChat — Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(0,255,150,0.05) 0%, transparent 60%);
+    }
+    .header {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #00ff96, #00c8ff);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+    }
+    .header h2 { font-size: 15px; font-weight: 700; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .room-code {
+      font-size: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .room-code:hover { border-color: rgba(0,255,150,0.4); color: #fff; }
+    .room-code span { color: #00ff96; font-weight: 700; letter-spacing: 2px; font-size: 13px; }
+    .leave-btn {
+      padding: 7px 16px;
+      background: transparent;
+      color: #ff4f4f;
+      border: 1px solid rgba(255,79,79,0.4);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .leave-btn:hover { background: rgba(255,79,79,0.1); border-color: #ff4f4f; }
+    .user-tag {
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      color: #333;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+    .user-tag .name span { color: #00ff96; font-weight: 600; }
+    .enc-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,255,150,0.06);
+      border: 1px solid rgba(0,255,150,0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #00ff96;
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      scroll-behavior: smooth;
+    }
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    .msg { max-width: 65%; display: flex; flex-direction: column; gap: 3px; }
+    .msg.me { align-self: flex-end; align-items: flex-end; }
+    .msg.other { align-self: flex-start; align-items: flex-start; }
+    .msg .meta { font-size: 11px; color: #444; padding: 0 4px; display: flex; align-items: center; gap: 5px; }
+    .enc-icon { font-size: 10px; color: #00ff96; opacity: 0.6; }
+    .msg .bubble {
+      display: inline-block;
+      padding: 10px 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+      animation: popIn 0.15s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .msg.me .bubble {
+      background: linear-gradient(135deg, #00ff96, #00e0aa);
+      color: #000;
+      border-radius: 16px 16px 4px 16px;
+      font-weight: 500;
+    }
+    .msg.other .bubble {
+      background: rgba(255,255,255,0.07);
+      color: #eee;
+      border-radius: 16px 16px 16px 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .system-msg {
+      text-align: center;
+      font-size: 11px;
+      color: #2a2a2a;
+      padding: 6px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .system-msg::before, .system-msg::after {
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.04);
+    }
+    .input-area {
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 12px 16px;
+    }
+    .emoji-picker {
+      display: none;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 10px;
+      background: rgba(20,20,30,0.98);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      animation: slideUp 0.2s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(8px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .emoji-picker.open { display: flex; }
+    .emoji-picker::-webkit-scrollbar { width: 3px; }
+    .emoji-picker::-webkit-scrollbar-thumb { background: #333; }
+    .emoji-btn {
+      background: none; border: none;
+      font-size: 20px; cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+    .emoji-btn:hover { background: rgba(255,255,255,0.1); }
+    .input-bar { display: flex; align-items: center; gap: 8px; }
+    .emoji-toggle {
+      background: none; border: none;
+      font-size: 20px; cursor: pointer;
+      padding: 8px; border-radius: 10px;
+      transition: background 0.15s;
+      line-height: 1; flex-shrink: 0;
+    }
+    .emoji-toggle:hover { background: rgba(255,255,255,0.08); }
+    .msg-input {
+      flex: 1;
+      padding: 11px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .msg-input:focus { border-color: rgba(0,255,150,0.35); }
+    .msg-input::placeholder { color: #333; }
+    .send-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #00ff96, #00c8ff);
+      color: #000;
+      border: none;
+      border-radius: 24px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+    .send-btn:hover { opacity: 0.9; transform: scale(1.03); }
+    .send-btn:active { transform: scale(0.97); }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-icon">🔒</div>
+      <h2>AnonChat</h2>
+    </div>
+    <div class="header-right">
+      <div class="room-code" onclick="copyCode()" title="Click to copy">
+        Room: <span id="roomCodeDisplay">------</span> 📋
+      </div>
+      <button class="leave-btn" onclick="leaveRoom()">Leave 🚪</button>
+    </div>
+  </div>
+
+  <div class="user-tag">
+    <div class="name">Chatting as <span id="usernameDisplay"></span></div>
+    <div class="enc-badge">🔐 AES Encrypted</div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-area">
+    <div class="emoji-picker" id="emojiPicker"></div>
+    <div class="input-bar">
+      <button class="emoji-toggle" onclick="toggleEmoji()">😊</button>
+      <input class="msg-input" type="text" id="msgInput" placeholder="Type an encrypted message..." onkeydown="handleKey(event)" />
+      <button class="send-btn" onclick="sendMessage()">Send ↑</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const username = sessionStorage.getItem('username');
+    const roomCode = sessionStorage.getItem('roomCode');
+
+    if (!username || !roomCode) window.location.href = '/';
+
+    document.getElementById('roomCodeDisplay').textContent = roomCode;
+    document.getElementById('usernameDisplay').textContent = username;
+
+    // Encryption key derived from the room code
+    // Only people with the same room code can decrypt
+    const ENCRYPTION_KEY = 'ANONCHAT_' + roomCode;
+
+    function encrypt(message) {
+      return CryptoJS.AES.encrypt(message, ENCRYPTION_KEY).toString();
+    }
+
+    function decrypt(cipherText) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(cipherText, ENCRYPTION_KEY);
+        return bytes.toString(CryptoJS.enc.Utf8);
+      } catch (e) {
+        return '[Unable to decrypt message]';
+      }
+    }
+
+    // Emoji setup
+    const emojis = [
+      '😀','😂','😍','🥹','😎','🤔','😅','🥲','😭','😡',
+      '👍','👎','👏','🙌','🤝','💪','🔥','❤️','💀','✅',
+      '😈','🤣','😱','🤯','🥳','😴','🤮','🥸','😇','🫡',
+      '🐱','🐶','🦊','🐺','🦁','🐯','🐸','🐧','🦋','🌟',
+      '💬','📢','🔐','🔑','🛡️','⚡','💥','🎯','🚀','🎉'
+    ];
+
+    const picker = document.getElementById('emojiPicker');
+    emojis.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.className = 'emoji-btn';
+      btn.textContent = emoji;
+      btn.onclick = () => insertEmoji(emoji);
+      picker.appendChild(btn);
+    });
+
+    function toggleEmoji() { picker.classList.toggle('open'); }
+    function insertEmoji(emoji) {
+      const input = document.getElementById('msgInput');
+      input.value += emoji;
+      input.focus();
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.emoji-toggle') && !e.target.closest('#emojiPicker')) {
+        picker.classList.remove('open');
+      }
+    });
+
+    socket.emit('join-room', { roomCode, username });
+
+    socket.on('join-success', () => {
+      addSystemMessage('You joined as ' + username + ' — messages are AES encrypted 🔐');
+    });
+
+    socket.on('join-error', (msg) => {
+      alert(msg);
+      window.location.href = '/';
+    });
+
+    socket.on('user-joined', (msg) => addSystemMessage(msg));
+    socket.on('user-left', (msg) => addSystemMessage(msg));
+
+    socket.on('receive-message', ({ username: sender, message }) => {
+      const decrypted = decrypt(message);
+      addMessage(sender, decrypted, sender === username ? 'me' : 'other');
+    });
+
+    function sendMessage() {
+      const input = document.getElementById('msgInput');
+      const message = input.value.trim();
+      if (!message) return;
+      const encrypted = encrypt(message);
+      socket.emit('send-message', { roomCode, username, message: encrypted });
+      input.value = '';
+      picker.classList.remove('open');
+    }
+
+    function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
+
+    function addMessage(sender, message, type) {
+      const container = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = `msg ${type}`;
+      div.innerHTML = `
+        <div class="meta">
+          ${type === 'me' ? 'You' : sender}
+          <span class="enc-icon">🔐</span>
+        </div>
+        <div class="bubble">${escapeHTML(message)}</div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addSystemMessage(text) {
+      const container = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = 'system-msg';
+      div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function copyCode() {
+      navigator.clipboard.writeText(roomCode);
+      alert('Room code copied: ' + roomCode);
+    }
+
+    function leaveRoom() {
+      sessionStorage.clear();
+      window.location.href = '/';
+    }
+  </script>
+
+</body>
+</html>
+```
+
+---
+
+**Steps:**
+1. Replace both files and save with **Ctrl + S**
+2. Press **Ctrl + C** in terminal to stop server
+3. Run `node server.js` again
+4. Hard refresh with **Ctrl + Shift + R**
+
+---
+
+**How to verify encryption is working:**
+- Send a message in the chat
+- Look at the **VS Code terminal** — you'll see the encrypted gibberish the server receives instead of your actual message like:
+```
+[ENCRYPTED MESSAGE from SilentFox42]: U2FsdGVkX1+xKs93...
