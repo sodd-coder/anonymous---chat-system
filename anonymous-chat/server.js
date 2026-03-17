@@ -26,16 +26,25 @@ io.on('connection', (socket) => {
       socket.roomCode = roomCode;
       socket.username = username;
       io.to(roomCode).emit('user-joined', `${username} has joined the room`);
+      io.to(roomCode).emit('user-count', rooms[roomCode].users.length);
       socket.emit('join-success', roomCode);
     } else {
       socket.emit('join-error', 'Room not found. Check the code and try again.');
     }
   });
 
-  // Server receives encrypted message and forwards it WITHOUT decrypting
   socket.on('send-message', ({ roomCode, username, message }) => {
-    console.log(`[ENCRYPTED MESSAGE from ${username}]: ${message}`); // Proves server can't read it
+    console.log(`[ENCRYPTED MESSAGE from ${username}]: ${message}`);
     io.to(roomCode).emit('receive-message', { username, message });
+  });
+
+  // Typing indicator
+  socket.on('typing', ({ roomCode, username }) => {
+    socket.to(roomCode).emit('user-typing', username);
+  });
+
+  socket.on('stop-typing', ({ roomCode }) => {
+    socket.to(roomCode).emit('user-stop-typing');
   });
 
   socket.on('disconnect', () => {
@@ -45,6 +54,7 @@ io.on('connection', (socket) => {
         rooms[socket.roomCode].users = rooms[socket.roomCode].users.filter(
           u => u !== socket.username
         );
+        io.to(socket.roomCode).emit('user-count', rooms[socket.roomCode].users.length);
         if (rooms[socket.roomCode].users.length === 0) {
           delete rooms[socket.roomCode];
         }
@@ -54,6 +64,7 @@ io.on('connection', (socket) => {
 
 });
 
-server.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

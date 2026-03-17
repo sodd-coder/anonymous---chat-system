@@ -2,27 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AnonChat — Room</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      height: 100dvh;
-      overflow: hidden;
-    }
     body {
       font-family: 'Inter', sans-serif;
       background: #0a0a0f;
       color: #fff;
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
       background-image: radial-gradient(ellipse at 50% 0%, rgba(0,255,150,0.05) 0%, transparent 60%);
     }
-
-    /* HEADER */
     .header {
       background: rgba(255,255,255,0.03);
       backdrop-filter: blur(20px);
@@ -32,48 +27,64 @@
       align-items: center;
       border-bottom: 1px solid rgba(255,255,255,0.07);
       flex-shrink: 0;
-      gap: 8px;
     }
-    .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .header-left { display: flex; align-items: center; gap: 10px; }
     .logo-icon {
-      width: 30px; height: 30px;
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, #00ff96, #00c8ff);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       flex-shrink: 0;
     }
-    .header h2 { font-size: 14px; font-weight: 700; white-space: nowrap; }
-    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .header h2 { font-size: 15px; font-weight: 700; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .user-count-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,255,150,0.06);
+      border: 1px solid rgba(0,255,150,0.15);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #00ff96;
+      font-weight: 600;
+    }
+    .user-count-dot {
+      width: 7px; height: 7px;
+      background: #00ff96;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
     .room-code {
-      font-size: 11px;
+      font-size: 12px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
-      padding: 5px 10px;
+      padding: 5px 12px;
       border-radius: 20px;
       color: #aaa;
       cursor: pointer;
+      transition: all 0.2s;
       display: flex; align-items: center; gap: 5px;
-      -webkit-tap-highlight-color: transparent;
-      white-space: nowrap;
     }
-    .room-code span { color: #00ff96; font-weight: 700; letter-spacing: 1px; font-size: 12px; }
+    .room-code:hover { border-color: rgba(0,255,150,0.4); color: #fff; }
+    .room-code span { color: #00ff96; font-weight: 700; letter-spacing: 2px; font-size: 12px; }
     .leave-btn {
-      padding: 6px 12px;
+      padding: 6px 14px;
       background: transparent;
       color: #ff4f4f;
       border: 1px solid rgba(255,79,79,0.4);
       border-radius: 20px;
       cursor: pointer;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
+      transition: all 0.2s;
     }
-    .leave-btn:active { background: rgba(255,79,79,0.1); }
-
-    /* USER TAG */
+    .leave-btn:hover { background: rgba(255,79,79,0.1); border-color: #ff4f4f; }
     .user-tag {
       text-align: center;
       padding: 7px;
@@ -82,7 +93,6 @@
       border-bottom: 1px solid rgba(255,255,255,0.04);
       display: flex; align-items: center; justify-content: center; gap: 12px;
       flex-shrink: 0;
-      flex-wrap: wrap;
     }
     .user-tag .name span { color: #00ff96; font-weight: 600; }
     .enc-badge {
@@ -94,8 +104,6 @@
       font-size: 10px;
       color: #00ff96;
     }
-
-    /* MESSAGES */
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -104,23 +112,21 @@
       flex-direction: column;
       gap: 8px;
       scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
     }
-    .messages::-webkit-scrollbar { width: 3px; }
+    .messages::-webkit-scrollbar { width: 4px; }
     .messages::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
-    .msg { max-width: 80%; display: flex; flex-direction: column; gap: 3px; }
+    .msg { max-width: 75%; display: flex; flex-direction: column; gap: 3px; }
     .msg.me { align-self: flex-end; align-items: flex-end; }
     .msg.other { align-self: flex-start; align-items: flex-start; }
-    .msg .meta { font-size: 10px; color: #444; padding: 0 4px; display: flex; align-items: center; gap: 4px; }
-    .enc-icon { font-size: 9px; color: #00ff96; opacity: 0.6; }
+    .msg .meta { font-size: 11px; color: #444; padding: 0 4px; display: flex; align-items: center; gap: 5px; }
+    .enc-icon { font-size: 10px; color: #00ff96; opacity: 0.6; }
     .msg .bubble {
       display: inline-block;
-      padding: 9px 13px;
+      padding: 10px 14px;
       font-size: 14px;
       line-height: 1.5;
       word-break: break-word;
       animation: popIn 0.15s ease;
-      max-width: 100%;
     }
     @keyframes popIn {
       from { transform: scale(0.95); opacity: 0; }
@@ -142,75 +148,101 @@
       text-align: center;
       font-size: 11px;
       color: #2a2a2a;
-      padding: 4px 0;
+      padding: 6px 0;
       display: flex; align-items: center; gap: 8px;
     }
     .system-msg::before, .system-msg::after {
       content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.04);
     }
 
-    /* INPUT AREA */
+    /* TYPING INDICATOR */
+    .typing-indicator {
+      padding: 0 16px 8px;
+      font-size: 12px;
+      color: #444;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .typing-dots {
+      display: flex; gap: 3px; align-items: center;
+    }
+    .typing-dots span {
+      width: 5px; height: 5px;
+      background: #00ff96;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+      opacity: 0.6;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
     .input-area {
       background: rgba(255,255,255,0.03);
       border-top: 1px solid rgba(255,255,255,0.07);
-      padding: 10px 12px;
-      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      padding: 10px 14px;
       flex-shrink: 0;
     }
     .emoji-picker {
       display: none;
       flex-wrap: wrap;
-      gap: 2px;
-      padding: 8px;
+      gap: 4px;
+      padding: 10px;
       background: rgba(20,20,30,0.98);
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px;
-      margin-bottom: 8px;
-      max-height: 130px;
+      margin-bottom: 10px;
+      max-height: 140px;
       overflow-y: auto;
       animation: slideUp 0.2s ease;
-      -webkit-overflow-scrolling: touch;
     }
     @keyframes slideUp {
       from { transform: translateY(8px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
     .emoji-picker.open { display: flex; }
+    .emoji-picker::-webkit-scrollbar { width: 3px; }
+    .emoji-picker::-webkit-scrollbar-thumb { background: #333; }
     .emoji-btn {
       background: none; border: none;
       font-size: 22px; cursor: pointer;
-      padding: 5px;
+      padding: 4px 6px;
       border-radius: 8px;
+      transition: background 0.15s;
       line-height: 1;
-      -webkit-tap-highlight-color: transparent;
     }
-    .emoji-btn:active { background: rgba(255,255,255,0.1); }
+    .emoji-btn:hover { background: rgba(255,255,255,0.1); }
     .input-bar { display: flex; align-items: center; gap: 8px; }
     .emoji-toggle {
       background: none; border: none;
       font-size: 22px; cursor: pointer;
-      padding: 8px;
-      border-radius: 10px;
-      line-height: 1;
-      flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
+      padding: 8px; border-radius: 10px;
+      transition: background 0.15s;
+      line-height: 1; flex-shrink: 0;
     }
+    .emoji-toggle:hover { background: rgba(255,255,255,0.08); }
     .msg-input {
       flex: 1;
-      padding: 11px 14px;
+      padding: 11px 16px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 24px;
       color: #fff;
-      font-size: 16px;
+      font-size: 14px;
       font-family: 'Inter', sans-serif;
       outline: none;
-      min-width: 0;
+      transition: border-color 0.2s;
     }
     .msg-input:focus { border-color: rgba(0,255,150,0.35); }
-    .msg-input::placeholder { color: #333; font-size: 14px; }
+    .msg-input::placeholder { color: #333; }
     .send-btn {
-      padding: 11px 16px;
+      padding: 10px 18px;
       background: linear-gradient(135deg, #00ff96, #00c8ff);
       color: #000;
       border: none;
@@ -219,16 +251,15 @@
       cursor: pointer;
       font-size: 14px;
       font-family: 'Inter', sans-serif;
+      transition: opacity 0.2s, transform 0.1s;
       flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-      white-space: nowrap;
     }
-    .send-btn:active { opacity: 0.85; transform: scale(0.97); }
+    .send-btn:hover { opacity: 0.9; transform: scale(1.03); }
+    .send-btn:active { transform: scale(0.97); }
 
-    /* Fix for mobile keyboard pushing content up */
-    @media (max-height: 500px) {
-      .user-tag { display: none; }
-      .emoji-picker { max-height: 100px; }
+    @media (max-width: 480px) {
+      .room-code { display: none; }
+      .msg { max-width: 85%; }
     }
   </style>
 </head>
@@ -240,8 +271,12 @@
       <h2>AnonChat</h2>
     </div>
     <div class="header-right">
-      <div class="room-code" onclick="copyCode()">
-        <span id="roomCodeDisplay">------</span> 📋
+      <div class="user-count-badge">
+        <div class="user-count-dot"></div>
+        <span id="userCount">1</span> online
+      </div>
+      <div class="room-code" onclick="copyCode()" title="Click to copy">
+        Room: <span id="roomCodeDisplay">------</span> 📋
       </div>
       <button class="leave-btn" onclick="leaveRoom()">Leave 🚪</button>
     </div>
@@ -254,11 +289,13 @@
 
   <div class="messages" id="messages"></div>
 
+  <div class="typing-indicator" id="typingIndicator"></div>
+
   <div class="input-area">
     <div class="emoji-picker" id="emojiPicker"></div>
     <div class="input-bar">
       <button class="emoji-toggle" onclick="toggleEmoji()">😊</button>
-      <input class="msg-input" type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" />
+      <input class="msg-input" type="text" id="msgInput" placeholder="Type an encrypted message..." onkeydown="handleKey(event)" />
       <button class="send-btn" onclick="sendMessage()">Send ↑</button>
     </div>
   </div>
@@ -312,7 +349,6 @@
       const input = document.getElementById('msgInput');
       input.value += emoji;
       input.focus();
-      scrollToBottom();
     }
 
     document.addEventListener('click', (e) => {
@@ -321,19 +357,11 @@
       }
     });
 
-    // Handle mobile keyboard pushing view
-    const msgInput = document.getElementById('msgInput');
-    msgInput.addEventListener('focus', () => {
-      setTimeout(scrollToBottom, 300);
-    });
-    msgInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-
+    // Socket events
     socket.emit('join-room', { roomCode, username });
 
     socket.on('join-success', () => {
-      addSystemMessage('You joined as ' + username + ' 🔐');
+      addSystemMessage('You joined as ' + username + ' — messages are AES encrypted 🔐');
     });
 
     socket.on('join-error', (msg) => {
@@ -344,9 +372,41 @@
     socket.on('user-joined', (msg) => addSystemMessage(msg));
     socket.on('user-left', (msg) => addSystemMessage(msg));
 
+    // User count
+    socket.on('user-count', (count) => {
+      document.getElementById('userCount').textContent = count;
+    });
+
+    // Typing indicator
+    let typingTimeout;
+    const msgInput = document.getElementById('msgInput');
+
+    msgInput.addEventListener('input', () => {
+      socket.emit('typing', { roomCode, username });
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        socket.emit('stop-typing', { roomCode });
+      }, 1500);
+    });
+
+    socket.on('user-typing', (typingUser) => {
+      const indicator = document.getElementById('typingIndicator');
+      indicator.innerHTML = `
+        <div class="typing-dots">
+          <span></span><span></span><span></span>
+        </div>
+        ${typingUser} is typing...
+      `;
+    });
+
+    socket.on('user-stop-typing', () => {
+      document.getElementById('typingIndicator').innerHTML = '';
+    });
+
     socket.on('receive-message', ({ username: sender, message }) => {
       const decrypted = decrypt(message);
       addMessage(sender, decrypted, sender === username ? 'me' : 'other');
+      document.getElementById('typingIndicator').innerHTML = '';
     });
 
     function sendMessage() {
@@ -355,15 +415,12 @@
       if (!message) return;
       const encrypted = encrypt(message);
       socket.emit('send-message', { roomCode, username, message: encrypted });
+      socket.emit('stop-typing', { roomCode });
       input.value = '';
       picker.classList.remove('open');
-      scrollToBottom();
     }
 
-    function scrollToBottom() {
-      const container = document.getElementById('messages');
-      container.scrollTop = container.scrollHeight;
-    }
+    function handleKey(e) { if (e.key === 'Enter') sendMessage(); }
 
     function addMessage(sender, message, type) {
       const container = document.getElementById('messages');
@@ -377,7 +434,7 @@
         <div class="bubble">${escapeHTML(message)}</div>
       `;
       container.appendChild(div);
-      scrollToBottom();
+      container.scrollTop = container.scrollHeight;
     }
 
     function addSystemMessage(text) {
@@ -386,7 +443,7 @@
       div.className = 'system-msg';
       div.textContent = text;
       container.appendChild(div);
-      scrollToBottom();
+      container.scrollTop = container.scrollHeight;
     }
 
     function escapeHTML(str) {
@@ -394,9 +451,8 @@
     }
 
     function copyCode() {
-      navigator.clipboard.writeText(roomCode).then(() => {
-        alert('Room code copied: ' + roomCode);
-      });
+      navigator.clipboard.writeText(roomCode);
+      alert('Room code copied: ' + roomCode);
     }
 
     function leaveRoom() {
