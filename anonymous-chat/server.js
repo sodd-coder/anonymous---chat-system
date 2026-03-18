@@ -9,6 +9,10 @@ const io = new Server(server, { maxHttpBufferSize: 50e6 });
 
 app.use(express.static('public'));
 
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/landing.html');
+});
+
 const rooms = {};
 
 io.on('connection', (socket) => {
