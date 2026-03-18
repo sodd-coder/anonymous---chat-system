@@ -144,6 +144,52 @@
       border-radius: 16px 16px 16px 4px;
       border: 1px solid rgba(255,255,255,0.06);
     }
+    .file-bubble {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      animation: popIn 0.15s ease;
+      max-width: 260px;
+    }
+    .msg.me .file-bubble {
+      background: linear-gradient(135deg, #00ff96, #00e0aa);
+      color: #000;
+      border-radius: 16px 16px 4px 16px;
+    }
+    .msg.other .file-bubble {
+      background: rgba(255,255,255,0.07);
+      color: #eee;
+      border-radius: 16px 16px 16px 4px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .file-icon { font-size: 24px; flex-shrink: 0; }
+    .file-info { overflow: hidden; }
+    .file-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+    }
+    .file-size { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+    .img-bubble {
+      max-width: 220px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      animation: popIn 0.15s ease;
+    }
+    .img-bubble img { width: 100%; display: block; border-radius: 12px; }
+    .upload-progress {
+      font-size: 11px;
+      color: #00ff96;
+      padding: 4px 8px;
+      display: none;
+    }
     .system-msg {
       text-align: center;
       font-size: 11px;
@@ -154,8 +200,6 @@
     .system-msg::before, .system-msg::after {
       content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.04);
     }
-
-    /* TYPING INDICATOR */
     .typing-indicator {
       padding: 0 16px 8px;
       font-size: 12px;
@@ -166,9 +210,7 @@
       gap: 8px;
       flex-shrink: 0;
     }
-    .typing-dots {
-      display: flex; gap: 3px; align-items: center;
-    }
+    .typing-dots { display: flex; gap: 3px; align-items: center; }
     .typing-dots span {
       width: 5px; height: 5px;
       background: #00ff96;
@@ -182,7 +224,6 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-4px); }
     }
-
     .input-area {
       background: rgba(255,255,255,0.03);
       border-top: 1px solid rgba(255,255,255,0.07);
@@ -219,14 +260,14 @@
     }
     .emoji-btn:hover { background: rgba(255,255,255,0.1); }
     .input-bar { display: flex; align-items: center; gap: 8px; }
-    .emoji-toggle {
+    .emoji-toggle, .file-toggle {
       background: none; border: none;
       font-size: 22px; cursor: pointer;
       padding: 8px; border-radius: 10px;
       transition: background 0.15s;
       line-height: 1; flex-shrink: 0;
     }
-    .emoji-toggle:hover { background: rgba(255,255,255,0.08); }
+    .emoji-toggle:hover, .file-toggle:hover { background: rgba(255,255,255,0.08); }
     .msg-input {
       flex: 1;
       padding: 11px 16px;
@@ -256,7 +297,6 @@
     }
     .send-btn:hover { opacity: 0.9; transform: scale(1.03); }
     .send-btn:active { transform: scale(0.97); }
-
     @media (max-width: 480px) {
       .room-code { display: none; }
       .msg { max-width: 85%; }
@@ -288,13 +328,16 @@
   </div>
 
   <div class="messages" id="messages"></div>
-
   <div class="typing-indicator" id="typingIndicator"></div>
+
+  <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(event)" />
 
   <div class="input-area">
     <div class="emoji-picker" id="emojiPicker"></div>
+    <div class="upload-progress" id="uploadProgress">⏳ Encrypting and sending file...</div>
     <div class="input-bar">
       <button class="emoji-toggle" onclick="toggleEmoji()">😊</button>
+      <button class="file-toggle" onclick="document.getElementById('fileInput').click()" title="Send file">📎</button>
       <input class="msg-input" type="text" id="msgInput" placeholder="Type an encrypted message..." onkeydown="handleKey(event)" />
       <button class="send-btn" onclick="sendMessage()">Send ↑</button>
     </div>
@@ -313,8 +356,8 @@
 
     const ENCRYPTION_KEY = 'ANONCHAT_' + roomCode;
 
-    function encrypt(message) {
-      return CryptoJS.AES.encrypt(message, ENCRYPTION_KEY).toString();
+    function encrypt(data) {
+      return CryptoJS.AES.encrypt(data, ENCRYPTION_KEY).toString();
     }
 
     function decrypt(cipherText) {
@@ -322,8 +365,114 @@
         const bytes = CryptoJS.AES.decrypt(cipherText, ENCRYPTION_KEY);
         return bytes.toString(CryptoJS.enc.Utf8);
       } catch (e) {
-        return '[Unable to decrypt message]';
+        return null;
       }
+    }
+
+    // File handling
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const maxSize = 40 * 1024 * 1024; // 40MB
+      if (file.size > maxSize) {
+        alert('File is too large! Maximum size is 40MB.');
+        event.target.value = '';
+        return;
+      }
+
+      // Show progress
+      const progress = document.getElementById('uploadProgress');
+      progress.style.display = 'block';
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result;
+        const encryptedData = encrypt(base64Data);
+        const encryptedName = encrypt(file.name);
+
+        socket.emit('send-file', {
+          roomCode,
+          username,
+          fileName: encryptedName,
+          fileType: file.type,
+          fileData: encryptedData
+        });
+
+        displayFile(username, file.name, file.type, base64Data, 'me');
+        progress.style.display = 'none';
+      };
+
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    socket.on('receive-file', ({ username: sender, fileName, fileType, fileData }) => {
+      if (sender === username) return;
+      const decryptedData = decrypt(fileData);
+      const decryptedName = decrypt(fileName);
+      if (decryptedData && decryptedName) {
+        displayFile(sender, decryptedName, fileType, decryptedData, 'other');
+      }
+    });
+
+    function displayFile(sender, fileName, fileType, fileData, type) {
+      const container = document.getElementById('messages');
+      const div = document.createElement('div');
+      div.className = `msg ${type}`;
+      const metaLabel = type === 'me' ? 'You' : sender;
+      const isImage = fileType.startsWith('image/');
+
+      if (isImage) {
+        div.innerHTML = `
+          <div class="meta">${metaLabel} <span class="enc-icon">🔐</span></div>
+          <div class="img-bubble" onclick="downloadFile('${fileData}', '${escapeHTML(fileName)}')">
+            <img src="${fileData}" alt="${escapeHTML(fileName)}" />
+          </div>
+          <div style="font-size:10px;color:#333;padding:2px 4px;">Click to download</div>
+        `;
+      } else {
+        const fileIcon = getFileIcon(fileType);
+        const fileSize = getFileSizeFromBase64(fileData);
+        div.innerHTML = `
+          <div class="meta">${metaLabel} <span class="enc-icon">🔐</span></div>
+          <div class="file-bubble" onclick="downloadFile('${fileData}', '${escapeHTML(fileName)}')">
+            <div class="file-icon">${fileIcon}</div>
+            <div class="file-info">
+              <div class="file-name">${escapeHTML(fileName)}</div>
+              <div class="file-size">${fileSize} · Click to download</div>
+            </div>
+          </div>
+        `;
+      }
+
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function downloadFile(dataUrl, fileName) {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = fileName;
+      a.click();
+    }
+
+    function getFileIcon(fileType) {
+      if (fileType.startsWith('image/')) return '🖼️';
+      if (fileType.startsWith('video/')) return '🎬';
+      if (fileType.startsWith('audio/')) return '🎵';
+      if (fileType.includes('pdf')) return '📄';
+      if (fileType.includes('word') || fileType.includes('document')) return '📝';
+      if (fileType.includes('sheet') || fileType.includes('excel')) return '📊';
+      if (fileType.includes('zip') || fileType.includes('rar')) return '🗜️';
+      return '📁';
+    }
+
+    function getFileSizeFromBase64(base64) {
+      const bytes = (base64.length * 3) / 4;
+      if (bytes < 1024) return bytes.toFixed(0) + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
     // Emoji setup
@@ -357,7 +506,6 @@
       }
     });
 
-    // Socket events
     socket.emit('join-room', { roomCode, username });
 
     socket.on('join-success', () => {
@@ -372,15 +520,12 @@
     socket.on('user-joined', (msg) => addSystemMessage(msg));
     socket.on('user-left', (msg) => addSystemMessage(msg));
 
-    // User count
     socket.on('user-count', (count) => {
       document.getElementById('userCount').textContent = count;
     });
 
-    // Typing indicator
     let typingTimeout;
     const msgInput = document.getElementById('msgInput');
-
     msgInput.addEventListener('input', () => {
       socket.emit('typing', { roomCode, username });
       clearTimeout(typingTimeout);
@@ -392,9 +537,7 @@
     socket.on('user-typing', (typingUser) => {
       const indicator = document.getElementById('typingIndicator');
       indicator.innerHTML = `
-        <div class="typing-dots">
-          <span></span><span></span><span></span>
-        </div>
+        <div class="typing-dots"><span></span><span></span><span></span></div>
         ${typingUser} is typing...
       `;
     });
@@ -405,7 +548,7 @@
 
     socket.on('receive-message', ({ username: sender, message }) => {
       const decrypted = decrypt(message);
-      addMessage(sender, decrypted, sender === username ? 'me' : 'other');
+      if (decrypted) addMessage(sender, decrypted, sender === username ? 'me' : 'other');
       document.getElementById('typingIndicator').innerHTML = '';
     });
 
@@ -427,10 +570,7 @@
       const div = document.createElement('div');
       div.className = `msg ${type}`;
       div.innerHTML = `
-        <div class="meta">
-          ${type === 'me' ? 'You' : sender}
-          <span class="enc-icon">🔐</span>
-        </div>
+        <div class="meta">${type === 'me' ? 'You' : sender} <span class="enc-icon">🔐</span></div>
         <div class="bubble">${escapeHTML(message)}</div>
       `;
       container.appendChild(div);

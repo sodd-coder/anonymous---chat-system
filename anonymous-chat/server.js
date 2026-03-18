@@ -5,7 +5,9 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  maxHttpBufferSize: 50e6 // 50MB buffer for file transfers
+});
 
 app.use(express.static('public'));
 
@@ -38,7 +40,11 @@ io.on('connection', (socket) => {
     io.to(roomCode).emit('receive-message', { username, message });
   });
 
-  // Typing indicator
+  socket.on('send-file', ({ roomCode, username, fileName, fileType, fileData }) => {
+    console.log(`[ENCRYPTED FILE from ${username}]: ${fileName}`);
+    io.to(roomCode).emit('receive-file', { username, fileName, fileType, fileData });
+  });
+
   socket.on('typing', ({ roomCode, username }) => {
     socket.to(roomCode).emit('user-typing', username);
   });
@@ -65,6 +71,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
