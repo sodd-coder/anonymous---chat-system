@@ -13,6 +13,8 @@
     :root{--bg:#08080f;--surface:#0f0f1a;--surface2:#16162a;--surface3:#1c1c32;--border:rgba(255,255,255,0.07);--accent:#7c6aff;--accent2:#ff6ab0;--accent3:#6affda;--text:#f0f0ff;--muted:#6b6b8a}
     html,body{height:100%;height:100dvh;overflow:hidden}
     body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;position:fixed;inset:0}
+
+    /* HEADER */
     .header{padding:10px 14px;background:rgba(8,8,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:8px;min-height:54px}
     .header-left{display:flex;align-items:center;gap:8px;min-width:0}
     .logo-badge{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;box-shadow:0 4px 12px rgba(124,106,255,.35)}
@@ -24,24 +26,49 @@
     .room-pill{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap}
     .room-pill:hover{border-color:var(--accent);color:var(--text)}
     .room-pill .code{color:var(--accent);font-weight:700;letter-spacing:2px}
-    @media(max-width:480px){.room-pill{display:none}}
     .leave-btn{padding:5px 12px;background:transparent;color:#ff6b6b;border:1px solid rgba(255,107,107,.3);border-radius:20px;cursor:pointer;font-size:11px;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;touch-action:manipulation;flex-shrink:0}
     .leave-btn:hover{background:rgba(255,107,107,.1);border-color:#ff6b6b}
     .leave-btn:active{opacity:.7}
-    .user-tag{padding:6px 14px;background:rgba(8,8,15,.7);border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
+
+    /* USER TAG */
+    .user-tag{padding:6px 14px;background:rgba(8,8,15,.7);border-bottom:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
     .user-tag .name{color:var(--text);font-weight:600}
     .enc-pill{display:flex;align-items:center;gap:4px;background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.2);padding:2px 8px;border-radius:8px;font-size:10px;color:var(--accent);font-weight:600}
-    .messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px 14px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+    .copy-pill{display:flex;align-items:center;gap:4px;background:rgba(106,255,218,.08);border:1px solid rgba(106,255,218,.2);padding:2px 8px;border-radius:8px;font-size:10px;color:var(--accent3);font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .copy-pill:active{opacity:.7}
+
+    /* EXPIRY BANNER */
+    .expiry-banner{display:none;padding:6px 14px;background:rgba(255,166,77,.1);border-bottom:1px solid rgba(255,166,77,.2);font-size:11px;color:#ffa64d;text-align:center;flex-shrink:0}
+    .expiry-banner.show{display:block}
+
+    /* MESSAGES */
+    .messages-wrap{flex:1;position:relative;overflow:hidden}
+    .messages{height:100%;overflow-y:auto;overflow-x:hidden;padding:12px 14px 12px;display:flex;flex-direction:column;gap:6px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
     .messages::-webkit-scrollbar{width:3px}
     .messages::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+
+    /* Scroll to bottom button */
+    .scroll-btn{position:absolute;bottom:12px;right:12px;width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:50%;color:#fff;font-size:16px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,106,255,.5);transition:transform .15s;-webkit-tap-highlight-color:transparent;z-index:10}
+    .scroll-btn.show{display:flex}
+    .scroll-btn:hover{transform:scale(1.1)}
+    .scroll-btn:active{transform:scale(.95)}
+
+    /* Messages */
     .msg{max-width:78%;display:flex;flex-direction:column;gap:2px}
     .msg.me{align-self:flex-end;align-items:flex-end}
     .msg.other{align-self:flex-start;align-items:flex-start}
     .msg .meta{font-size:10px;color:var(--muted);padding:0 5px;display:flex;align-items:center;gap:4px}
+    .msg .time{font-size:9px;color:var(--muted);opacity:.6}
     .msg .bubble{padding:9px 13px;font-size:14px;line-height:1.5;word-break:break-word;animation:msgPop .2s cubic-bezier(.34,1.56,.64,1)}
     @keyframes msgPop{from{transform:scale(.85) translateY(8px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
     .msg.me .bubble{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px 16px 4px 16px;box-shadow:0 4px 16px rgba(124,106,255,.25)}
     .msg.other .bubble{background:var(--surface2);color:var(--text);border-radius:16px 16px 16px 4px;border:1px solid var(--border)}
+
+    /* Rate limit toast */
+    .toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:rgba(255,107,107,.15);border:1px solid rgba(255,107,107,.3);color:#ff6b6b;padding:8px 16px;border-radius:12px;font-size:12px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* File bubble */
     .file-bubble{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:13px;cursor:pointer;max-width:260px;animation:msgPop .2s cubic-bezier(.34,1.56,.64,1);-webkit-tap-highlight-color:transparent}
     .msg.me .file-bubble{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:16px 16px 4px 16px;box-shadow:0 4px 16px rgba(124,106,255,.25)}
     .msg.other .file-bubble{background:var(--surface2);color:var(--text);border-radius:16px 16px 16px 4px;border:1px solid var(--border)}
@@ -50,14 +77,20 @@
     .file-size{font-size:10px;opacity:.6;margin-top:2px}
     .img-bubble{max-width:200px;border-radius:13px;overflow:hidden;cursor:pointer;animation:msgPop .2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 16px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent}
     .img-bubble img{width:100%;display:block}
+
+    /* System message */
     .system-msg{text-align:center;font-size:11px;color:var(--muted);padding:4px 0;display:flex;align-items:center;gap:8px}
     .system-msg::before,.system-msg::after{content:'';flex:1;height:1px;background:var(--border)}
+
+    /* Typing */
     .typing-bar{padding:0 14px 5px;font-size:11px;color:var(--muted);height:20px;display:flex;align-items:center;gap:6px;flex-shrink:0}
     .typing-dots{display:flex;gap:3px;align-items:center}
     .typing-dots span{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.7;animation:typingBounce 1.2s infinite}
     .typing-dots span:nth-child(2){animation-delay:.2s}
     .typing-dots span:nth-child(3){animation-delay:.4s}
     @keyframes typingBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+    /* INPUT */
     .input-area{padding:8px 12px 12px;background:rgba(8,8,15,.95);border-top:1px solid var(--border);flex-shrink:0}
     .emoji-picker{display:none;flex-wrap:wrap;gap:2px;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:8px;max-height:130px;overflow-y:auto;animation:slideUp .18s ease;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
     @keyframes slideUp{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
@@ -76,9 +109,39 @@
     .send-btn{padding:10px 16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:20px;font-weight:700;cursor:pointer;font-size:14px;font-family:'Space Grotesk',sans-serif;transition:transform .15s,box-shadow .15s;flex-shrink:0;box-shadow:0 4px 14px rgba(124,106,255,.35);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
     .send-btn:hover{transform:scale(1.04);box-shadow:0 6px 20px rgba(124,106,255,.5)}
     .send-btn:active{transform:scale(.97);opacity:.9}
+
+    /* Leave confirm modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal-overlay.show{display:flex}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:100%;max-width:320px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+    .modal-icon{font-size:36px;margin-bottom:12px}
+    .modal-title{font-size:17px;font-weight:700;margin-bottom:8px}
+    .modal-sub{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:24px}
+    .modal-btns{display:flex;gap:10px}
+    .modal-cancel{flex:1;padding:12px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:12px;font-size:14px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .modal-cancel:active{opacity:.7}
+    .modal-confirm{flex:1;padding:12px;background:linear-gradient(135deg,#ff6b6b,#ff4f4f);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .modal-confirm:active{opacity:.8}
   </style>
 </head>
 <body>
+
+<!-- Leave confirmation modal -->
+<div class="modal-overlay" id="leaveModal">
+  <div class="modal">
+    <div class="modal-icon">🚪</div>
+    <div class="modal-title">Leave the room?</div>
+    <div class="modal-sub">All messages will be gone once everyone leaves. You can't come back with the same session.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Stay</button>
+      <button class="modal-confirm" onclick="confirmLeave()">Leave</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rate limit toast -->
+<div class="toast" id="toast"></div>
+
 <div class="header">
   <div class="header-left">
     <div class="logo-badge">🔐</div>
@@ -94,9 +157,18 @@
 <div class="user-tag">
   <span>You are <span class="name" id="usernameDisplay"></span></span>
   <div class="enc-pill">🔐 AES-256</div>
+  <div class="copy-pill" onclick="copyCode()">📋 Copy Code</div>
 </div>
 
-<div class="messages" id="messages"></div>
+<div class="expiry-banner" id="expiryBanner">
+  ⏱️ Room expires in <span id="expiryCountdown"></span> — send a message to reset the timer
+</div>
+
+<div class="messages-wrap">
+  <div class="messages" id="messages"></div>
+  <button class="scroll-btn" id="scrollBtn" onclick="scrollToBottom()">↓</button>
+</div>
+
 <div class="typing-bar" id="typingBar"></div>
 <input type="file" id="fileInput" style="display:none" onchange="handleFileSelect(event)"/>
 
@@ -113,17 +185,15 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  // ── READ SESSION ──
+  // ── SESSION ──
   const username = sessionStorage.getItem('username');
   const roomCode = sessionStorage.getItem('roomCode');
   const isCreator = sessionStorage.getItem('isCreator') === 'true';
 
-  if (!username || !roomCode) {
-    window.location.href = '/app';
-  } else {
-    document.getElementById('roomCodeDisplay').textContent = roomCode;
-    document.getElementById('usernameDisplay').textContent = username;
-  }
+  if (!username || !roomCode) { window.location.href = '/app'; }
+
+  document.getElementById('roomCodeDisplay').textContent = roomCode;
+  document.getElementById('usernameDisplay').textContent = username;
 
   // ── CRYPTO ──
   const KEY = 'ANONCHAT_' + roomCode;
@@ -133,31 +203,78 @@
   // ── SOCKET ──
   const socket = io();
 
-  function register() {
-    socket.emit('register-in-room', { roomCode, username, isCreator });
-  }
-
-  // Wait for socket to connect before registering
   socket.on('connect', () => {
-    register();
+    socket.emit('register-in-room', { roomCode, username, isCreator });
   });
 
-  socket.on('room-registered', () => {
-    addSys('You joined as ' + username + ' 🔐');
-  });
-
+  socket.on('room-registered', () => addSys('You joined as ' + username + ' 🔐'));
   socket.on('join-error', (msg) => {
-    // Creator: room will be created fresh, should never fail
-    // Joiner: room is gone
-    if (!isCreator) {
-      alert(msg);
+    if (!isCreator) { alert(msg); window.location.href = '/app'; }
+  });
+
+  socket.on('user-joined', ({ username: u, time }) => addSys(`${u} joined the room`, time));
+  socket.on('user-left', ({ username: u, time }) => addSys(`${u} left the room`, time));
+  socket.on('user-count', n => { document.getElementById('userCount').textContent = n; });
+
+  // Room expired
+  socket.on('room-expired', () => {
+    alert('This room has expired due to inactivity.');
+    sessionStorage.clear();
+    window.location.href = '/app';
+  });
+
+  // Rate limit
+  socket.on('rate-limited', (msg) => showToast(msg));
+
+  // ── EXPIRY TIMER (client side visual) ──
+  const EXPIRY_MINS = 30;
+  let expiryTime = Date.now() + EXPIRY_MINS * 60 * 1000;
+
+  function updateExpiryBanner() {
+    const remaining = expiryTime - Date.now();
+    const banner = document.getElementById('expiryBanner');
+    if (remaining <= 5 * 60 * 1000) {
+      banner.classList.add('show');
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('expiryCountdown').textContent =
+        `${mins}:${secs.toString().padStart(2,'0')}`;
+    } else {
+      banner.classList.remove('show');
+    }
+    if (remaining <= 0) {
+      sessionStorage.clear();
       window.location.href = '/app';
     }
+  }
+  setInterval(updateExpiryBanner, 1000);
+
+  function resetExpiryTimer() {
+    expiryTime = Date.now() + EXPIRY_MINS * 60 * 1000;
+    document.getElementById('expiryBanner').classList.remove('show');
+  }
+
+  // ── TOAST ──
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── SCROLL TO BOTTOM ──
+  const messagesEl = document.getElementById('messages');
+  const scrollBtn = document.getElementById('scrollBtn');
+
+  messagesEl.addEventListener('scroll', () => {
+    const atBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 60;
+    scrollBtn.classList.toggle('show', !atBottom);
   });
 
-  socket.on('user-joined', msg => addSys(msg));
-  socket.on('user-left', msg => addSys(msg));
-  socket.on('user-count', n => { document.getElementById('userCount').textContent = n; });
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
 
   // ── TYPING ──
   let tt;
@@ -173,10 +290,11 @@
   socket.on('user-stop-typing', () => { document.getElementById('typingBar').innerHTML = ''; });
 
   // ── MESSAGES ──
-  socket.on('receive-message', ({ username: s, message }) => {
+  socket.on('receive-message', ({ username: s, message, time }) => {
     const d = dec(message);
-    if (d) addMsg(s, d, s === username ? 'me' : 'other');
+    if (d) addMsg(s, d, s === username ? 'me' : 'other', time);
     document.getElementById('typingBar').innerHTML = '';
+    resetExpiryTimer();
   });
 
   function sendMessage() {
@@ -187,6 +305,7 @@
     socket.emit('stop-typing', { roomCode });
     inp.value = '';
     document.getElementById('emojiPicker').classList.remove('open');
+    resetExpiryTimer();
   }
 
   document.getElementById('msgInput').addEventListener('keydown', e => {
@@ -197,7 +316,7 @@
   function handleFileSelect(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 40 * 1024 * 1024) { alert('Max file size is 40MB.'); e.target.value = ''; return; }
+    if (file.size > 40 * 1024 * 1024) { showToast('Max file size is 40MB.'); e.target.value = ''; return; }
     const prog = document.getElementById('uploadProgress');
     prog.style.display = 'block';
     const reader = new FileReader();
@@ -206,41 +325,41 @@
       socket.emit('send-file', { roomCode, username, fileName: enc(file.name), fileType: file.type, fileData: enc(b64) });
       showFile(username, file.name, file.type, b64, 'me');
       prog.style.display = 'none';
+      resetExpiryTimer();
     };
     reader.readAsDataURL(file);
     e.target.value = '';
   }
 
-  socket.on('receive-file', ({ username: s, fileName, fileType, fileData }) => {
+  socket.on('receive-file', ({ username: s, fileName, fileType, fileData, time }) => {
     if (s === username) return;
     const d = dec(fileData), n = dec(fileName);
-    if (d && n) showFile(s, n, fileType, d, 'other');
+    if (d && n) showFile(s, n, fileType, d, 'other', time);
+    resetExpiryTimer();
   });
 
-  function showFile(sender, name, type, data, side) {
+  function showFile(sender, name, type, data, side, time) {
     const c = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = `msg ${side}`;
     const label = side === 'me' ? 'You' : sender;
+    const ts = fmtTime(time);
     if (type.startsWith('image/')) {
-      div.innerHTML = `<div class="meta">${label} 🔐</div>
-        <div class="img-bubble" onclick="dl('${data}','${escH(name)}')">
-          <img src="${data}"/>
-        </div>
+      div.innerHTML = `
+        <div class="meta">${label} 🔐 <span class="time">${ts}</span></div>
+        <div class="img-bubble" onclick="dl('${data}','${escH(name)}')"><img src="${data}"/></div>
         <div style="font-size:10px;color:var(--muted);padding:2px 5px">tap to save</div>`;
     } else {
       const icon = fIcon(type), size = fSize(data);
-      div.innerHTML = `<div class="meta">${label} 🔐</div>
+      div.innerHTML = `
+        <div class="meta">${label} 🔐 <span class="time">${ts}</span></div>
         <div class="file-bubble" onclick="dl('${data}','${escH(name)}')">
           <div class="file-icon">${icon}</div>
-          <div>
-            <div class="file-name">${escH(name)}</div>
-            <div class="file-size">${size} · tap to save</div>
-          </div>
+          <div><div class="file-name">${escH(name)}</div><div class="file-size">${size} · tap to save</div></div>
         </div>`;
     }
     c.appendChild(div);
-    c.scrollTop = c.scrollHeight;
+    autoScroll();
   }
 
   function dl(url, name) { const a = document.createElement('a'); a.href = url; a.download = name; a.click(); }
@@ -275,38 +394,68 @@
   });
 
   // ── HELPERS ──
-  function addMsg(sender, msg, side) {
+  function fmtTime(timestamp) {
+    if (!timestamp) return '';
+    const d = new Date(timestamp);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function autoScroll() {
+    const atBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 100;
+    if (atBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function addMsg(sender, msg, side, time) {
     const c = document.getElementById('messages');
     const div = document.createElement('div');
     div.className = `msg ${side}`;
-    div.innerHTML = `<div class="meta">${side==='me'?'You':sender} 🔐</div><div class="bubble">${escH(msg)}</div>`;
-    c.appendChild(div); c.scrollTop = c.scrollHeight;
+    const ts = fmtTime(time);
+    div.innerHTML = `
+      <div class="meta">${side==='me'?'You':sender} 🔐 <span class="time">${ts}</span></div>
+      <div class="bubble">${escH(msg)}</div>`;
+    c.appendChild(div);
+    autoScroll();
   }
 
-  function addSys(text) {
+  function addSys(text, time) {
     const c = document.getElementById('messages');
     const div = document.createElement('div');
-    div.className = 'system-msg'; div.textContent = text;
-    c.appendChild(div); c.scrollTop = c.scrollHeight;
+    div.className = 'system-msg';
+    div.textContent = time ? `${text} · ${fmtTime(time)}` : text;
+    c.appendChild(div);
+    autoScroll();
   }
 
   function escH(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+  // ── COPY CODE ──
   function copyCode() {
-    navigator.clipboard.writeText(roomCode).then(() => alert('Copied: ' + roomCode));
+    navigator.clipboard.writeText(roomCode)
+      .then(() => showToast('✓ Room code copied: ' + roomCode))
+      .catch(() => showToast('Code: ' + roomCode));
   }
 
+  // ── LEAVE MODAL ──
   function leaveRoom() {
+    document.getElementById('leaveModal').classList.add('show');
+  }
+  function closeModal() {
+    document.getElementById('leaveModal').classList.remove('show');
+  }
+  function confirmLeave() {
     sessionStorage.clear();
     window.location.href = '/app';
   }
 
+  // Close modal on overlay click
+  document.getElementById('leaveModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('leaveModal')) closeModal();
+  });
+
   // Mobile keyboard scroll fix
   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
     document.getElementById('msgInput').addEventListener('focus', () => {
-      setTimeout(() => {
-        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-      }, 300);
+      setTimeout(() => scrollToBottom(), 300);
     });
   }
 </script>

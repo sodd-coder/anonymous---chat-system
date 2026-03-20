@@ -9,58 +9,118 @@ const server = http.createServer(app);
 const io = new Server(server, { maxHttpBufferSize: 50e6 });
 
 const rooms = {};
+const MAX_USERS = 20;
+const ROOM_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
+const RATE_LIMIT_MS = 500; // min ms between messages
+const RATE_LIMIT_MAX = 10; // max messages per 5 seconds
 
-// ── ROUTES ──
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'landing.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/chat.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── SOCKET ──
+// ── Room expiry timer ──
+function resetExpiry(roomCode) {
+  if (!rooms[roomCode]) return;
+  clearTimeout(rooms[roomCode].expiryTimer);
+  rooms[roomCode].expiryTimer = setTimeout(() => {
+    if (rooms[roomCode]) {
+      io.to(roomCode).emit('room-expired');
+      io.socketsLeave(roomCode);
+      delete rooms[roomCode];
+      console.log(`Room ${roomCode} expired after inactivity`);
+    }
+  }, ROOM_EXPIRY_MS);
+}
+
 io.on('connection', (socket) => {
 
-  // Step 1 (index.html): generate a code only — no room yet
+  // Generate code only — no room yet
   socket.on('generate-code', () => {
     const code = uuidv4().substring(0, 6).toUpperCase();
     socket.emit('code-generated', code);
   });
 
-  // Step 1b (index.html): check room exists before joiner redirects
+  // Check room exists for joiners
   socket.on('check-room', ({ roomCode }) => {
-    if (rooms[roomCode]) {
-      socket.emit('room-valid');
-    } else {
+    if (!rooms[roomCode]) {
       socket.emit('join-error', 'Room not found. Check your code.');
+      return;
     }
+    if (rooms[roomCode].users.length >= MAX_USERS) {
+      socket.emit('join-error', `Room is full. Max ${MAX_USERS} users allowed.`);
+      return;
+    }
+    socket.emit('room-valid');
   });
 
-  // Step 2 (chat.html): actually create or join the room
+  // Register in room from chat.html
   socket.on('register-in-room', ({ roomCode, username, isCreator }) => {
     if (isCreator) {
-      // Always create room fresh for creator
-      rooms[roomCode] = { users: [] };
+      rooms[roomCode] = {
+        users: [],
+        expiryTimer: null,
+        createdAt: Date.now()
+      };
+      resetExpiry(roomCode);
     }
+
     if (!rooms[roomCode]) {
       socket.emit('join-error', 'Room not found or expired.');
       return;
     }
+
+    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) {
+      socket.emit('join-error', `Room is full. Max ${MAX_USERS} users allowed.`);
+      return;
+    }
+
     socket.join(roomCode);
     socket.roomCode = roomCode;
     socket.username = username;
+    socket.messageCount = 0;
+    socket.lastMessageTime = 0;
+    socket.rateLimitReset = null;
+
     if (!rooms[roomCode].users.includes(username)) {
       rooms[roomCode].users.push(username);
-      io.to(roomCode).emit('user-joined', `${username} joined the room`);
+      io.to(roomCode).emit('user-joined', { username, time: Date.now() });
     }
+
     io.to(roomCode).emit('user-count', rooms[roomCode].users.length);
     socket.emit('room-registered');
+    resetExpiry(roomCode);
   });
 
+  // Rate limited message sending
   socket.on('send-message', ({ roomCode, username, message }) => {
-    io.to(roomCode).emit('receive-message', { username, message });
+    const now = Date.now();
+
+    // Throttle: min gap between messages
+    if (now - socket.lastMessageTime < RATE_LIMIT_MS) {
+      socket.emit('rate-limited', 'Slow down! You are sending messages too fast.');
+      return;
+    }
+
+    // Burst limit: max 10 messages per 5 seconds
+    if (!socket.rateLimitReset || now > socket.rateLimitReset) {
+      socket.messageCount = 0;
+      socket.rateLimitReset = now + 5000;
+    }
+    socket.messageCount++;
+    if (socket.messageCount > RATE_LIMIT_MAX) {
+      socket.emit('rate-limited', 'Too many messages. Please wait a moment.');
+      return;
+    }
+
+    socket.lastMessageTime = now;
+    resetExpiry(roomCode);
+    io.to(roomCode).emit('receive-message', { username, message, time: Date.now() });
   });
 
   socket.on('send-file', ({ roomCode, username, fileName, fileType, fileData }) => {
-    io.to(roomCode).emit('receive-file', { username, fileName, fileType, fileData });
+    resetExpiry(roomCode);
+    io.to(roomCode).emit('receive-file', { username, fileName, fileType, fileData, time: Date.now() });
   });
 
   socket.on('typing', ({ roomCode, username }) => {
@@ -75,9 +135,13 @@ io.on('connection', (socket) => {
     const { roomCode, username } = socket;
     if (roomCode && username && rooms[roomCode]) {
       rooms[roomCode].users = rooms[roomCode].users.filter(u => u !== username);
-      io.to(roomCode).emit('user-left', `${username} left the room`);
+      io.to(roomCode).emit('user-left', { username, time: Date.now() });
       io.to(roomCode).emit('user-count', rooms[roomCode].users.length);
-      if (rooms[roomCode].users.length === 0) delete rooms[roomCode];
+      if (rooms[roomCode].users.length === 0) {
+        clearTimeout(rooms[roomCode].expiryTimer);
+        delete rooms[roomCode];
+        console.log(`Room ${roomCode} deleted — all users left`);
+      }
     }
   });
 
