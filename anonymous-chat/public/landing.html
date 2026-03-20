@@ -1,610 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AnonChat — Private Encrypted Chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#08080f;--surface:#0f0f1a;--surface2:#16162a;
+      --border:rgba(255,255,255,0.07);--accent:#7c6aff;
+      --accent2:#ff6ab0;--accent3:#6affda;
+      --text:#f0f0ff;--muted:#6b6b8a;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
-    :root {
-      --bg: #08080f;
-      --surface: #0f0f1a;
-      --surface2: #16162a;
-      --border: rgba(255,255,255,0.07);
-      --accent: #7c6aff;
-      --accent2: #ff6ab0;
-      --accent3: #6affda;
-      --text: #f0f0ff;
-      --muted: #6b6b8a;
-    }
+    /* BG */
+    .bg-fixed{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.12;animation:blobFloat 10s ease-in-out infinite}
+    .b1{width:500px;height:500px;background:var(--accent);top:-200px;left:-200px}
+    .b2{width:400px;height:400px;background:var(--accent2);bottom:-150px;right:-150px;animation-delay:4s}
+    .b3{width:350px;height:350px;background:var(--accent3);top:40%;left:40%;animation-delay:7s}
+    @keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.05)}66%{transform:translate(-20px,20px) scale(.95)}}
 
-    html { scroll-behavior: smooth; }
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-badge{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 16px rgba(124,106,255,.4)}
+    .nav-name{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.5px}
+    .nav-name span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;display:none}
+    .nav-link:hover{color:var(--text)}
+    @media(min-width:640px){.nav-link{display:block}}
+    .nav-cta{padding:9px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(124,106,255,.35);white-space:nowrap}
+    .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,106,255,.5)}
 
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-    }
+    section{position:relative;z-index:1}
 
-    /* ── BACKGROUND ── */
-    .bg-fixed {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-    }
-    .blob {
-      position: absolute; border-radius: 50%;
-      filter: blur(100px); opacity: 0.12;
-      animation: blobFloat 10s ease-in-out infinite;
-    }
-    .b1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; animation-delay: 0s; }
-    .b2 { width: 500px; height: 500px; background: var(--accent2); bottom: -150px; right: -150px; animation-delay: 4s; }
-    .b3 { width: 400px; height: 400px; background: var(--accent3); top: 40%; left: 40%; animation-delay: 7s; }
-    @keyframes blobFloat {
-      0%,100% { transform: translate(0,0) scale(1); }
-      33% { transform: translate(30px,-30px) scale(1.05); }
-      66% { transform: translate(-20px,20px) scale(0.95); }
-    }
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 20px 60px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.25);padding:6px 16px;border-radius:20px;font-size:12px;color:var(--accent);font-weight:600;margin-bottom:24px;animation:fadeUp .6s ease both}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent3);box-shadow:0 0 8px var(--accent3);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero-title{font-size:clamp(38px,9vw,88px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;animation:fadeUp .7s ease .1s both}
+    .hero-title .grad{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gradShift 4s ease infinite}
+    @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    .hero-sub{font-size:clamp(15px,2.5vw,19px);color:var(--muted);max-width:520px;line-height:1.65;margin-bottom:36px;animation:fadeUp .7s ease .2s both}
+    .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s ease .3s both}
+    .btn-primary{padding:14px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 8px 32px rgba(124,106,255,.4);display:inline-flex;align-items:center;gap:8px}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(124,106,255,.55)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-secondary{padding:14px 28px;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
 
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 16px 40px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(8,8,15,0.8);
-      backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none;
-    }
-    .nav-logo-badge {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-      box-shadow: 0 4px 16px rgba(124,106,255,0.4);
-    }
-    .nav-logo-text {
-      font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.5px;
-    }
-    .nav-logo-text span {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .nav-link {
-      font-size: 14px; color: var(--muted); text-decoration: none;
-      transition: color 0.2s; font-weight: 500;
-    }
-    .nav-link:hover { color: var(--text); }
-    .nav-cta {
-      padding: 9px 20px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; border: none; border-radius: 12px;
-      font-size: 14px; font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
-      cursor: pointer; text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 16px rgba(124,106,255,0.35);
-    }
-    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,106,255,0.5); }
+    /* MOCKUP */
+    .mockup-wrap{margin-top:56px;width:100%;max-width:600px;animation:fadeUp .8s ease .4s both,floatY 6s ease-in-out infinite 1.2s}
+    @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .mockup{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(124,106,255,.1)}
+    .mockup-top{background:rgba(8,8,15,.9);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+    .mock-dots{display:flex;gap:5px}
+    .mock-dot{width:9px;height:9px;border-radius:50%}
+    .mock-dot:nth-child(1){background:#ff5f57}
+    .mock-dot:nth-child(2){background:#febc2e}
+    .mock-dot:nth-child(3){background:#28c840}
+    .mock-title{font-size:12px;font-weight:600;color:var(--muted);margin-left:8px}
+    .mock-room{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:2px;background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.2);padding:3px 10px;border-radius:8px}
+    .mock-body{padding:16px;display:flex;flex-direction:column;gap:8px}
+    .mock-sys{text-align:center;font-size:11px;color:var(--muted)}
+    .mock-msg{display:flex;flex-direction:column;gap:2px;max-width:72%}
+    .mock-msg.me{align-self:flex-end;align-items:flex-end}
+    .mock-msg.other{align-self:flex-start}
+    .mock-meta{font-size:10px;color:var(--muted);padding:0 4px}
+    .mock-bubble{padding:8px 13px;font-size:13px;border-radius:12px}
+    .mock-msg.me .mock-bubble{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:12px 12px 3px 12px}
+    .mock-msg.other .mock-bubble{background:var(--surface2);color:var(--text);border-radius:12px 12px 12px 3px;border:1px solid var(--border)}
+    .mock-input{margin:0 16px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between}
+    .mock-input span{font-size:12px;color:var(--muted)}
+    .mock-send{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif}
 
-    /* ── SECTIONS ── */
-    section { position: relative; z-index: 1; }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ── HERO ── */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 120px 24px 80px;
-    }
+    /* STATS */
+    .stats{padding:28px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:40px;flex-wrap:wrap;background:rgba(15,15,26,.6);backdrop-filter:blur(20px)}
+    .stat{text-align:center}
+    .stat-num{font-size:clamp(22px,5vw,32px);font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
 
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(124,106,255,0.1);
-      border: 1px solid rgba(124,106,255,0.25);
-      padding: 6px 16px; border-radius: 20px;
-      font-size: 13px; color: var(--accent); font-weight: 600;
-      margin-bottom: 28px;
-      animation: fadeUp 0.6s ease both;
-    }
-    .hero-badge-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent3);
-      box-shadow: 0 0 8px var(--accent3);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    /* FEATURES */
+    .features{padding:80px 20px;max-width:1100px;margin:0 auto}
+    .section-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(106,255,218,.08);border:1px solid rgba(106,255,218,.2);padding:5px 14px;border-radius:20px;font-size:11px;color:var(--accent3);font-weight:600;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase}
+    .section-title{font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-1.5px;margin-bottom:12px;line-height:1.1}
+    .section-title span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .section-sub{font-size:15px;color:var(--muted);max-width:480px;line-height:1.6;margin-bottom:48px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .fcard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;transition:transform .2s,border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
+    .fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s}
+    .fcard:hover{transform:translateY(-4px);border-color:rgba(124,106,255,.3);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+    .fcard:hover::before{opacity:1}
+    .ficon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+    .fi-purple{background:rgba(124,106,255,.15)}
+    .fi-pink{background:rgba(255,106,176,.15)}
+    .fi-teal{background:rgba(106,255,218,.15)}
+    .fi-orange{background:rgba(255,166,77,.15)}
+    .fi-blue{background:rgba(106,178,255,.15)}
+    .fi-green{background:rgba(106,255,120,.15)}
+    .fcard-title{font-size:16px;font-weight:700;margin-bottom:7px}
+    .fcard-desc{font-size:13px;color:var(--muted);line-height:1.6}
 
-    .hero-title {
-      font-size: clamp(48px, 8vw, 88px);
-      font-weight: 800; line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-      animation: fadeUp 0.7s ease 0.1s both;
-    }
-    .hero-title .line2 {
-      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-size: 200% 200%;
-      animation: gradShift 4s ease infinite, fadeUp 0.7s ease 0.1s both;
-    }
-    @keyframes gradShift {
-      0%,100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
+    /* HOW */
+    .how{padding:80px 20px;max-width:1100px;margin:0 auto}
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-top:48px;position:relative}
+    .steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:.25;display:none}
+    @media(min-width:640px){.steps::before{display:block}}
+    .step{text-align:center;padding:0 10px}
+    .step-num{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 24px rgba(124,106,255,.4);position:relative;z-index:1}
+    .step-title{font-size:15px;font-weight:700;margin-bottom:6px}
+    .step-desc{font-size:13px;color:var(--muted);line-height:1.6}
 
-    .hero-sub {
-      font-size: clamp(16px, 2.5vw, 20px);
-      color: var(--muted); max-width: 560px;
-      line-height: 1.65; margin-bottom: 44px;
-      animation: fadeUp 0.7s ease 0.2s both;
-    }
+    /* CTA */
+    .cta-sec{padding:80px 20px;text-align:center}
+    .cta-card{max-width:680px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 24px;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+    .cta-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,255,.12),transparent 60%);pointer-events:none}
+    .cta-title{font-size:clamp(26px,5vw,42px);font-weight:800;letter-spacing:-1px;margin-bottom:14px;line-height:1.15}
+    .cta-title span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .cta-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.6}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-    .hero-btns {
-      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
-      animation: fadeUp 0.7s ease 0.3s both;
-    }
-    .btn-primary {
-      padding: 16px 36px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; border: none; border-radius: 16px;
-      font-size: 16px; font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
-      cursor: pointer; text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 8px 32px rgba(124,106,255,0.4);
-      display: inline-flex; align-items: center; gap: 8px;
-      position: relative; overflow: hidden;
-    }
-    .btn-primary::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-      opacity: 0; transition: opacity 0.2s;
-    }
-    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(124,106,255,0.55); }
-    .btn-primary:hover::before { opacity: 1; }
-    .btn-primary:active { transform: translateY(0); }
+    /* FOOTER */
+    footer{padding:24px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:rgba(8,8,15,.8)}
+    .footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .footer-badge{width:26px;height:26px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px}
+    .footer-name{font-size:13px;font-weight:700;color:var(--text)}
+    .footer-name span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .footer-copy{font-size:11px;color:var(--muted)}
+    .footer-pills{display:flex;gap:6px;flex-wrap:wrap}
+    .fp{font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:3px 9px;border-radius:8px}
 
-    .btn-secondary {
-      padding: 16px 36px;
-      background: var(--surface2);
-      color: var(--text); border: 1.5px solid var(--border);
-      border-radius: 16px; font-size: 16px; font-weight: 600;
-      font-family: 'Space Grotesk', sans-serif;
-      cursor: pointer; text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* Chat preview mockup */
-    .hero-mockup {
-      margin-top: 72px;
-      width: 100%; max-width: 680px;
-      animation: fadeUp 0.8s ease 0.4s both, floatY 6s ease-in-out infinite 1.2s;
-    }
-    @keyframes floatY {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-    .mockup-window {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(124,106,255,0.1);
-    }
-    .mockup-bar {
-      background: rgba(8,8,15,0.9);
-      padding: 12px 18px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-    .mockup-bar-left { display: flex; align-items: center; gap: 8px; }
-    .mockup-dots { display: flex; gap: 6px; }
-    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
-    .mockup-dot:nth-child(1) { background: #ff5f57; }
-    .mockup-dot:nth-child(2) { background: #febc2e; }
-    .mockup-dot:nth-child(3) { background: #28c840; }
-    .mockup-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 8px; }
-    .mockup-room { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 2px; background: rgba(124,106,255,0.1); border: 1px solid rgba(124,106,255,0.2); padding: 3px 10px; border-radius: 10px; }
-    .mockup-body { padding: 20px 18px; display: flex; flex-direction: column; gap: 10px; }
-    .mockup-sys { text-align: center; font-size: 11px; color: var(--muted); }
-    .mockup-msg { display: flex; flex-direction: column; gap: 3px; max-width: 70%; }
-    .mockup-msg.me { align-self: flex-end; align-items: flex-end; }
-    .mockup-msg.other { align-self: flex-start; }
-    .mockup-meta { font-size: 10px; color: var(--muted); padding: 0 4px; }
-    .mockup-bubble { padding: 9px 14px; font-size: 13px; border-radius: 14px; }
-    .mockup-msg.me .mockup-bubble { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-radius: 14px 14px 4px 14px; }
-    .mockup-msg.other .mockup-bubble { background: var(--surface2); color: var(--text); border-radius: 14px 14px 14px 4px; border: 1px solid var(--border); }
-    .mockup-input { margin: 0 18px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
-    .mockup-input span { font-size: 12px; color: var(--muted); }
-    .mockup-send { background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: 10px; padding: 6px 14px; color: #fff; font-size: 12px; font-weight: 700; cursor: default; font-family: 'Space Grotesk', sans-serif; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── STATS BAR ── */
-    .stats-bar {
-      padding: 32px 40px;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      display: flex; justify-content: center; gap: 80px; flex-wrap: wrap;
-      background: rgba(15,15,26,0.6);
-      backdrop-filter: blur(20px);
-    }
-    .stat { text-align: center; }
-    .stat-num { font-size: 32px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 500; }
-
-    /* ── FEATURES ── */
-    .features {
-      padding: 100px 40px;
-      max-width: 1100px; margin: 0 auto;
-    }
-    .section-label {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(106,255,218,0.08);
-      border: 1px solid rgba(106,255,218,0.2);
-      padding: 5px 14px; border-radius: 20px;
-      font-size: 12px; color: var(--accent3); font-weight: 600;
-      margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase;
-    }
-    .section-title {
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 800; letter-spacing: -1.5px;
-      margin-bottom: 16px; line-height: 1.1;
-    }
-    .section-title span {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .section-sub { font-size: 16px; color: var(--muted); max-width: 500px; line-height: 1.6; margin-bottom: 60px; }
-
-    .features-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;
-    }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px; padding: 28px;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .feature-card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .feature-card:hover { transform: translateY(-4px); border-color: rgba(124,106,255,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-    .feature-card:hover::before { opacity: 1; }
-    .feature-icon {
-      width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; margin-bottom: 18px;
-    }
-    .feature-icon.purple { background: rgba(124,106,255,0.15); }
-    .feature-icon.pink { background: rgba(255,106,176,0.15); }
-    .feature-icon.teal { background: rgba(106,255,218,0.15); }
-    .feature-icon.orange { background: rgba(255,166,77,0.15); }
-    .feature-icon.blue { background: rgba(106,178,255,0.15); }
-    .feature-icon.green { background: rgba(106,255,120,0.15); }
-    .feature-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-    .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
-
-    /* ── HOW IT WORKS ── */
-    .how {
-      padding: 100px 40px;
-      max-width: 1100px; margin: 0 auto;
-    }
-    .steps {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0; position: relative; margin-top: 60px;
-    }
-    .steps::before {
-      content: ''; position: absolute;
-      top: 30px; left: 10%; right: 10%; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
-      opacity: 0.3;
-    }
-    .step {
-      text-align: center; padding: 0 20px;
-      position: relative;
-    }
-    .step-num {
-      width: 60px; height: 60px; border-radius: 18px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff; font-size: 22px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-      box-shadow: 0 8px 24px rgba(124,106,255,0.4);
-      position: relative; z-index: 1;
-    }
-    .step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-
-    /* ── CTA ── */
-    .cta-section {
-      padding: 100px 40px;
-      text-align: center;
-    }
-    .cta-card {
-      max-width: 720px; margin: 0 auto;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 28px; padding: 60px 48px;
-      position: relative; overflow: hidden;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-    }
-    .cta-card::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(124,106,255,0.12), transparent 60%);
-      pointer-events: none;
-    }
-    .cta-title {
-      font-size: clamp(28px, 5vw, 44px);
-      font-weight: 800; letter-spacing: -1px;
-      margin-bottom: 16px; line-height: 1.15;
-    }
-    .cta-title span {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .cta-sub { font-size: 16px; color: var(--muted); margin-bottom: 36px; line-height: 1.6; }
-    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 28px 40px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px;
-      background: rgba(8,8,15,0.8);
-    }
-    .footer-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .footer-logo-badge { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
-    .footer-logo-text { font-size: 14px; font-weight: 700; color: var(--text); }
-    .footer-logo-text span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .footer-copy { font-size: 12px; color: var(--muted); }
-    .footer-pills { display: flex; gap: 8px; }
-    .footer-pill { font-size: 11px; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); padding: 3px 10px; border-radius: 10px; }
-
-    /* ── SCROLL REVEAL ── */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    @media (max-width: 768px) {
-      nav { padding: 14px 20px; }
-      .nav-link { display: none; }
-      .stats-bar { gap: 40px; padding: 28px 20px; }
-      .features, .how { padding: 60px 20px; }
-      .cta-card { padding: 40px 24px; }
-      footer { padding: 20px; }
-      .steps::before { display: none; }
-    }
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
   </style>
 </head>
 <body>
+<div class="bg-fixed">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
 
-  <div class="bg-fixed">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-badge">🔐</div>
+    <div class="nav-name">Anon<span>Chat</span></div>
+  </a>
+  <div class="nav-right">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="/app" class="nav-cta">Launch App →</a>
   </div>
+</nav>
 
-  <!-- NAV -->
-  <nav>
-    <a href="/landing.html" class="nav-logo">
-      <div class="nav-logo-badge">🔐</div>
-      <div class="nav-logo-text">Anon<span>Chat</span></div>
-    </a>
-    <div class="nav-right">
-      <a href="#features" class="nav-link">Features</a>
-      <a href="#how" class="nav-link">How it works</a>
-      <a href="/index.html" class="nav-cta">Launch App →</a>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-badge">
-      <div class="hero-badge-dot"></div>
-      End-to-end encrypted · Zero logs · No accounts
-    </div>
-
-    <h1 class="hero-title">
-      Chat without<br>
-      <span class="line2">leaving a trace.</span>
-    </h1>
-
-    <p class="hero-sub">
-      Create a private room in seconds. Share the code. Talk freely.
-      AES-256 encrypted, fully anonymous, gone when you leave. 🫧
-    </p>
-
-    <div class="hero-btns">
-      <a href="/index.html" class="btn-primary">
-        ✦ Start Chatting Free
-      </a>
-      <a href="#how" class="btn-secondary">
-        How it works ↓
-      </a>
-    </div>
-
-    <!-- Mockup -->
-    <div class="hero-mockup">
-      <div class="mockup-window">
-        <div class="mockup-bar">
-          <div class="mockup-bar-left">
-            <div class="mockup-dots">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-            </div>
-            <span class="mockup-title">🔐 AnonChat</span>
-          </div>
-          <div class="mockup-room">X7K92A</div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><div class="hero-badge-dot"></div>End-to-end encrypted · Zero logs · No accounts</div>
+  <h1 class="hero-title">Chat without<br><span class="grad">leaving a trace.</span></h1>
+  <p class="hero-sub">Create a private room in seconds. Share the code. Talk freely. AES-256 encrypted, fully anonymous, gone when you leave. 🫧</p>
+  <div class="hero-btns">
+    <a href="/app" class="btn-primary">✦ Start Chatting Free</a>
+    <a href="#how" class="btn-secondary">How it works ↓</a>
+  </div>
+  <div class="mockup-wrap">
+    <div class="mockup">
+      <div class="mockup-top">
+        <div style="display:flex;align-items:center">
+          <div class="mock-dots"><div class="mock-dot"></div><div class="mock-dot"></div><div class="mock-dot"></div></div>
+          <span class="mock-title">🔐 AnonChat</span>
         </div>
-        <div class="mockup-body">
-          <div class="mockup-sys">GhostFox42 joined the room 🔐</div>
-          <div class="mockup-msg other">
-            <div class="mockup-meta">GhostFox42</div>
-            <div class="mockup-bubble">yo nobody can see this right? 👀</div>
-          </div>
-          <div class="mockup-msg me">
-            <div class="mockup-meta">You 🔐</div>
-            <div class="mockup-bubble">nope, AES encrypted fr fr 🔐</div>
-          </div>
-          <div class="mockup-msg other">
-            <div class="mockup-meta">GhostFox42</div>
-            <div class="mockup-bubble">no cap this is actually clean ✨</div>
-          </div>
-          <div class="mockup-msg me">
-            <div class="mockup-meta">You 🔐</div>
-            <div class="mockup-bubble">built it myself lol 😎🚀</div>
-          </div>
-        </div>
-        <div class="mockup-input">
-          <span>Send a message...</span>
-          <button class="mockup-send">Send ↑</button>
-        </div>
+        <div class="mock-room">X7K92A</div>
       </div>
-    </div>
-  </section>
-
-  <!-- STATS BAR -->
-  <div class="stats-bar reveal">
-    <div class="stat">
-      <div class="stat-num">AES-256</div>
-      <div class="stat-label">Encryption Standard</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">0 logs</div>
-      <div class="stat-label">Messages Stored</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">40MB</div>
-      <div class="stat-label">Max File Size</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">∞</div>
-      <div class="stat-label">Rooms You Can Create</div>
+      <div class="mock-body">
+        <div class="mock-sys">GhostFox42 joined the room 🔐</div>
+        <div class="mock-msg other"><div class="mock-meta">GhostFox42</div><div class="mock-bubble">yo nobody can see this right? 👀</div></div>
+        <div class="mock-msg me"><div class="mock-meta">You 🔐</div><div class="mock-bubble">nope, AES encrypted fr fr 🔐</div></div>
+        <div class="mock-msg other"><div class="mock-meta">GhostFox42</div><div class="mock-bubble">no cap this is actually clean ✨</div></div>
+        <div class="mock-msg me"><div class="mock-meta">You 🔐</div><div class="mock-bubble">built it myself lol 😎🚀</div></div>
+      </div>
+      <div class="mock-input"><span>Send a message...</span><button class="mock-send">Send ↑</button></div>
     </div>
   </div>
+</section>
 
-  <!-- FEATURES -->
-  <section class="features" id="features">
-    <div class="reveal">
-      <div class="section-label">✦ Features</div>
-      <h2 class="section-title">Everything you need.<br><span>Nothing you don't.</span></h2>
-      <p class="section-sub">Built for people who actually care about their privacy. No fluff, no tracking, no nonsense.</p>
+<!-- STATS -->
+<div class="stats reveal">
+  <div class="stat"><div class="stat-num">AES-256</div><div class="stat-label">Encryption Standard</div></div>
+  <div class="stat"><div class="stat-num">0 logs</div><div class="stat-label">Messages Stored</div></div>
+  <div class="stat"><div class="stat-num">40MB</div><div class="stat-label">Max File Size</div></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Rooms You Can Create</div></div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="reveal">
+    <div class="section-tag">✦ Features</div>
+    <h2 class="section-title">Everything you need.<br><span>Nothing you don't.</span></h2>
+    <p class="section-sub">Built for people who actually care about their privacy. No fluff, no tracking, no nonsense.</p>
+  </div>
+  <div class="grid">
+    <div class="fcard reveal"><div class="ficon fi-purple">🔐</div><div class="fcard-title">AES-256 Encryption</div><div class="fcard-desc">Every message is encrypted in your browser before reaching the server. The server never sees your actual words — ever.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-pink">👤</div><div class="fcard-title">Fully Anonymous</div><div class="fcard-desc">No accounts, no emails, no phone numbers. You get a random name like GhostFox42 and you're in. That's it.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-teal">🏠</div><div class="fcard-title">Private Room Codes</div><div class="fcard-desc">Create a room and get a unique 6-character code. Share it with only the people you want. No one else can join without it.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-orange">📎</div><div class="fcard-title">Encrypted File Sharing</div><div class="fcard-desc">Share files up to 40MB — images, docs, videos, anything. Files are AES encrypted before transfer just like messages.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-blue">✍️</div><div class="fcard-title">Typing Indicators</div><div class="fcard-desc">See animated dots when someone is typing. Real-time connection without giving up any privacy.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-green">🗑️</div><div class="fcard-title">Auto Self-Destruct</div><div class="fcard-desc">When everyone leaves, all messages are permanently wiped from memory. No database, no history, no receipts.</div></div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="reveal">
+    <div class="section-tag">✦ How It Works</div>
+    <h2 class="section-title">Three steps.<br><span>That's literally it.</span></h2>
+    <p class="section-sub">No setup, no install, no account. Just open, create, and chat.</p>
+  </div>
+  <div class="steps">
+    <div class="step reveal"><div class="step-num">1</div><div class="step-title">Create a Room</div><div class="step-desc">Tap the button and get a unique 6-character room code instantly. You get an anonymous username automatically.</div></div>
+    <div class="step reveal"><div class="step-num">2</div><div class="step-title">Share the Code</div><div class="step-desc">Send the room code to whoever you want to chat with. They enter it and join instantly — no sign up needed.</div></div>
+    <div class="step reveal"><div class="step-num">3</div><div class="step-title">Chat Freely</div><div class="step-desc">Every message is AES-256 encrypted before it leaves your device. Share files, use emojis. When done, just leave.</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-card reveal">
+    <h2 class="cta-title">Ready to chat<br><span>off the record?</span></h2>
+    <p class="cta-sub">No sign up. No tracking. No receipts. Just a private room and your people. 🫧</p>
+    <div class="cta-btns">
+      <a href="/app" class="btn-primary">✦ Launch AnonChat</a>
+      <a href="#features" class="btn-secondary">Learn more ↓</a>
     </div>
+  </div>
+</section>
 
-    <div class="features-grid">
-      <div class="feature-card reveal">
-        <div class="feature-icon purple">🔐</div>
-        <div class="feature-title">AES-256 Encryption</div>
-        <div class="feature-desc">Every single message is encrypted in your browser before it even reaches the server. The server never sees your actual words — ever.</div>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon pink">👤</div>
-        <div class="feature-title">Fully Anonymous</div>
-        <div class="feature-desc">No accounts, no emails, no phone numbers. You get a random name like GhostFox42 and you're in. That's it.</div>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon teal">🏠</div>
-        <div class="feature-title">Private Room Codes</div>
-        <div class="feature-desc">Create a room and get a unique 6-character code. Share it with only the people you want. No one else can join without it.</div>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon orange">📎</div>
-        <div class="feature-title">Encrypted File Sharing</div>
-        <div class="feature-desc">Share files up to 40MB — images, docs, videos, anything. Files are AES encrypted before transfer, just like messages.</div>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon blue">✍️</div>
-        <div class="feature-title">Typing Indicators</div>
-        <div class="feature-desc">See animated dots when someone is typing. Feel the real-time connection without giving up any privacy.</div>
-      </div>
-      <div class="feature-card reveal">
-        <div class="feature-icon green">🗑️</div>
-        <div class="feature-title">Auto Self-Destruct</div>
-        <div class="feature-desc">When everyone leaves the room, all messages are permanently wiped from memory. No database, no history, no receipts.</div>
-      </div>
-    </div>
-  </section>
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">
+    <div class="footer-badge">🔐</div>
+    <div class="footer-name">Anon<span>Chat</span></div>
+  </a>
+  <div class="footer-copy">Built during OJT · Cybersecurity Project</div>
+  <div class="footer-pills">
+    <div class="fp">🔐 Encrypted</div>
+    <div class="fp">👤 Anonymous</div>
+    <div class="fp">🗑️ No Logs</div>
+  </div>
+</footer>
 
-  <!-- HOW IT WORKS -->
-  <section class="how" id="how">
-    <div class="reveal">
-      <div class="section-label">✦ How It Works</div>
-      <h2 class="section-title">Three steps.<br><span>That's literally it.</span></h2>
-      <p class="section-sub">No setup, no install, no account. Just open, create, and chat.</p>
-    </div>
-
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step-num">1</div>
-        <div class="step-title">Create a Room</div>
-        <div class="step-desc">Hit the button and get a unique 6-character room code generated instantly. You're automatically assigned an anonymous username.</div>
-      </div>
-      <div class="step reveal">
-        <div class="step-num">2</div>
-        <div class="step-title">Share the Code</div>
-        <div class="step-desc">Send the room code to whoever you want to chat with. They enter it on the home page and join instantly — no sign up needed.</div>
-      </div>
-      <div class="step reveal">
-        <div class="step-num">3</div>
-        <div class="step-title">Chat Freely</div>
-        <div class="step-desc">Every message is AES-256 encrypted before it leaves your device. Share files, use emojis, type freely. When you're done, just leave.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="cta-card reveal">
-      <h2 class="cta-title">Ready to chat<br><span>off the record?</span></h2>
-      <p class="cta-sub">No sign up. No tracking. No receipts. Just a private room and your people. 🫧</p>
-      <div class="cta-btns">
-        <a href="/index.html" class="btn-primary">✦ Launch AnonChat</a>
-        <a href="#features" class="btn-secondary">Learn more ↓</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <a href="/landing.html" class="footer-logo">
-      <div class="footer-logo-badge">🔐</div>
-      <div class="footer-logo-text">Anon<span>Chat</span></div>
-    </a>
-    <div class="footer-copy">Built during OJT · Cybersecurity Project</div>
-    <div class="footer-pills">
-      <div class="footer-pill">🔐 Encrypted</div>
-      <div class="footer-pill">👤 Anonymous</div>
-      <div class="footer-pill">🗑️ No Logs</div>
-    </div>
-  </footer>
-
-  <script>
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  </script>
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
 </body>
 </html>
