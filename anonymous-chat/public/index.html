@@ -24,7 +24,7 @@
     .btn-create{width:100%;padding:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;margin-bottom:18px;transition:transform .15s,box-shadow .15s,opacity .2s;box-shadow:0 8px 28px rgba(124,106,255,.35);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
     .btn-create:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,106,255,.5)}
     .btn-create:active{transform:scale(.98);opacity:.9}
-    .btn-create:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .btn-create:disabled{opacity:.5;cursor:not-allowed;transform:none}
     .divider{display:flex;align-items:center;gap:12px;margin-bottom:18px}
     .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
     .divider span{font-size:12px;color:var(--muted);white-space:nowrap}
@@ -35,10 +35,10 @@
     .btn-join{width:100%;padding:14px;background:var(--surface2);color:var(--accent);border:1.5px solid rgba(124,106,255,.3);border-radius:14px;font-size:15px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
     .btn-join:hover{background:rgba(124,106,255,.1);border-color:var(--accent)}
     .btn-join:active{transform:scale(.98);opacity:.9}
-    .btn-join:disabled{opacity:.6;cursor:not-allowed}
-    .msg{font-size:12px;margin-top:10px;text-align:center;display:none}
-    .msg.error{color:#ff6b6b}
-    .msg.loading{color:var(--accent)}
+    .btn-join:disabled{opacity:.5;cursor:not-allowed}
+    .msg{font-size:12px;margin-top:10px;text-align:center;display:none;padding:8px 12px;border-radius:10px}
+    .msg.error{color:#ff6b6b;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2)}
+    .msg.loading{color:var(--accent);background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.2)}
     .pills{display:flex;justify-content:center;gap:8px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
     .pill{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px}
     .pill-dot{width:5px;height:5px;border-radius:50%;background:var(--accent3)}
@@ -58,108 +58,106 @@
     <div class="logo-text">Anon<span>Chat</span></div>
   </div>
   <p class="tagline">No accounts. No logs. No traces. Just vibes. 🌐</p>
-
   <button class="btn-create" id="createBtn" onclick="createRoom()">✦ Create New Room</button>
-
   <div class="divider"><span>or drop a code</span></div>
-
   <div class="input-wrap">
-    <input type="text" id="roomCodeInput" placeholder="Enter room code..." maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
+    <input type="text" id="roomCodeInput" placeholder="Enter room code..."
+      maxlength="6" autocomplete="off" autocorrect="off"
+      autocapitalize="characters" spellcheck="false"/>
   </div>
   <button class="btn-join" id="joinBtn" onclick="joinRoom()">Join Room →</button>
-
   <div class="msg error" id="errorMsg"></div>
   <div class="msg loading" id="loadingMsg"></div>
-
   <div class="pills">
     <div class="pill"><div class="pill-dot"></div>Anonymous</div>
     <div class="pill"><div class="pill-dot"></div>Encrypted</div>
     <div class="pill"><div class="pill-dot"></div>Zero Logs</div>
   </div>
-
   <a href="/" class="back-link">← Back to home</a>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
-  let navigating = false;
+  let busy = false;
 
   function generateUsername() {
-    const adj=['Silent','Ghost','Shadow','Anon','Stealth','Phantom','Cipher','Mystic','Neon','Glitch'];
-    const noun=['Fox','Wolf','Hawk','Bear','Lynx','Raven','Tiger','Eagle','Vibe','Pixel'];
-    return adj[Math.floor(Math.random()*adj.length)]+noun[Math.floor(Math.random()*noun.length)]+Math.floor(10+Math.random()*90);
+    const adj = ['Silent','Ghost','Shadow','Anon','Stealth','Phantom','Cipher','Mystic','Neon','Glitch'];
+    const noun = ['Fox','Wolf','Hawk','Bear','Lynx','Raven','Tiger','Eagle','Vibe','Pixel'];
+    return adj[Math.floor(Math.random()*adj.length)] + noun[Math.floor(Math.random()*noun.length)] + Math.floor(10+Math.random()*90);
   }
 
-  function setLoading(on) {
-    document.getElementById('createBtn').disabled = on;
-    document.getElementById('joinBtn').disabled = on;
-    const l = document.getElementById('loadingMsg');
-    l.style.display = on ? 'block' : 'none';
-    l.textContent = on ? '⏳ Connecting...' : '';
+  function lock() {
+    busy = true;
+    document.getElementById('createBtn').disabled = true;
+    document.getElementById('joinBtn').disabled = true;
+  }
+
+  function unlock() {
+    busy = false;
+    document.getElementById('createBtn').disabled = false;
+    document.getElementById('joinBtn').disabled = false;
   }
 
   function showError(msg) {
+    unlock();
     const e = document.getElementById('errorMsg');
     e.textContent = msg; e.style.display = 'block';
     document.getElementById('loadingMsg').style.display = 'none';
   }
 
-  function hideMsg() {
+  function showLoading(msg) {
+    document.getElementById('errorMsg').style.display = 'none';
+    const l = document.getElementById('loadingMsg');
+    l.textContent = msg; l.style.display = 'block';
+  }
+
+  function hideAll() {
     document.getElementById('errorMsg').style.display = 'none';
     document.getElementById('loadingMsg').style.display = 'none';
   }
 
-  function goToChat() {
-    if (navigating) return;
-    navigating = true;
+  function redirect(roomCode, isCreator) {
+    sessionStorage.setItem('username', generateUsername());
+    sessionStorage.setItem('roomCode', roomCode);
+    sessionStorage.setItem('isCreator', isCreator ? 'true' : 'false');
     window.location.href = '/chat.html';
   }
 
+  // ── CREATE ──
   function createRoom() {
-    if (navigating) return;
-    hideMsg(); setLoading(true);
-    socket.emit('create-room');
+    if (busy) return;
+    lock(); hideAll(); showLoading('⏳ Creating room...');
+    socket.emit('generate-code');
   }
 
-  socket.on('room-created', (roomCode) => {
-    const username = generateUsername();
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('roomCode', roomCode);
-    sessionStorage.setItem('isCreator', 'true');
-    goToChat();
+  socket.on('code-generated', (roomCode) => {
+    redirect(roomCode, true);
   });
 
+  // ── JOIN ──
   function joinRoom() {
-    if (navigating) return;
+    if (busy) return;
     const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
     if (!code) return showError('Please enter a room code.');
     if (code.length < 6) return showError('Room code must be 6 characters.');
-    hideMsg(); setLoading(true);
+    lock(); hideAll(); showLoading('⏳ Checking room...');
     socket.emit('check-room', { roomCode: code });
   }
 
   socket.on('room-valid', () => {
     const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-    const username = generateUsername();
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('roomCode', code);
-    sessionStorage.setItem('isCreator', 'false');
-    goToChat();
+    redirect(code, false);
   });
 
-  socket.on('join-error', (msg) => {
-    navigating = false;
-    setLoading(false);
-    showError(msg);
-  });
+  socket.on('join-error', (msg) => showError(msg));
 
+  // Input helpers
   document.getElementById('roomCodeInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') joinRoom();
   });
-
-  // Auto-uppercase input
   document.getElementById('roomCodeInput').addEventListener('input', e => {
+    hideAll();
     const pos = e.target.selectionStart;
     e.target.value = e.target.value.toUpperCase();
     e.target.setSelectionRange(pos, pos);

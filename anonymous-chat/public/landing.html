@@ -7,24 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --bg:#08080f;--surface:#0f0f1a;--surface2:#16162a;
-      --border:rgba(255,255,255,0.07);--accent:#7c6aff;
-      --accent2:#ff6ab0;--accent3:#6affda;
-      --text:#f0f0ff;--muted:#6b6b8a;
-    }
+    :root{--bg:#08080f;--surface:#0f0f1a;--surface2:#16162a;--border:rgba(255,255,255,0.07);--accent:#7c6aff;--accent2:#ff6ab0;--accent3:#6affda;--text:#f0f0ff;--muted:#6b6b8a}
     html{scroll-behavior:smooth}
     body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-
-    /* BG */
     .bg-fixed{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
     .blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.12;animation:blobFloat 10s ease-in-out infinite}
     .b1{width:500px;height:500px;background:var(--accent);top:-200px;left:-200px}
     .b2{width:400px;height:400px;background:var(--accent2);bottom:-150px;right:-150px;animation-delay:4s}
     .b3{width:350px;height:350px;background:var(--accent3);top:40%;left:40%;animation-delay:7s}
     @keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.05)}66%{transform:translate(-20px,20px) scale(.95)}}
-
-    /* NAV */
     nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,15,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
     .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
     .nav-badge{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 16px rgba(124,106,255,.4)}
@@ -34,12 +25,9 @@
     .nav-link{font-size:13px;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;display:none}
     .nav-link:hover{color:var(--text)}
     @media(min-width:640px){.nav-link{display:block}}
-    .nav-cta{padding:9px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(124,106,255,.35);white-space:nowrap}
+    .nav-cta{padding:9px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(124,106,255,.35);white-space:nowrap;-webkit-tap-highlight-color:transparent}
     .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,106,255,.5)}
-
     section{position:relative;z-index:1}
-
-    /* HERO */
     .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 20px 60px}
     .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.25);padding:6px 16px;border-radius:20px;font-size:12px;color:var(--accent);font-weight:600;margin-bottom:24px;animation:fadeUp .6s ease both}
     .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent3);box-shadow:0 0 8px var(--accent3);animation:pulse 2s infinite}
@@ -49,13 +37,11 @@
     @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
     .hero-sub{font-size:clamp(15px,2.5vw,19px);color:var(--muted);max-width:520px;line-height:1.65;margin-bottom:36px;animation:fadeUp .7s ease .2s both}
     .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .7s ease .3s both}
-    .btn-primary{padding:14px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 8px 32px rgba(124,106,255,.4);display:inline-flex;align-items:center;gap:8px}
+    .btn-primary{padding:14px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;box-shadow:0 8px 32px rgba(124,106,255,.4);display:inline-flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
     .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(124,106,255,.55)}
-    .btn-primary:active{transform:translateY(0)}
-    .btn-secondary{padding:14px 28px;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .btn-primary:active{transform:scale(.97)}
+    .btn-secondary{padding:14px 28px;background:var(--surface2);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:15px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
     .btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
-
-    /* MOCKUP */
     .mockup-wrap{margin-top:56px;width:100%;max-width:600px;animation:fadeUp .8s ease .4s both,floatY 6s ease-in-out infinite 1.2s}
     @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
     .mockup{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7),0 0 0 1px rgba(124,106,255,.1)}
@@ -79,16 +65,11 @@
     .mock-input{margin:0 16px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between}
     .mock-input span{font-size:12px;color:var(--muted)}
     .mock-send{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;font-family:'Space Grotesk',sans-serif}
-
     @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-    /* STATS */
     .stats{padding:28px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:40px;flex-wrap:wrap;background:rgba(15,15,26,.6);backdrop-filter:blur(20px)}
     .stat{text-align:center}
     .stat-num{font-size:clamp(22px,5vw,32px);font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .stat-label{font-size:12px;color:var(--muted);margin-top:2px;font-weight:500}
-
-    /* FEATURES */
     .features{padding:80px 20px;max-width:1100px;margin:0 auto}
     .section-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(106,255,218,.08);border:1px solid rgba(106,255,218,.2);padding:5px 14px;border-radius:20px;font-size:11px;color:var(--accent3);font-weight:600;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase}
     .section-title{font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-1.5px;margin-bottom:12px;line-height:1.1}
@@ -108,8 +89,6 @@
     .fi-green{background:rgba(106,255,120,.15)}
     .fcard-title{font-size:16px;font-weight:700;margin-bottom:7px}
     .fcard-desc{font-size:13px;color:var(--muted);line-height:1.6}
-
-    /* HOW */
     .how{padding:80px 20px;max-width:1100px;margin:0 auto}
     .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-top:48px;position:relative}
     .steps::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);opacity:.25;display:none}
@@ -118,8 +97,6 @@
     .step-num{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:20px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 24px rgba(124,106,255,.4);position:relative;z-index:1}
     .step-title{font-size:15px;font-weight:700;margin-bottom:6px}
     .step-desc{font-size:13px;color:var(--muted);line-height:1.6}
-
-    /* CTA */
     .cta-sec{padding:80px 20px;text-align:center}
     .cta-card{max-width:680px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 24px;position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5)}
     .cta-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,255,.12),transparent 60%);pointer-events:none}
@@ -127,8 +104,6 @@
     .cta-title span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .cta-sub{font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.6}
     .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-
-    /* FOOTER */
     footer{padding:24px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:rgba(8,8,15,.8)}
     .footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
     .footer-badge{width:26px;height:26px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px}
@@ -137,8 +112,6 @@
     .footer-copy{font-size:11px;color:var(--muted)}
     .footer-pills{display:flex;gap:6px;flex-wrap:wrap}
     .fp{font-size:10px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);padding:3px 9px;border-radius:8px}
-
-    /* REVEAL */
     .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
     .reveal.visible{opacity:1;transform:translateY(0)}
   </style>
@@ -150,7 +123,6 @@
   <div class="blob b3"></div>
 </div>
 
-<!-- NAV -->
 <nav>
   <a href="/" class="nav-logo">
     <div class="nav-badge">🔐</div>
@@ -163,7 +135,6 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <div class="hero-badge"><div class="hero-badge-dot"></div>End-to-end encrypted · Zero logs · No accounts</div>
   <h1 class="hero-title">Chat without<br><span class="grad">leaving a trace.</span></h1>
@@ -193,7 +164,6 @@
   </div>
 </section>
 
-<!-- STATS -->
 <div class="stats reveal">
   <div class="stat"><div class="stat-num">AES-256</div><div class="stat-label">Encryption Standard</div></div>
   <div class="stat"><div class="stat-num">0 logs</div><div class="stat-label">Messages Stored</div></div>
@@ -201,7 +171,6 @@
   <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Rooms You Can Create</div></div>
 </div>
 
-<!-- FEATURES -->
 <section class="features" id="features">
   <div class="reveal">
     <div class="section-tag">✦ Features</div>
@@ -211,14 +180,13 @@
   <div class="grid">
     <div class="fcard reveal"><div class="ficon fi-purple">🔐</div><div class="fcard-title">AES-256 Encryption</div><div class="fcard-desc">Every message is encrypted in your browser before reaching the server. The server never sees your actual words — ever.</div></div>
     <div class="fcard reveal"><div class="ficon fi-pink">👤</div><div class="fcard-title">Fully Anonymous</div><div class="fcard-desc">No accounts, no emails, no phone numbers. You get a random name like GhostFox42 and you're in. That's it.</div></div>
-    <div class="fcard reveal"><div class="ficon fi-teal">🏠</div><div class="fcard-title">Private Room Codes</div><div class="fcard-desc">Create a room and get a unique 6-character code. Share it with only the people you want. No one else can join without it.</div></div>
+    <div class="fcard reveal"><div class="ficon fi-teal">🏠</div><div class="fcard-title">Private Room Codes</div><div class="fcard-desc">Create a room and get a unique 6-character code. Share it with only the people you want. No one else can join.</div></div>
     <div class="fcard reveal"><div class="ficon fi-orange">📎</div><div class="fcard-title">Encrypted File Sharing</div><div class="fcard-desc">Share files up to 40MB — images, docs, videos, anything. Files are AES encrypted before transfer just like messages.</div></div>
     <div class="fcard reveal"><div class="ficon fi-blue">✍️</div><div class="fcard-title">Typing Indicators</div><div class="fcard-desc">See animated dots when someone is typing. Real-time connection without giving up any privacy.</div></div>
     <div class="fcard reveal"><div class="ficon fi-green">🗑️</div><div class="fcard-title">Auto Self-Destruct</div><div class="fcard-desc">When everyone leaves, all messages are permanently wiped from memory. No database, no history, no receipts.</div></div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
 <section class="how" id="how">
   <div class="reveal">
     <div class="section-tag">✦ How It Works</div>
@@ -232,7 +200,6 @@
   </div>
 </section>
 
-<!-- CTA -->
 <section class="cta-sec">
   <div class="cta-card reveal">
     <h2 class="cta-title">Ready to chat<br><span>off the record?</span></h2>
@@ -244,7 +211,6 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <a href="/" class="footer-logo">
     <div class="footer-badge">🔐</div>
