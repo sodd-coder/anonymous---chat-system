@@ -7,7 +7,12 @@ const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { maxHttpBufferSize: 50e6 });
+const io = new Server(server, {
+  maxHttpBufferSize: 50e6,
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  reconnection: true
+});
 
 const rooms = {};
 const MAX_USERS = 20;
@@ -70,7 +75,7 @@ io.on('connection', (socket) => {
       resetExpiry(roomCode);
     }
     if (!rooms[roomCode]) { socket.emit('join-error', 'Room not found or expired.'); return; }
-    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', `Room is full.`); return; }
+    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', 'Room is full.'); return; }
 
     socket.join(roomCode);
     socket.roomCode = roomCode;
@@ -92,7 +97,7 @@ io.on('connection', (socket) => {
     resetExpiry(roomCode);
   });
 
-  socket.on('send-message', ({ roomCode, username, message, msgId, replyTo }) => {
+  socket.on('send-message', ({ roomCode, username, message, msgId, replyTo, checksum }) => {
     const now = Date.now();
     if (now - socket.lastMessageTime < RATE_LIMIT_MS) { socket.emit('rate-limited', 'Slow down!'); return; }
     if (!socket.rateLimitReset || now > socket.rateLimitReset) { socket.messageCount = 0; socket.rateLimitReset = now + 5000; }
@@ -101,7 +106,7 @@ io.on('connection', (socket) => {
     socket.lastMessageTime = now;
     resetExpiry(roomCode);
 
-    const msgObj = { username, message, time: now, msgId, replyTo: replyTo || null };
+    const msgObj = { username, message, time: now, msgId, replyTo: replyTo || null, checksum };
     if (rooms[roomCode]) {
       rooms[roomCode].messageHistory.push(msgObj);
       if (rooms[roomCode].messageHistory.length > 100) rooms[roomCode].messageHistory.shift();
@@ -109,7 +114,10 @@ io.on('connection', (socket) => {
     io.to(roomCode).emit('receive-message', msgObj);
   });
 
-  // Emoji reactions
+  socket.on('message-seen', ({ roomCode, msgId, username }) => {
+    socket.to(roomCode).emit('message-seen', { msgId, username });
+  });
+
   socket.on('send-reaction', ({ roomCode, msgId, emoji, username }) => {
     if (!rooms[roomCode]) return;
     resetExpiry(roomCode);

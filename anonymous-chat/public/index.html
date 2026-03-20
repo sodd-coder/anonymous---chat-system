@@ -162,6 +162,14 @@
     e.target.value = e.target.value.toUpperCase();
     e.target.setSelectionRange(pos, pos);
   });
+
+  // Auto fill room code from QR scan
+const urlParams = new URLSearchParams(window.location.search);
+const qrCode = urlParams.get('code');
+if (qrCode) {
+  document.getElementById('roomCodeInput').value = qrCode.toUpperCase();
+}
+
 </script>
 </body>
 </html>
