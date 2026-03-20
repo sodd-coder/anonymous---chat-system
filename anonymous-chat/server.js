@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
@@ -10,16 +11,18 @@ const io = new Server(server, { maxHttpBufferSize: 50e6 });
 
 const rooms = {};
 const MAX_USERS = 20;
-const ROOM_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
-const RATE_LIMIT_MS = 500; // min ms between messages
-const RATE_LIMIT_MAX = 10; // max messages per 5 seconds
+const ROOM_EXPIRY_MS = 30 * 60 * 1000;
+const RATE_LIMIT_MS = 500;
+const RATE_LIMIT_MAX = 10;
+const codeAttempts = {};
+const MAX_ATTEMPTS = 10;
+const ATTEMPT_WINDOW_MS = 60 * 1000;
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'landing.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/chat.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── Room expiry timer ──
 function resetExpiry(roomCode) {
   if (!rooms[roomCode]) return;
   clearTimeout(rooms[roomCode].expiryTimer);
@@ -28,52 +31,46 @@ function resetExpiry(roomCode) {
       io.to(roomCode).emit('room-expired');
       io.socketsLeave(roomCode);
       delete rooms[roomCode];
-      console.log(`Room ${roomCode} expired after inactivity`);
     }
   }, ROOM_EXPIRY_MS);
 }
 
-io.on('connection', (socket) => {
+function checkBruteForce(ip) {
+  const now = Date.now();
+  if (!codeAttempts[ip]) codeAttempts[ip] = { count: 0, resetAt: now + ATTEMPT_WINDOW_MS };
+  if (now > codeAttempts[ip].resetAt) codeAttempts[ip] = { count: 0, resetAt: now + ATTEMPT_WINDOW_MS };
+  codeAttempts[ip].count++;
+  return codeAttempts[ip].count > MAX_ATTEMPTS;
+}
 
-  // Generate code only — no room yet
+io.on('connection', (socket) => {
+  const ip = socket.handshake.address;
+
   socket.on('generate-code', () => {
-    const code = uuidv4().substring(0, 6).toUpperCase();
-    socket.emit('code-generated', code);
+    socket.emit('code-generated', uuidv4().substring(0, 6).toUpperCase());
   });
 
-  // Check room exists for joiners
   socket.on('check-room', ({ roomCode }) => {
-    if (!rooms[roomCode]) {
-      socket.emit('join-error', 'Room not found. Check your code.');
-      return;
-    }
-    if (rooms[roomCode].users.length >= MAX_USERS) {
-      socket.emit('join-error', `Room is full. Max ${MAX_USERS} users allowed.`);
-      return;
-    }
+    if (checkBruteForce(ip)) { socket.emit('join-error', 'Too many attempts. Please wait a minute.'); return; }
+    if (!rooms[roomCode]) { socket.emit('join-error', 'Room not found. Check your code.'); return; }
+    if (rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', `Room is full. Max ${MAX_USERS} users.`); return; }
+    if (codeAttempts[ip]) codeAttempts[ip].count = 0;
     socket.emit('room-valid');
   });
 
-  // Register in room from chat.html
   socket.on('register-in-room', ({ roomCode, username, isCreator }) => {
     if (isCreator) {
       rooms[roomCode] = {
         users: [],
         expiryTimer: null,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        sessionSalt: crypto.randomBytes(16).toString('hex'),
+        messageHistory: []
       };
       resetExpiry(roomCode);
     }
-
-    if (!rooms[roomCode]) {
-      socket.emit('join-error', 'Room not found or expired.');
-      return;
-    }
-
-    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) {
-      socket.emit('join-error', `Room is full. Max ${MAX_USERS} users allowed.`);
-      return;
-    }
+    if (!rooms[roomCode]) { socket.emit('join-error', 'Room not found or expired.'); return; }
+    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', `Room is full.`); return; }
 
     socket.join(roomCode);
     socket.roomCode = roomCode;
@@ -88,34 +85,35 @@ io.on('connection', (socket) => {
     }
 
     io.to(roomCode).emit('user-count', rooms[roomCode].users.length);
-    socket.emit('room-registered');
+    socket.emit('room-registered', {
+      sessionSalt: rooms[roomCode].sessionSalt,
+      history: rooms[roomCode].messageHistory
+    });
     resetExpiry(roomCode);
   });
 
-  // Rate limited message sending
-  socket.on('send-message', ({ roomCode, username, message }) => {
+  socket.on('send-message', ({ roomCode, username, message, msgId, replyTo }) => {
     const now = Date.now();
-
-    // Throttle: min gap between messages
-    if (now - socket.lastMessageTime < RATE_LIMIT_MS) {
-      socket.emit('rate-limited', 'Slow down! You are sending messages too fast.');
-      return;
-    }
-
-    // Burst limit: max 10 messages per 5 seconds
-    if (!socket.rateLimitReset || now > socket.rateLimitReset) {
-      socket.messageCount = 0;
-      socket.rateLimitReset = now + 5000;
-    }
+    if (now - socket.lastMessageTime < RATE_LIMIT_MS) { socket.emit('rate-limited', 'Slow down!'); return; }
+    if (!socket.rateLimitReset || now > socket.rateLimitReset) { socket.messageCount = 0; socket.rateLimitReset = now + 5000; }
     socket.messageCount++;
-    if (socket.messageCount > RATE_LIMIT_MAX) {
-      socket.emit('rate-limited', 'Too many messages. Please wait a moment.');
-      return;
-    }
-
+    if (socket.messageCount > RATE_LIMIT_MAX) { socket.emit('rate-limited', 'Too many messages. Please wait.'); return; }
     socket.lastMessageTime = now;
     resetExpiry(roomCode);
-    io.to(roomCode).emit('receive-message', { username, message, time: Date.now() });
+
+    const msgObj = { username, message, time: now, msgId, replyTo: replyTo || null };
+    if (rooms[roomCode]) {
+      rooms[roomCode].messageHistory.push(msgObj);
+      if (rooms[roomCode].messageHistory.length > 100) rooms[roomCode].messageHistory.shift();
+    }
+    io.to(roomCode).emit('receive-message', msgObj);
+  });
+
+  // Emoji reactions
+  socket.on('send-reaction', ({ roomCode, msgId, emoji, username }) => {
+    if (!rooms[roomCode]) return;
+    resetExpiry(roomCode);
+    io.to(roomCode).emit('receive-reaction', { msgId, emoji, username });
   });
 
   socket.on('send-file', ({ roomCode, username, fileName, fileType, fileData }) => {
@@ -123,13 +121,8 @@ io.on('connection', (socket) => {
     io.to(roomCode).emit('receive-file', { username, fileName, fileType, fileData, time: Date.now() });
   });
 
-  socket.on('typing', ({ roomCode, username }) => {
-    socket.to(roomCode).emit('user-typing', username);
-  });
-
-  socket.on('stop-typing', ({ roomCode }) => {
-    socket.to(roomCode).emit('user-stop-typing');
-  });
+  socket.on('typing', ({ roomCode, username }) => { socket.to(roomCode).emit('user-typing', username); });
+  socket.on('stop-typing', ({ roomCode }) => { socket.to(roomCode).emit('user-stop-typing'); });
 
   socket.on('disconnect', () => {
     const { roomCode, username } = socket;
@@ -137,14 +130,9 @@ io.on('connection', (socket) => {
       rooms[roomCode].users = rooms[roomCode].users.filter(u => u !== username);
       io.to(roomCode).emit('user-left', { username, time: Date.now() });
       io.to(roomCode).emit('user-count', rooms[roomCode].users.length);
-      if (rooms[roomCode].users.length === 0) {
-        clearTimeout(rooms[roomCode].expiryTimer);
-        delete rooms[roomCode];
-        console.log(`Room ${roomCode} deleted — all users left`);
-      }
+      if (rooms[roomCode].users.length === 0) { clearTimeout(rooms[roomCode].expiryTimer); delete rooms[roomCode]; }
     }
   });
-
 });
 
 const PORT = process.env.PORT || 8080;
