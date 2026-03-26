@@ -47,9 +47,15 @@ const PROMPTS = [
 ];
 
 // ── ROUTES ──
+// ── ROUTES ──
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'landing.html')));
 app.get('/app', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/chat', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
+// Clean room URL: /room/XXXXXX → serves chat.html
+app.get('/room/:code', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
+// Legacy redirects
+app.get('/chat.html', (req, res) => res.redirect('/chat'));
+app.use(express.static(path.join(__dirname, 'public')));
 // Legacy redirect
 app.get('/chat.html', (req, res) => res.redirect('/chat'));
 app.use(express.static(path.join(__dirname, 'public')));
