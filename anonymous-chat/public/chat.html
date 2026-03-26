@@ -5,26 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>AnonChat — Room</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="stylesheet" href="/style.css"/>
 <style>
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --ink:#070710;--ink2:#0d0d1c;--ink3:#12122a;
-  --glass:rgba(255,255,255,0.03);--glass2:rgba(255,255,255,0.06);--glass3:rgba(255,255,255,0.1);
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);
-  --v1:#7c3aed;--v2:#a855f7;--v3:#c084fc;--p1:#ec4899;--p2:#f472b6;
-  --t1:#06d6a0;--amber:#f59e0b;
-  --text:#f0efff;--sub:#9898b8;--dim:#5a5a7a;
-  --me-grad:linear-gradient(135deg,#7c3aed,#ec4899);
-  --font-d:'Cabinet Grotesk',sans-serif;--font-b:'Satoshi',sans-serif;
-  --r:22px;--r-sm:14px;
-}
+/* Page specific styles */
 html,body{height:100%;height:100dvh;overflow:hidden}
-body{font-family:var(--font-b);background:var(--ink);color:var(--text);display:flex;flex-direction:column;position:fixed;inset:0}
+body{display:flex;flex-direction:column;position:fixed;inset:0}
 
 /* MESH BG */
 .mesh-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
