@@ -1,294 +1,379 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AnonChat — Talk Freely. Stay Anonymous.</title>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AnonChat | Talk Freely. Stay Anonymous.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-container-low": "#181021", primary: "#ddcdff", "inverse-surface": "#fff7ff", "outline-variant": "#514260", "secondary-container": "#1b2918", "on-error-container": "#ff97a3", background: "#120b19", "primary-fixed-dim": "#c2afef", "tertiary-fixed": "#bdfca1", "on-surface": "#f2dfff", "primary-dim": "#c2afef", outline: "#806f8f", "on-background": "#f2dfff", "primary-container": "#d0bcfe", "on-secondary-container": "#98a991", "surface-tint": "#ddcdff", "on-surface-variant": "#b7a4c7", "surface-container-lowest": "#000000", "secondary-fixed-dim": "#d6e8cd", "surface-variant": "#2d203c", "on-primary-container": "#47376e", "on-error": "#490013", "tertiary-container": "#bdfca1", "surface-container": "#1f152a", "surface-container-highest": "#2d203c", "on-tertiary-fixed-variant": "#376d24", "inverse-primary": "#66568f", "error-dim": "#c8475d", "secondary-fixed": "#e4f6db", "on-tertiary": "#356b22", "on-secondary": "#354431", surface: "#120b19", "secondary-dim": "#adbea5", "on-tertiary-fixed": "#1a4f07", "surface-bright": "#352545", "on-tertiary-container": "#2d621a", tertiary: "#edffdf", "on-primary-fixed": "#322258", "error-container": "#8a1632", secondary: "#baccb2", "surface-dim": "#120b19", "tertiary-fixed-dim": "#b0ed94", "surface-container-high": "#261a33", "on-primary": "#504078", "on-secondary-fixed-variant": "#596954", "inverse-on-surface": "#5b5163", "tertiary-dim": "#b0ed94", "primary-fixed": "#d0bcfe", error: "#fd6f85", "on-secondary-fixed": "#3d4c39", "on-primary-fixed-variant": "#504078"}, fontFamily: {headline: ["Space Grotesk"], body: ["Manrope"], label: ["Manrope"], display: "Space Grotesk"}, borderRadius: {DEFAULT: "0.5rem", lg: "1rem", xl: "1.5rem", full: "9999px"}}}};</script>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0b0c1f;--sl:#101127;--sc:#16172f;--sch:#1c1d37;--scx:#22233f;--sb:#282947;
-  --pr:#ba9eff;--prd:#8455ef;--sec:#ff67ad;--ter:#65ffc8;
-  --os:#e4e3fe;--osv:#a9a9c3;--out:#73738b;--outv:#45465c;
-  --grad:linear-gradient(135deg,#ba9eff 0%,#ff67ad 100%);
-  --fh:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;
-}
-html{scroll-behavior:smooth;overflow-x:hidden}
-body{font-family:var(--fb);background:var(--bg);color:var(--os);overflow-x:hidden}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--sb);border-radius:10px}
-::-webkit-scrollbar-thumb:hover{background:var(--pr)}
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0b0c1f;
+            color: #e4e3fe;
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-card {
+            background: rgba(34, 35, 63, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(186, 158, 255, 0.1);
+        }
+        .glow-button {
+            background: linear-gradient(135deg, #ba9eff 0%, #ff67ad 100%);
+            box-shadow: 0 10px 20px -5px rgba(186, 158, 255, 0.4);
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(186, 158, 255, 0.5);
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #282947; border-radius: 10px; }
+    
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
 
-.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.p{position:absolute;border-radius:50%;opacity:0;animation:pfloat linear infinite}
-@keyframes pfloat{from{transform:translateY(100vh);opacity:0}20%{opacity:.4}80%{opacity:.4}to{transform:translateY(-5vh);opacity:0}}
-.p1{width:4px;height:4px;background:var(--pr);animation-duration:25s;left:10%;animation-delay:0s}
-.p2{width:3px;height:3px;background:var(--sec);animation-duration:30s;left:25%;animation-delay:-5s}
-.p3{width:5px;height:5px;background:var(--ter);animation-duration:22s;left:45%;animation-delay:-12s}
-.p4{width:2px;height:2px;background:var(--pr);animation-duration:35s;left:65%;animation-delay:-8s}
-.p5{width:4px;height:4px;background:var(--sec);animation-duration:28s;left:85%;animation-delay:-15s}
-.p6{width:3px;height:3px;background:var(--ter);animation-duration:32s;left:15%;animation-delay:-22s}
-.p7{width:5px;height:5px;background:var(--pr);animation-duration:26s;left:75%;animation-delay:-3s}
-.p8{width:2px;height:2px;background:var(--sec);animation-duration:40s;left:55%;animation-delay:-18s}
-.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.mo{position:absolute;border-radius:50%;filter:blur(120px);animation:mof 16s ease-in-out infinite}
-.mo1{width:700px;height:700px;background:rgba(132,85,239,.18);top:-250px;left:-250px}
-.mo2{width:600px;height:600px;background:rgba(255,103,173,.14);bottom:-200px;right:-200px;animation-delay:-6s}
-.mo3{width:500px;height:500px;background:rgba(101,255,200,.08);top:45%;left:40%;animation-delay:-11s}
-@keyframes mof{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,12,31,.82);backdrop-filter:blur(24px) saturate(200%)}
-.nl{display:flex;align-items:center;gap:10px;text-decoration:none}
-.ng{width:32px;height:32px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 20px rgba(186,158,255,.45);flex-shrink:0}
-.nw{font-family:var(--fh);font-size:17px;font-weight:800;letter-spacing:-.5px;color:var(--os)}
-.nlinks{display:flex;align-items:center;gap:2px}
-.na{padding:7px 14px;border-radius:12px;font-size:13px;color:var(--osv);text-decoration:none;transition:all .2s;font-weight:500}
-.na:hover{color:var(--os);background:rgba(255,255,255,.05)}
-.nbg{display:flex;align-items:center;gap:8px}
-.ngh{padding:9px 18px;background:transparent;border:1px solid rgba(186,158,255,.25);color:var(--pr);border-radius:24px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s}
-.ngh:hover{border-color:var(--pr);box-shadow:0 0 16px rgba(186,158,255,.2)}
-.nf{padding:9px 20px;background:var(--grad);color:#39008c;border:none;border-radius:24px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;position:relative;overflow:hidden}
-.nf::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);opacity:0;transition:opacity .2s}
-.nf:hover::before{opacity:1}
-.nf:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(186,158,255,.35)}
-.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
-.ham span{width:22px;height:2px;background:var(--os);border-radius:2px;transition:all .3s}
-.ham.o span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-.ham.o span:nth-child(2){opacity:0}
-.ham.o span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
-.mnav{position:fixed;top:64px;left:0;right:0;z-index:99;background:rgba(11,12,31,.97);backdrop-filter:blur(24px);padding:16px 24px;flex-direction:column;gap:4px;display:none}
-.mnav.o{display:flex}
-.mnav a{padding:13px 16px;border-radius:12px;font-size:15px;color:var(--os);text-decoration:none;display:block;transition:background .2s}
-.mnav a:hover{background:rgba(255,255,255,.05)}
-@media(max-width:768px){.nlinks{display:none}.ham{display:flex}.nbg .ngh{display:none}}
-@media(max-width:480px){.nbg .nf{display:none}}
-
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 72px;text-align:center;position:relative;z-index:1}
-.h-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:9999px;background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.2);font-size:11px;font-weight:700;color:var(--ter);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:32px;animation:fu .7s ease both}
-.hdot{width:6px;height:6px;border-radius:50%;background:var(--ter);box-shadow:0 0 8px var(--ter);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.htit{font-family:var(--fh);font-size:clamp(44px,8vw,96px);font-weight:900;line-height:1.0;letter-spacing:-3px;margin-bottom:24px;animation:fu .75s ease .08s both}
-.ht1{display:block;color:var(--os)}
-.ht2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gm 5s ease infinite}
-@keyframes gm{0%,100%{background-position:0%}50%{background-position:100%}}
-.hsub{font-size:clamp(14px,2vw,18px);color:var(--osv);max-width:520px;line-height:1.72;margin-bottom:40px;font-weight:400;animation:fu .75s ease .16s both}
-.hbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .75s ease .24s both}
-.btnp{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--grad);color:#39008c;border:none;border-radius:24px;font-family:var(--fh);font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .3s;box-shadow:0 8px 32px rgba(186,158,255,.35);letter-spacing:-.2px;position:relative;overflow:hidden;min-height:52px}
-.btnp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.35)}
-.btnp:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(186,158,255,.5)}
-.btnp:active{transform:scale(.97)}
-.btng{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;background:transparent;border:1px solid rgba(186,158,255,.25);color:var(--os);border-radius:24px;font-family:var(--fb);font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s;min-height:52px}
-.btng:hover{border-color:var(--pr);color:var(--pr);box-shadow:0 0 20px rgba(186,158,255,.15)}
-.btng:active{transform:scale(.97)}
-@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-
-/* MOCKUP */
-.hvisual{margin-top:64px;width:100%;max-width:780px;position:relative;z-index:1;animation:fu .9s ease .32s both,hvfl 8s ease-in-out infinite 1.2s}
-@keyframes hvfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-.mkup{background:var(--sc);border-radius:24px;overflow:hidden;box-shadow:0 0 0 1px rgba(186,158,255,.1),0 40px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
-.mkbar{background:var(--sch);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
-.mkdots{display:flex;gap:6px}
-.mkd{width:10px;height:10px;border-radius:50%}
-.d1{background:#ff5f57}.d2{background:#febc2e}.d3{background:#28c840}
-.mkcode{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:3px;color:var(--pr);background:rgba(186,158,255,.08);border:1px solid rgba(186,158,255,.12);padding:4px 12px;border-radius:9999px}
-.mkstat{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ter);font-weight:600}
-.mkstatd{width:6px;height:6px;border-radius:50%;background:var(--ter);box-shadow:0 0 8px var(--ter);animation:blink 2s infinite}
-.mksys{background:var(--sl);padding:8px 20px;display:flex;justify-content:center}
-.mksysc{font-size:10px;color:var(--osv);background:rgba(255,255,255,.04);padding:3px 14px;border-radius:9999px;letter-spacing:.8px;text-transform:uppercase;font-weight:600}
-.mkbody{padding:20px;display:flex;flex-direction:column;gap:12px}
-.mkm{display:flex;flex-direction:column;gap:4px;max-width:72%}
-.mkm.t{align-self:flex-start}
-.mkm.m{align-self:flex-end;align-items:flex-end}
-.mkmeta{font-size:10px;color:var(--osv);padding:0 4px;font-weight:600;letter-spacing:.2px}
-.mkbub{padding:12px 16px;font-size:13px;line-height:1.55}
-.mkm.t .mkbub{background:var(--scx);color:var(--os);border-radius:4px 20px 20px 20px}
-.mkm.m .mkbub{background:rgba(132,85,239,.32);backdrop-filter:blur(12px);color:var(--os);border-radius:20px 4px 20px 20px;border:1px solid rgba(186,158,255,.14);box-shadow:0 4px 15px rgba(132,85,239,.2)}
-.mksdchip{align-self:center;font-size:10px;color:var(--out);background:rgba(255,255,255,.04);padding:4px 14px;border-radius:9999px;letter-spacing:.8px;text-transform:uppercase}
-.mkfooter{background:#000;padding:12px 20px 16px;display:flex;align-items:center;gap:10px}
-.mkinpb{flex:1;background:var(--scx);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--osv);border:1px solid rgba(255,255,255,.08)}
-.mksend{width:36px;height:36px;border-radius:8px;background:var(--grad);border:none;color:white;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
-
-/* SECTIONS */
-.section{padding:100px 24px;max-width:1140px;margin:0 auto;position:relative;z-index:1}
-.sec-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ter);margin-bottom:16px;display:block}
-.sec-h{font-family:var(--fh);font-size:clamp(26px,4vw,46px);font-weight:800;letter-spacing:-2px;line-height:1.08;margin-bottom:14px;color:var(--os)}
-.sec-h em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.sec-sub{font-size:16px;color:var(--osv);max-width:480px;line-height:1.72;margin-bottom:56px}
-
-/* no-line grids using tonal layering */
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:var(--sch)}
-.fc{background:var(--sc);padding:32px;transition:background .3s;cursor:default;position:relative;overflow:hidden}
-.fc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(186,158,255,.06),transparent 60%);opacity:0;transition:opacity .3s}
-.fc:hover{background:var(--sch)}
-.fc:hover::before{opacity:1}
-.fci{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px}
-.fp{background:rgba(186,158,255,.1);border:1px solid rgba(186,158,255,.1)}
-.fs{background:rgba(255,103,173,.09);border:1px solid rgba(255,103,173,.1)}
-.ft{background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.08)}
-.fo{background:rgba(255,165,0,.07);border:1px solid rgba(255,165,0,.08)}
-.fb{background:rgba(100,149,237,.07);border:1px solid rgba(100,149,237,.08)}
-.fg{background:rgba(72,199,142,.07);border:1px solid rgba(72,199,142,.08)}
-.ftit{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--os);margin-bottom:8px;letter-spacing:-.3px}
-.fdesc{font-size:13px;color:var(--osv);line-height:1.68}
-
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:var(--sch)}
-.sc2{background:var(--sc);padding:40px 32px;text-align:center;position:relative}
-.snum{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--grad);font-family:var(--fh);font-size:20px;font-weight:900;color:#39008c;margin-bottom:20px;box-shadow:0 8px 24px rgba(186,158,255,.28);position:relative}
-.snum::before{content:'';position:absolute;inset:-5px;border-radius:20px;background:var(--grad);opacity:.18;filter:blur(10px)}
-.snv{position:relative;z-index:1}
-.stit{font-family:var(--fh);font-size:16px;font-weight:800;color:var(--os);margin-bottom:10px;letter-spacing:-.2px}
-.sdesc{font-size:13px;color:var(--osv);line-height:1.7}
-.sarr{position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--outv);font-size:22px;z-index:2;display:none}
-@media(min-width:768px){.sarr{display:block}}
-
-.uc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--sch)}
-.uc{background:var(--sc);padding:40px 32px;transition:background .3s;position:relative;overflow:hidden}
-.uc:hover{background:var(--sch)}
-.uc.ac{background:rgba(132,85,239,.16)}
-.uc.ac:hover{background:rgba(132,85,239,.22)}
-.ucic{font-size:30px;margin-bottom:16px;display:block}
-.uctit{font-family:var(--fh);font-size:18px;font-weight:800;color:var(--os);margin-bottom:8px;letter-spacing:-.3px}
-.ucdesc{font-size:13px;color:var(--osv);line-height:1.68}
-@media(max-width:600px){.uc-grid{grid-template-columns:1fr}}
-
-.cta-sec{padding:100px 24px;text-align:center;position:relative;z-index:1}
-.cta-in{max-width:680px;margin:0 auto;background:var(--sc);border-radius:24px;padding:64px 40px;position:relative;overflow:hidden}
-.cta-in::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(186,158,255,.1),transparent 55%)}
-.cta-in::after{content:'';position:absolute;top:0;left:20%;right:20%;height:1.5px;background:var(--grad);border-radius:9999px}
-.ctah{font-family:var(--fh);font-size:clamp(26px,4.5vw,46px);font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:16px;position:relative;z-index:1;color:var(--os)}
-.ctasub{font-size:15px;color:var(--osv);line-height:1.7;margin:0 auto 36px;max-width:420px;position:relative;z-index:1}
-.ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.ctanote{font-size:10px;color:var(--out);letter-spacing:1.2px;text-transform:uppercase;margin-top:20px;position:relative;z-index:1}
-
-footer{padding:24px 32px;background:var(--sl);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
-.flogo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.fgl{width:26px;height:26px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:12px}
-.fnm{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--os)}
-.fcopy{font-size:11px;color:var(--out)}
-.flinks{display:flex;gap:20px}
-.flink{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s}
-.flink:hover{color:var(--pr)}
-
-.rv{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
-.rv.vs{opacity:1;transform:translateY(0)}
-.rv2{opacity:0;transform:translateY(32px);transition:opacity .7s ease .15s,transform .7s ease .15s}
-.rv2.vs{opacity:1;transform:translateY(0)}
-</style>
+        .step-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s linear forwards;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
 </head>
-<body>
-<div class="particles">
-  <div class="p p1"></div><div class="p p2"></div><div class="p p3"></div><div class="p p4"></div>
-  <div class="p p5"></div><div class="p p6"></div><div class="p p7"></div><div class="p p8"></div>
+<body class="selection:bg-primary selection:text-on-primary">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-white/5 backdrop-blur-md border-b border-white/5">
+<div class="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
+<div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-pink-500 font-['Space_Grotesk'] tracking-tight"><span>🔐</span> AnonChat</div>
+<div class="hidden md:flex items-center gap-8"><a class="text-primary font-semibold transition-colors font-['Satoshi',sans-serif] tracking-tight hover:text-white" href="#">Features</a>
+<a class="text-slate-400 hover:text-white transition-colors font-['Satoshi',sans-serif] tracking-tight" href="#">How it Works</a>
+<a class="text-slate-400 hover:text-white transition-colors font-['Satoshi',sans-serif] tracking-tight" href="#">Security</a>
+<a class="text-slate-400 hover:text-white transition-colors font-['Satoshi',sans-serif] tracking-tight" href="#">FAQ</a></div>
+<div class="flex items-center gap-4"><button class="hidden sm:block text-slate-400 hover:text-white transition-all px-4 py-2 text-sm font-semibold font-['Satoshi',sans-serif]">Join with Code</button>
+<button class="bg-gradient-to-r from-primary to-secondary px-6 py-2.5 rounded-full text-on-primary-fixed font-bold text-sm transition-all hover:shadow-[0_0_20px_rgba(186,158,255,0.4)] active:scale-95">Start a Room</button></div>
 </div>
-<div class="mesh"><div class="mo mo1"></div><div class="mo mo2"></div><div class="mo mo3"></div></div>
-
-<nav>
-  <a href="/" class="nl"><div class="ng">🔐</div><div class="nw">AnonChat</div></a>
-  <div class="nlinks">
-    <a href="#features" class="na">Features</a>
-    <a href="#how" class="na">How It Works</a>
-    <a href="#security" class="na">Security</a>
-    <a href="#faq" class="na">FAQ</a>
-  </div>
-  <div class="nbg">
-    <a href="/app" class="ngh">Join with Code</a>
-    <a href="/app" class="nf">Start a Room</a>
-    <div class="ham" id="ham" onclick="toggleM()"><span></span><span></span><span></span></div>
-  </div>
 </nav>
-<div class="mnav" id="mnav">
-  <a href="#features" onclick="closeM()">Features</a>
-  <a href="#how" onclick="closeM()">How It Works</a>
-  <a href="#security" onclick="closeM()">Security</a>
-  <a href="/app" onclick="closeM()">Join with Code</a>
-  <a href="/app">Start a Room</a>
+<main class="relative overflow-hidden pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex flex-col items-center justify-center px-6 overflow-hidden">
+<!-- Background Gradients -->
+<div class="absolute top-0 -left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-0 -right-1/4 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="relative z-10 text-center max-w-4xl mx-auto mb-16">
+<h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-on-surface to-on-surface-variant">
+                    Talk Freely.<br/><span class="text-primary">Stay Anonymous.</span>
+</h1>
+<p class="font-body text-lg md:text-xl text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
+                    No sign-ups, no tracking, no logs. Create a private room in seconds and chat securely with anyone, anywhere.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="glow-button px-10 py-4 rounded-md text-on-primary-fixed font-bold text-lg active:scale-95 transition-all">Start a Room</button>
 </div>
-
-<section class="hero">
-  <div class="h-badge"><div class="hdot"></div>No Sign-ups · Encrypted · No Logs</div>
-  <h1 class="htit"><span class="ht1">Talk Freely.</span><span class="ht2">Stay Anonymous.</span></h1>
-  <p class="hsub">No sign-ups, no tracking, no logs. Create a private room in seconds and chat securely with anyone, anywhere.</p>
-  <div class="hbtns">
-    <a href="/app" class="btnp">✦ Start a Room</a>
-    <a href="/app" class="btng">Join with Code</a>
-  </div>
-  <div class="hvisual">
-    <div class="mkup">
-      <div class="mkbar">
-        <div class="mkdots"><div class="mkd d1"></div><div class="mkd d2"></div><div class="mkd d3"></div></div>
-        <div class="mkcode">Encrypted Room #Alpha-99</div>
-        <div class="mkstat"><div class="mkstatd"></div>Active Users: 3</div>
-      </div>
-      <div class="mksys"><div class="mksysc">Secure Channel Established at 21:04 PM</div></div>
-      <div class="mkbody">
-        <div class="mkm t"><div class="mkmeta">User — 9:12pm</div><div class="mkbub">Hey! Did you see the new protocol update? It feels way faster now.</div></div>
-        <div class="mkm m"><div class="mkmeta">You — 9:14pm</div><div class="mkbub">Just checked it out. The zero-knowledge architecture is impressive.</div></div>
-        <div class="mksdchip">Message self-destructs in 6:00</div>
-      </div>
-      <div class="mkfooter"><div class="mkinpb">Type an anonymous message...</div><div class="mksend">↑</div></div>
-    </div>
-  </div>
+</div>
+<!-- Chat Interface Mockup -->
+<div class="relative w-full max-w-5xl mx-auto mt-12 mb-24">
+<div class="glass-card rounded-lg p-1 shadow-2xl overflow-hidden transform rotate-1">
+<div class="bg-surface-container-lowest rounded-lg h-[500px] flex flex-col">
+<div class="flex items-center justify-between p-4 border-b border-outline-variant/20">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_10px_rgba(101,255,200,0.5)]"></div>
+<span class="text-sm font-medium text-on-surface">Encrypted Room: #Alpha-99</span>
+</div>
+<span class="text-xs text-on-surface-variant px-2 py-1 bg-surface-container rounded">Active Users: 3</span>
+</div>
+<div class="flex-1 p-6 space-y-6 overflow-y-auto">
+<!-- Incoming -->
+<div class="flex flex-col items-start gap-1 max-w-[80%]">
+<div class="bg-surface-container-highest text-on-surface px-4 py-3 rounded-md rounded-tl-sm text-sm">
+                                    Hey! Did you see the new protocol update? It feels way faster now.
+                                </div>
+<span class="text-[10px] text-on-surface-variant ml-1">Guest-128 • 2m ago</span>
+</div>
+<!-- Outgoing -->
+<div class="flex flex-col items-end gap-1 max-w-[80%] ml-auto">
+<div class="bg-primary-dim/40 backdrop-blur-md text-on-surface px-4 py-3 rounded-md rounded-tr-sm text-sm border border-primary/20">
+                                    Just checked it out. The zero-knowledge architecture is impressive.
+                                </div>
+<span class="text-[10px] text-on-surface-variant mr-1">You • 1m ago</span>
+</div>
+<!-- System -->
+<div class="flex justify-center">
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold bg-surface-container/30 px-3 py-1 rounded-full">Message Self-Destruct in 5:00</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-lowest">
+<div class="flex gap-3 bg-surface-container rounded-sm p-2 items-center">
+<span class="material-symbols-outlined text-on-surface-variant px-2">sentiment_satisfied</span>
+<div class="flex-1 text-on-surface-variant text-sm">Type an anonymous message...</div>
+<button class="p-2 text-primary">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Decorative Particles -->
+<div class="absolute -top-10 -right-10 w-24 h-24 bg-secondary/20 rounded-full blur-2xl animate-pulse"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+</div>
 </section>
-
-<section class="section" id="security">
-  <div class="rv"><span class="sec-eyebrow">Security First</span><h2 class="sec-h">Designed for <em>Total Privacy.</em></h2><p class="sec-sub">Every layer is engineered with security as the foundation, not an afterthought.</p></div>
-  <div class="feat-grid rv2">
-    <div class="fc"><div class="fci fp">👤</div><div class="ftit">No Sign-up Required</div><div class="fdesc">Jump straight into a conversation without ever providing an email, phone number, or name.</div></div>
-    <div class="fc"><div class="fci fs">🔐</div><div class="ftit">End-to-End Encryption</div><div class="fdesc">Messages are encrypted locally on your device. Only the participants in your room can read them.</div></div>
-    <div class="fc"><div class="fci ft">💣</div><div class="ftit">Self-Destruct Messages</div><div class="fdesc">Configure messages to disappear after a set time. No digital footprint left behind.</div></div>
-    <div class="fc"><div class="fci fo">⚡</div><div class="ftit">Instant Sharing</div><div class="fdesc">Share a unique 6-digit code or a temporary link to bring others into your private space.</div></div>
-    <div class="fc"><div class="fci fb">🎤</div><div class="ftit">Voice Messages</div><div class="fdesc">Record and send encrypted voice messages. Play inline with live waveform visualization.</div></div>
-    <div class="fc"><div class="fci fg">🛡️</div><div class="ftit">Reputation Engine</div><div class="fdesc">Device-hash reputation tracking, progressive cooldowns, shadow mute, admin controls.</div></div>
-  </div>
+<!-- How It Works Section -->
+<section class="py-24 px-6 relative overflow-hidden bg-surface-container-lowest">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none"></div>
+<div class="max-w-7xl mx-auto relative z-10">
+<div class="text-center mb-20 animate-fade-in-up">
+<span class="text-primary font-bold tracking-[0.2em] text-xs uppercase block mb-4 font-headline">The Process</span>
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-on-surface mb-6">How It Works</h2>
+<p class="text-on-surface-variant max-w-2xl mx-auto text-lg">Experience privacy without the complexity. Our streamlined flow ensures you're chatting securely in under 10 seconds.</p>
+</div>
+<div class="relative">
+<!-- Flow Diagram Connector (Desktop only) -->
+<div class="hidden lg:block absolute top-1/2 left-0 w-full -translate-y-1/2 px-24 pointer-events-none">
+<svg class="w-full h-24 overflow-visible" fill="none" viewbox="0 0 1000 100">
+<path class="step-path" d="M0,50 C150,50 150,50 300,50 C450,50 450,50 600,50 C750,50 750,50 900,50" stroke="url(#lineGradient)" stroke-dasharray="8 12" stroke-width="2"></path>
+<defs>
+<lineargradient id="lineGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#ba9eff"></stop>
+<stop offset="100%" stop-color="#ff67ad"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center group animate-fade-in-up delay-100">
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-xl scale-0 group-hover:scale-150 transition-transform duration-500"></div>
+<div class="w-24 h-24 glass-card rounded-full flex items-center justify-center relative z-10 border-primary/30 group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">plus_circle</span>
+</div>
+<div class="absolute -top-2 -right-2 w-8 h-8 bg-surface-container-highest border border-outline-variant/30 rounded-full flex items-center justify-center text-xs font-bold text-primary font-headline shadow-lg">01</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Create a Room</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-xs">Launch a new private session instantly with a single click. No personal data requested.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center group animate-fade-in-up delay-200">
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-secondary/20 rounded-full blur-xl scale-0 group-hover:scale-150 transition-transform duration-500"></div>
+<div class="w-24 h-24 glass-card rounded-full flex items-center justify-center relative z-10 border-secondary/30 group-hover:border-secondary transition-colors">
+<span class="material-symbols-outlined text-4xl text-secondary" style="font-variation-settings: 'FILL' 1;">share</span>
+</div>
+<div class="absolute -top-2 -right-2 w-8 h-8 bg-surface-container-highest border border-outline-variant/30 rounded-full flex items-center justify-center text-xs font-bold text-secondary font-headline shadow-lg">02</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Share the Code</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-xs">Send the unique room code or encrypted link to your participants via any platform.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center group animate-fade-in-up delay-300">
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-tertiary/20 rounded-full blur-xl scale-0 group-hover:scale-150 transition-transform duration-500"></div>
+<div class="w-24 h-24 glass-card rounded-full flex items-center justify-center relative z-10 border-tertiary/30 group-hover:border-tertiary transition-colors">
+<span class="material-symbols-outlined text-4xl text-tertiary" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="absolute -top-2 -right-2 w-8 h-8 bg-surface-container-highest border border-outline-variant/30 rounded-full flex items-center justify-center text-xs font-bold text-tertiary font-headline shadow-lg">03</div>
+</div>
+<h3 class="font-headline text-2xl font-bold mb-4 text-on-surface">Chat Securely</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-xs">Messages are end-to-end encrypted and completely ephemeral. Data vanishes when you do.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<section class="section" id="how">
-  <div class="rv"><span class="sec-eyebrow">Simple Flow</span><h2 class="sec-h">Chat in <em>3 Simple Steps.</em></h2><p class="sec-sub">The easiest way to communicate securely without the friction.</p></div>
-  <div class="steps-grid rv2">
-    <div class="sc2"><div class="snum"><span class="snv">01</span></div><div class="stit">Create / Join Room</div><div class="sdesc">Launch a new session with one click or enter an existing code provided by a friend.</div><div class="sarr">→</div></div>
-    <div class="sc2"><div class="snum"><span class="snv">02</span></div><div class="stit">Share Code</div><div class="sdesc">Your room has a unique temporary code. Send it to whoever you want to chat with.</div><div class="sarr">→</div></div>
-    <div class="sc2"><div class="snum"><span class="snv">03</span></div><div class="stit">Chat Freely</div><div class="sdesc">Exchange messages in real-time. When everyone leaves, the room and its data vanish.</div></div>
-  </div>
+<!-- Features (Value Section) -->
+<section class="py-24 px-6 bg-surface-container-low relative">
+<div class="max-w-7xl mx-auto">
+<div class="mb-16">
+<span class="text-secondary font-bold tracking-widest text-xs uppercase block mb-2">Security first</span>
+<h2 class="font-headline text-4xl font-bold text-on-surface">Designed for Total Privacy.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Feature 1 -->
+<div class="p-8 rounded-md bg-surface-container hover:bg-surface-container-high transition-all group border-b-2 border-transparent hover:border-primary opacity-0 animate-fade-in-up delay-100">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_off</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-3 text-on-surface">No Sign-up Required</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Jump straight into a conversation without ever providing an email, phone number, or name.</p>
+</div>
+<!-- Feature 2 -->
+<div class="p-8 rounded-md bg-surface-container hover:bg-surface-container-high transition-all group border-b-2 border-transparent hover:border-secondary opacity-0 animate-fade-in-up delay-200">
+<div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">enhanced_encryption</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-3 text-on-surface">End-to-End Encryption</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Messages are encrypted locally on your device. Only the participants in your room can read them.</p>
+</div>
+<!-- Feature 3 -->
+<div class="p-8 rounded-md bg-surface-container hover:bg-surface-container-high transition-all group border-b-2 border-transparent hover:border-tertiary opacity-0 animate-fade-in-up delay-300">
+<div class="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center mb-6 text-tertiary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">timer_off</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Self-Destruct Messages</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Configure messages to disappear after a set time. No digital footprint left behind once the room closes.</p>
+</div>
+<!-- Feature 4 -->
+<div class="p-8 rounded-md bg-surface-container hover:bg-surface-container-high transition-all group border-b-2 border-transparent hover:border-primary opacity-0 animate-fade-in-up delay-400">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-3 text-on-surface">Instant Sharing</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Simply share a unique 6-digit code or a temporary link to bring others into your private space.</p>
+</div>
+</div>
+</div>
 </section>
-
-<section class="section" id="features">
-  <div class="rv"><span class="sec-eyebrow">Privacy for Every Occasion</span><h2 class="sec-h">From academic collaboration <br>to <em>sensitive discussions.</em></h2></div>
-  <div class="uc-grid rv2">
-    <div class="uc"><span class="ucic">📚</span><div class="uctit">Study Groups</div><div class="ucdesc">Collaborate on assignments without sharing permanent social profiles or phone numbers.</div></div>
-    <div class="uc ac"><span class="ucic">🔒</span><div class="uctit">Private Conversations</div><div class="ucdesc">Sensitive talks that shouldn't live in your main messenger's history forever.</div></div>
-    <div class="uc ac"><span class="ucic">🎉</span><div class="uctit">Event Chats</div><div class="ucdesc">Temporary hubs for concerts, meetups, or workshops where quick coordination is key.</div></div>
-    <div class="uc"><span class="ucic">🎭</span><div class="uctit">Anonymous Discussions</div><div class="ucdesc">Share honest feedback or brainstorm ideas without the fear of bias. Confession mode hides all names.</div></div>
-  </div>
+<!-- How it Works (Legacy Steps - Replaced or Supplemented above) -->
+<section class="py-32 px-6">
+<div class="max-w-5xl mx-auto">
+<div class="text-center mb-20">
+<h2 class="font-headline text-4xl font-bold text-on-surface mb-4">Chat in 3 Simple Steps</h2>
+<p class="text-on-surface-variant">The easiest way to communicate securely without the friction.</p>
+</div>
+<div class="flex flex-col md:flex-row gap-12 items-start">
+<div class="flex-1 text-center md:text-left">
+<div class="inline-block px-4 py-1 rounded-full bg-surface-container-high text-primary font-bold text-sm mb-4">01</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Create/Join Room</h3>
+<p class="text-on-surface-variant leading-relaxed">Launch a new session with one click or enter an existing code provided by a friend.</p>
+</div>
+<div class="hidden md:block pt-8 text-on-surface-variant/20">
+<span class="material-symbols-outlined text-4xl">arrow_forward</span>
+</div>
+<div class="flex-1 text-center md:text-left">
+<div class="inline-block px-4 py-1 rounded-full bg-surface-container-high text-secondary font-bold text-sm mb-4">02</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Share Code</h3>
+<p class="text-on-surface-variant leading-relaxed">Your room has a unique temporary code. Send it to whoever you want to chat with.</p>
+</div>
+<div class="hidden md:block pt-8 text-on-surface-variant/20">
+<span class="material-symbols-outlined text-4xl">arrow_forward</span>
+</div>
+<div class="flex-1 text-center md:text-left">
+<div class="inline-block px-4 py-1 rounded-full bg-surface-container-high text-tertiary font-bold text-sm mb-4">03</div>
+<h3 class="font-headline text-2xl font-bold mb-4">Chat Freely</h3>
+<p class="text-on-surface-variant leading-relaxed">Exchange messages in real-time. When everyone leaves, the room and its data vanish.</p>
+</div>
+</div>
+</div>
 </section>
-
-<section class="cta-sec">
-  <div class="cta-in rv">
-    <h2 class="ctah">Start chatting in seconds.</h2>
-    <p class="ctasub">The simplest way to communicate anonymously is just a click away. No data collected. Ever.</p>
-    <div class="ctabtns"><a href="/app" class="btnp">✦ Start a Room</a></div>
-    <p class="ctanote">Available on all browsers · No installation required</p>
-  </div>
+<!-- Use Cases (Bento Grid Style) -->
+<section class="py-24 px-6 bg-surface-container-low">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+<div class="max-w-xl">
+<h2 class="font-headline text-4xl font-bold text-on-surface mb-4">Privacy for every occasion.</h2>
+<p class="text-on-surface-variant">From academic collaboration to sensitive discussions, AnonChat is the versatile tool for secure messaging.</p>
+</div>
+<div class="flex gap-2">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Study Groups -->
+<div class="md:col-span-8 group relative rounded-lg overflow-hidden h-[300px] opacity-0 animate-fade-in-up delay-100">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-40" data-alt="overhead view of college students collaborating on notebooks in a cozy library with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzFXj8YDRH5pPNfjShQZerJwFrnWQA8L4UY6byaKZQIbn_CK_po7dMU1ta4f1-4hyWPdiEa4vBysTIq3A4fN55q5XjPVzes4o7MGc2JuExAFb9NYhTbrXg4gBVLYZH2ARKz0Krl936ghLO_7KXBc3PN25HDy9gW3tcS-esYT42WzjCZDwl5_T3ghRsdZmMpRyLPl0zd0nFLvrxRB79tGeFaY5ejZgDdYN5tkRL1XdJ96jv0SKdCPohYKADYnBDFQpGffwpvMmU-zBL"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+<div class="absolute bottom-0 p-8">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-2">Study Groups</h3>
+<p class="text-on-surface-variant max-w-md">Collaborate on assignments without sharing permanent social profiles or phone numbers.</p>
+</div>
+</div>
+<!-- Private Conversations -->
+<div class="md:col-span-4 group relative rounded-lg overflow-hidden h-[300px] bg-secondary-container/20 opacity-0 animate-fade-in-up delay-200">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-secondary/10 to-transparent"></div>
+<div class="relative p-8 h-full flex flex-col justify-end">
+<span class="material-symbols-outlined text-secondary text-4xl mb-auto" style="font-variation-settings: 'FILL' 1;">lock</span>
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-2">Private Conversations</h3>
+<p class="text-on-surface-variant">Sensitive talks that shouldn't live in your main messenger's history forever.</p>
+</div>
+</div>
+<!-- Event Chats -->
+<div class="md:col-span-4 group relative rounded-lg overflow-hidden h-[300px] bg-primary-container/20 opacity-0 animate-fade-in-up delay-300">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 to-transparent"></div>
+<div class="relative p-8 h-full flex flex-col justify-end">
+<span class="material-symbols-outlined text-primary text-4xl mb-auto" style="font-variation-settings: 'FILL' 1;">celebration</span>
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-2">Event Chats</h3>
+<p class="text-on-surface-variant">Temporary hubs for concerts, meetups, or workshops where quick coordination is key.</p>
+</div>
+</div>
+<!-- Anonymous Discussions -->
+<div class="md:col-span-8 group relative rounded-lg overflow-hidden h-[300px] opacity-0 animate-fade-in-up delay-400">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-40" data-alt="blurred silhouettes of people sitting in a dark circle discussing, illuminated by a single spotlight from above" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAv5gq7LFKHJ6xr4_n1pINUQJV8Peqkd-ajyoSz1tkXheyM41TVfThYNsJcBf-l14FUyXsF_VcShUzEc_sbA6u0FAiqlrgslYQ_RFXWblqqaVplj7MRdOpc37gywc7QHoajyKGmRjog2PBI_cVWBVIe1UDm1-jO22ArOyhWe1Sg_x1cqHSCbuGLR0p6wxyLsti_JEyxC-dRSCoBhgFRAgJBufvbR8LAuhpP0wbcKD_yWmQGG8zT2Oj02kjG5-2gSSeKciH86BuYNGM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+<div class="absolute bottom-0 p-8">
+<h3 class="font-headline text-2xl font-bold text-on-surface mb-2">Anonymous Discussions</h3>
+<p class="text-on-surface-variant max-w-md">Share honest feedback or brainstorm ideas in a workplace environment without the fear of bias.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
-
-<footer>
-  <a href="/" class="flogo"><div class="fgl">🔐</div><div class="fnm">AnonChat</div></a>
-  <div class="fcopy">© 2024 AnonChat. Encrypted by Midnight Protocol.</div>
-  <div class="flinks">
-    <a href="#" class="flink">Privacy Policy</a>
-    <a href="#" class="flink">Terms of Service</a>
-    <a href="#" class="flink">Bug Report</a>
-    <a href="#" class="flink">Status</a>
-  </div>
+<!-- Final CTA -->
+<section class="py-32 px-6 relative overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[400px] bg-primary/20 blur-[150px] rounded-full"></div>
+<div class="relative z-10 max-w-4xl mx-auto text-center glass-card p-12 md:p-20 rounded-lg">
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-on-surface mb-6">Start chatting in seconds.</h2>
+<p class="text-on-surface-variant text-lg mb-10 max-w-xl mx-auto">
+                    The simplest way to communicate anonymously is just a click away. No data collected. Ever.
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="glow-button px-12 py-5 rounded-md text-on-primary-fixed font-bold text-xl active:scale-95 transition-all flex items-center gap-3 justify-center">
+<span class="material-symbols-outlined">add_circle</span>
+                        Start a Room
+                    </button>
+</div>
+<p class="mt-8 text-xs font-label text-on-surface-variant/60 uppercase tracking-widest">
+                    Available on all browsers • No installation required
+                </p>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="bg-[#0b0c1f] w-full py-12 px-6 border-t border-white/5">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto gap-6">
+<div class="flex flex-col items-center md:items-start gap-4">
+<div class="text-lg font-bold text-violet-400 font-['Satoshi']">AnonChat</div>
+<div class="text-sm text-slate-400 font-['Satoshi']">
+                    © 2024 AnonChat. Encrypted by Midnight Protocol.
+                </div>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-slate-500 hover:text-pink-400 transition-colors font-['Satoshi'] text-sm" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-pink-400 transition-colors font-['Satoshi'] text-sm" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-pink-400 transition-colors font-['Satoshi'] text-sm" href="#">Bug Bounty</a>
+<a class="text-slate-500 hover:text-pink-400 transition-colors font-['Satoshi'] text-sm flex items-center gap-2" href="#">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                    Status
+                </a>
+</div>
+</div>
 </footer>
-
-<script>
-const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vs');});},{threshold:.08});
-document.querySelectorAll('.rv,.rv2').forEach(el=>obs.observe(el));
-function toggleM(){document.getElementById('ham').classList.toggle('o');document.getElementById('mnav').classList.toggle('o');}
-function closeM(){document.getElementById('ham').classList.remove('o');document.getElementById('mnav').classList.remove('o');}
-document.addEventListener('click',e=>{if(!e.target.closest('nav'))closeM();});
-</script>
-</body>
-</html>
+</body></html>
