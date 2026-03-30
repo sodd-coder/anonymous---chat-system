@@ -1,236 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>AnonChat — Start a Room</title>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#16172f","surface":"#0b0c1f","primary":"#ba9eff","secondary":"#ff67ad","tertiary":"#65ffc8","surface-container-highest":"#22233f","surface-container-high":"#1c1d37","surface-container-low":"#101127","surface-container-lowest":"#000000","on-surface":"#e4e3fe","on-surface-variant":"#a9a9c3","outline":"#73738b","outline-variant":"#45465c","on-primary":"#39008c","error":"#ff6e84","surface-bright":"#282947","primary-dim":"#8455ef"},fontFamily:{"headline":["Space Grotesk","sans-serif"],"body":["Manrope","sans-serif"]},borderRadius:{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"}}}}
+</script>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#0b0c1f;--sl:#101127;--sc:#16172f;--sch:#1c1d37;--scx:#22233f;--sb:#282947;
-  --pr:#ba9eff;--prd:#8455ef;--sec:#ff67ad;--ter:#65ffc8;
-  --os:#e4e3fe;--osv:#a9a9c3;--out:#73738b;--outv:#45465c;
-  --grad:linear-gradient(135deg,#ba9eff 0%,#ff67ad 100%);
-  --fh:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;
-  --err:#ff6e84;
-}
-html,body{height:100%;overflow:hidden}
-body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;align-items:center;justify-content:center;padding:16px;position:relative}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--sb);border-radius:10px}
-
-.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.p{position:absolute;border-radius:50%;opacity:0;animation:pfloat linear infinite}
-@keyframes pfloat{from{transform:translateY(100vh);opacity:0}20%{opacity:.35}80%{opacity:.35}to{transform:translateY(-5vh);opacity:0}}
-.p1{width:3px;height:3px;background:var(--pr);animation-duration:25s;left:10%;animation-delay:0s}
-.p2{width:2px;height:2px;background:var(--sec);animation-duration:30s;left:30%;animation-delay:-5s}
-.p3{width:4px;height:4px;background:var(--ter);animation-duration:22s;left:60%;animation-delay:-12s}
-.p4{width:3px;height:3px;background:var(--pr);animation-duration:35s;left:80%;animation-delay:-8s}
-.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.mo{position:absolute;border-radius:50%;filter:blur(110px);animation:mof 12s ease-in-out infinite}
-.mo1{width:500px;height:500px;background:rgba(132,85,239,.16);top:-200px;left:-200px}
-.mo2{width:400px;height:400px;background:rgba(255,103,173,.12);bottom:-150px;right:-150px;animation-delay:-5s}
-@keyframes mof{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
-
-/* CARD */
-.card{
-  position:relative;z-index:1;
-  background:var(--sc);
-  border-radius:24px;
-  width:100%;max-width:460px;
-  overflow:hidden;
-  box-shadow:0 0 0 1px rgba(186,158,255,.08),0 40px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
-  animation:cin .45s cubic-bezier(.34,1.56,.64,1) both;
-}
-@keyframes cin{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.card-top-bar{height:3px;background:var(--grad)}
-.card-inner{padding:28px 28px 24px;display:flex;flex-direction:column}
-
-/* HEADER */
-.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
-.logo-row{display:flex;align-items:center;gap:10px}
-.lglyph{width:34px;height:34px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 20px rgba(186,158,255,.45);flex-shrink:0}
-.lwm{font-family:var(--fh);font-size:18px;font-weight:900;letter-spacing:-.5px;color:var(--os)}
-.tagline{font-size:11px;color:var(--out);font-weight:400}
-
-/* NICK */
-.lbl{font-family:var(--fh);font-size:9px;color:var(--osv);font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:7px}
-.nick-wrap{display:flex;gap:8px;margin-bottom:18px}
-.nick-inp{
-  flex:1;padding:11px 14px;
-  background:var(--scx);
-  border:1px solid rgba(186,158,255,.08);
-  border-radius:12px;color:var(--os);
-  font-size:15px;font-family:var(--fb);
-  outline:none;transition:all .22s;-webkit-appearance:none;
-}
-.nick-inp:focus{border-color:rgba(186,158,255,.35);box-shadow:0 0 0 3px rgba(186,158,255,.08)}
-.nick-inp::placeholder{color:var(--out);font-size:13px}
-.rnd-btn{
-  padding:11px 14px;
-  background:var(--scx);border:1px solid rgba(186,158,255,.08);
-  border-radius:12px;color:var(--pr);
-  font-family:var(--fh);font-size:12px;font-weight:800;
-  cursor:pointer;transition:all .2s;white-space:nowrap;
-  -webkit-tap-highlight-color:transparent;letter-spacing:.1px;
-}
-.rnd-btn:hover{border-color:rgba(186,158,255,.3);background:rgba(186,158,255,.06)}
-.rnd-btn:active{transform:scale(.95)}
-
-/* ROOM TYPES */
-.type-wrap{margin-bottom:18px}
-.type-strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.type-strip::-webkit-scrollbar{display:none}
-.tc{
-  flex-shrink:0;flex:1;min-width:0;
-  padding:11px 8px;
-  background:var(--sch);
-  border-radius:14px;cursor:pointer;text-align:center;
-  transition:all .22s cubic-bezier(.34,1.56,.64,1);
-  -webkit-tap-highlight-color:transparent;
-  position:relative;
-  border:1px solid transparent;
-}
-.tc:hover{background:var(--scx);transform:translateY(-2px)}
-.tc.sel{background:rgba(186,158,255,.08);border-color:rgba(186,158,255,.25);transform:translateY(-3px);box-shadow:0 6px 20px rgba(186,158,255,.12)}
-.tc[data-type="vanish"].sel{background:rgba(255,103,173,.08);border-color:rgba(255,103,173,.25);box-shadow:0 6px 20px rgba(255,103,173,.12)}
-.tc[data-type="rapid"].sel{background:rgba(255,165,0,.07);border-color:rgba(255,165,0,.22);box-shadow:0 6px 20px rgba(255,165,0,.1)}
-.tc[data-type="confession"].sel{background:rgba(255,103,173,.07);border-color:rgba(255,103,173,.22);box-shadow:0 6px 20px rgba(255,103,173,.1)}
-.tc[data-type="study"].sel{background:rgba(101,255,200,.07);border-color:rgba(101,255,200,.2);box-shadow:0 6px 20px rgba(101,255,200,.08)}
-.tc-em{font-size:20px;display:block;margin-bottom:4px;transition:transform .22s}
-.tc:hover .tc-em,.tc.sel .tc-em{transform:scale(1.15)}
-.tc-nm{font-family:var(--fh);font-size:9px;font-weight:800;display:block;color:var(--os);letter-spacing:.1px}
-.tc-ds{font-size:8px;color:var(--out);display:block;margin-top:1px;line-height:1.2}
-
-/* BUTTONS */
-.btn-create{
-  width:100%;padding:14px;
-  background:var(--grad);color:#39008c;
-  border:none;border-radius:16px;
-  font-family:var(--fh);font-size:15px;font-weight:900;
-  cursor:pointer;margin-bottom:14px;
-  transition:all .25s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 6px 24px rgba(186,158,255,.3);
-  -webkit-tap-highlight-color:transparent;
-  letter-spacing:-.2px;position:relative;overflow:hidden;min-height:52px;
-}
-.btn-create::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.3)}
-.btn-create::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:opacity .2s}
-.btn-create span{position:relative;z-index:1}
-.btn-create:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(186,158,255,.45)}
-.btn-create:hover::after{opacity:1}
-.btn-create:active{transform:scale(.97)}
-.btn-create:disabled{opacity:.45;cursor:not-allowed;transform:none}
-
-.divider{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--sch)}
-.divider span{font-size:11px;color:var(--out);white-space:nowrap}
-
-.join-row{display:flex;gap:8px;margin-bottom:14px}
-.code-inp{
-  flex:1;padding:13px 14px;
-  background:var(--scx);border:1px solid rgba(186,158,255,.08);
-  border-radius:12px;color:var(--os);
-  font-family:var(--fh);font-size:20px;font-weight:900;
-  letter-spacing:6px;text-align:center;text-transform:uppercase;
-  outline:none;transition:all .22s;-webkit-appearance:none;
-}
-.code-inp::placeholder{letter-spacing:0;text-transform:none;color:var(--out);font-size:13px;font-weight:400;font-family:var(--fb)}
-.code-inp:focus{border-color:rgba(186,158,255,.35);box-shadow:0 0 0 3px rgba(186,158,255,.08)}
-.btn-join{
-  padding:13px 20px;
-  background:var(--scx);color:var(--pr);
-  border:1px solid rgba(186,158,255,.15);
-  border-radius:12px;font-family:var(--fh);font-size:13px;font-weight:800;
-  cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent;white-space:nowrap;
-}
-.btn-join:hover{border-color:rgba(186,158,255,.35);background:rgba(186,158,255,.06);transform:translateY(-1px)}
-.btn-join:active{transform:scale(.97)}
-.btn-join:disabled{opacity:.45;cursor:not-allowed;transform:none}
-
-/* RECENT */
-.recent-wrap{margin-bottom:10px}
-.rec-lbl{font-family:var(--fh);font-size:9px;color:var(--out);font-weight:700;text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:7px}
-.rec-list{display:flex;flex-direction:column;gap:4px}
-.ri{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--sch);border-radius:12px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
-.ri:hover{background:var(--scx);transform:translateX(3px)}
-.ri-l{display:flex;align-items:center;gap:9px}
-.ri-em{font-size:16px}
-.ri-code{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--pr);letter-spacing:2px}
-.ri-info{font-size:10px;color:var(--out);margin-top:1px}
-.ri-go{font-size:11px;color:var(--ter);font-weight:700}
-
-/* FEEDBACK */
-.fb{font-size:12px;margin-top:6px;display:none;padding:7px 12px;border-radius:10px;text-align:center}
-.fb.err{color:var(--err);background:rgba(255,110,132,.06);border:1px solid rgba(255,110,132,.12)}
-.fb.load{color:var(--pr);background:rgba(186,158,255,.06);border:1px solid rgba(186,158,255,.12)}
-
-/* BOTTOM */
-.card-btm{display:flex;align-items:center;justify-content:space-between;padding-top:10px;flex-wrap:wrap;gap:8px;background:var(--sl);margin:0 -28px -24px;padding:12px 28px}
-.pills{display:flex;gap:5px;flex-wrap:wrap}
-.pill{font-size:9px;color:var(--out);background:rgba(255,255,255,.04);padding:3px 9px;border-radius:9999px;font-weight:600;letter-spacing:.3px}
-.back-lnk{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s;font-weight:500}
-.back-lnk:hover{color:var(--pr)}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+body{font-family:'Manrope',sans-serif;background-color:#0b0c1f}
+.hide-scrollbar::-webkit-scrollbar{display:none}
+.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#282947;border-radius:10px}
+@keyframes float-particle{0%,100%{transform:translateY(0) translateX(0) scale(1);opacity:.2}50%{transform:translateY(-40px) translateX(20px) scale(1.2);opacity:.6}75%{transform:translateY(-20px) translateX(-10px) scale(.8);opacity:.4}}
+@keyframes die-roll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(-15deg) scale(1.1)}50%{transform:rotate(15deg) scale(1.1)}75%{transform:rotate(-10deg) scale(1.1)}100%{transform:rotate(0deg) scale(1)}}
+.animate-roll{animation:die-roll .4s ease-in-out}
+.fb{font-size:12px;margin-top:6px;display:none;padding:7px 12px;border-radius:10px;text-align:center;font-family:'Space Grotesk',sans-serif}
+.fb.err{color:#ff6e84;background:rgba(255,110,132,.06);border:1px solid rgba(255,110,132,.12)}
+.fb.load{color:#ba9eff;background:rgba(186,158,255,.06);border:1px solid rgba(186,158,255,.12)}
+.ri{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(28,29,55,.6);border-radius:14px;cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,.05);backdrop-filter:blur(10px)}
+.ri:hover{background:rgba(186,158,255,.08);border-color:rgba(186,158,255,.2);transform:translateX(3px)}
+.ri-code{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#ba9eff;letter-spacing:2px}
+.ri-info{font-size:10px;color:#73738b;margin-top:1px}
+.ri-go{font-size:11px;color:#65ffc8;font-weight:700}
 </style>
 </head>
-<body>
-<div class="particles"><div class="p p1"></div><div class="p p2"></div><div class="p p3"></div><div class="p p4"></div></div>
-<div class="mesh"><div class="mo mo1"></div><div class="mo mo2"></div></div>
+<body class="bg-surface text-on-surface selection:bg-primary/30 min-h-screen">
 
-<div class="card">
-  <div class="card-top-bar"></div>
-  <div class="card-inner">
-    <div class="card-hdr">
-      <div class="logo-row"><div class="lglyph">🔐</div><div class="lwm">AnonChat</div></div>
-      <div class="tagline">no trace. just ghost. 👻</div>
-    </div>
-
-    <label class="lbl">Your nickname (optional)</label>
-    <div class="nick-wrap">
-      <input type="text" id="nickInp" class="nick-inp" placeholder="Leave blank for random name..." maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"/>
-      <button class="rnd-btn" onclick="genRnd()">🎲 Random</button>
-    </div>
-
-    <label class="lbl">Room type</label>
-    <div class="type-wrap">
-      <div class="type-strip">
-        <div class="tc sel" data-type="normal" onclick="pickType('normal')"><span class="tc-em">💬</span><span class="tc-nm">Normal</span><span class="tc-ds">Standard</span></div>
-        <div class="tc" data-type="vanish" onclick="pickType('vanish')"><span class="tc-em">🔥</span><span class="tc-nm">Vanish</span><span class="tc-ds">30s delete</span></div>
-        <div class="tc" data-type="rapid" onclick="pickType('rapid')"><span class="tc-em">⚡</span><span class="tc-nm">Rapid</span><span class="tc-ds">100 chars</span></div>
-        <div class="tc" data-type="confession" onclick="pickType('confession')"><span class="tc-em">🎭</span><span class="tc-nm">Confess</span><span class="tc-ds">No names</span></div>
-        <div class="tc" data-type="study" onclick="pickType('study')"><span class="tc-em">📚</span><span class="tc-nm">Study</span><span class="tc-ds">+Prompts</span></div>
-      </div>
-    </div>
-
-    <button class="btn-create" id="createBtn" onclick="createRoom()"><span>✦ Start a Room</span></button>
-
-    <div class="divider"><span>or join with a code</span></div>
-
-    <div class="join-row">
-      <input type="text" id="codeInp" class="code-inp" placeholder="Enter code" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"/>
-      <button class="btn-join" id="joinBtn" onclick="joinRoom()">Join →</button>
-    </div>
-
-    <div id="recentWrap" class="recent-wrap" style="display:none">
-      <span class="rec-lbl">Recent sessions</span>
-      <div class="rec-list" id="recentList"></div>
-    </div>
-
-    <div class="fb err" id="errMsg"></div>
-    <div class="fb load" id="loadMsg"></div>
-
-    <div class="card-btm">
-      <div class="pills">
-        <div class="pill">🔐 Encrypted</div>
-        <div class="pill">👤 Anonymous</div>
-        <div class="pill">🗑️ Zero Logs</div>
-      </div>
-      <a href="/" class="back-lnk">← Home</a>
+<nav class="fixed top-0 w-full z-50 bg-[#0b0c1f]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16">
+  <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary">security</span>
+    <span class="text-2xl font-bold bg-gradient-to-r from-[#ba9eff] to-[#ff67ad] bg-clip-text text-transparent font-['Space_Grotesk'] tracking-tight">AnonChat</span>
+  </div>
+  <div class="flex items-center gap-4">
+    <button class="text-[#a9a9c3] hover:text-[#ff67ad] transition-colors active:scale-95">
+      <span class="material-symbols-outlined">shutter_speed</span>
+    </button>
+    <div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20 bg-surface-container-high flex items-center justify-center">
+      <span class="material-symbols-outlined text-[#a9a9c3] text-[18px]">person</span>
     </div>
   </div>
+</nav>
+
+<div aria-hidden="true" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:0">
+  <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-primary/40 rounded-full blur-[1px]" style="animation:float-particle 15s infinite ease-in-out"></div>
+  <div class="absolute top-3/4 left-1/3 w-1.5 h-1.5 bg-secondary/30 rounded-full blur-[1px]" style="animation:float-particle 20s infinite ease-in-out reverse"></div>
+  <div class="absolute top-1/2 right-1/4 w-1 h-1 bg-tertiary/40 rounded-full blur-[1px]" style="animation:float-particle 18s infinite ease-in-out 2s"></div>
+  <div class="absolute top-1/3 right-1/3 w-2 h-2 bg-primary/20 rounded-full blur-[2px]" style="animation:float-particle 25s infinite linear"></div>
+  <div class="absolute bottom-1/4 right-1/2 w-1 h-1 bg-secondary/40 rounded-full blur-[1px]" style="animation:float-particle 22s infinite ease-in-out 1s"></div>
+  <div class="absolute top-2/3 left-1/2 w-1.5 h-1.5 bg-primary/30 rounded-full blur-[1px]" style="animation:float-particle 30s infinite ease-in-out"></div>
 </div>
+
+<main class="relative pt-24 pb-32 px-6 flex flex-col items-center justify-center min-h-screen" style="z-index:1">
+  <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full -z-10"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[120px] rounded-full -z-10"></div>
+
+  <div class="w-full max-w-2xl bg-surface-container/40 backdrop-blur-2xl rounded-lg p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-outline-variant/10 relative overflow-hidden">
+
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-high mb-4 shadow-lg shadow-black/40">
+        <span class="material-symbols-outlined text-primary text-4xl">fingerprint</span>
+      </div>
+      <h1 class="font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-on-surface mb-2">AnonChat</h1>
+      <p class="text-on-surface-variant font-medium tracking-wide">no name. no face. no trace. just ghost 👻</p>
+    </div>
+
+    <div class="space-y-8">
+      <div class="space-y-3">
+        <div class="flex justify-between items-end">
+          <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Your nickname (optional)</label>
+          <a id="diceBtn" class="text-secondary hover:text-primary transition-all duration-300 flex items-center justify-center cursor-pointer" title="Generate a random nickname">
+            <span class="material-symbols-outlined text-xl">casino</span>
+          </a>
+        </div>
+        <input id="nickInp" type="text" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"
+          class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md py-4 px-5 text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          placeholder="Leave blank for random name..."/>
+      </div>
+
+      <div class="space-y-3">
+        <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Select Room Protocol</label>
+        <div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x py-2" id="typeStrip">
+          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-primary/10 border-2 border-primary text-left snap-start shadow-[0_0_20px_rgba(186,158,255,0.15)] transition-all relative group" data-type="normal" onclick="pickType('normal')">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-xl pointer-events-none"></div>
+            <div class="relative z-10">
+              <span class="material-symbols-outlined text-primary mb-4 block text-3xl">forum</span>
+              <div class="font-bold text-on-surface text-base mb-1">Normal</div>
+              <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80">Standard persistent anonymous chat.</div>
+            </div>
+          </button>
+          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-secondary/50 hover:bg-secondary/5 transition-all group" data-type="vanish" onclick="pickType('vanish')">
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary mb-4 block text-3xl transition-colors">timer</span>
+            <div class="font-bold text-on-surface text-base mb-1">Vanish</div>
+            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">Messages self-delete after 30s.</div>
+          </button>
+          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-primary/50 hover:bg-primary/5 transition-all group" data-type="rapid" onclick="pickType('rapid')">
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-4 block text-3xl transition-colors">bolt</span>
+            <div class="font-bold text-on-surface text-base mb-1">Rapid</div>
+            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">100 char limit. Fast bursts.</div>
+          </button>
+          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-secondary/50 hover:bg-secondary/5 transition-all group" data-type="confession" onclick="pickType('confession')">
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary mb-4 block text-3xl transition-colors">theater_comedy</span>
+            <div class="font-bold text-on-surface text-base mb-1">Confess</div>
+            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">No usernames shown.</div>
+          </button>
+          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-primary/50 hover:bg-primary/5 transition-all group" data-type="study" onclick="pickType('study')">
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-4 block text-3xl transition-colors">school</span>
+            <div class="font-bold text-on-surface text-base mb-1">Study</div>
+            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">Study sessions + prompts.</div>
+          </button>
+        </div>
+      </div>
+
+      <button id="createBtn" onclick="createRoom()"
+        class="w-full h-16 rounded-md bg-gradient-to-r from-primary to-secondary text-on-primary font-bold text-lg font-['Space_Grotesk'] shadow-[0_10px_30px_rgba(186,158,255,0.3)] hover:shadow-[0_15px_40px_rgba(186,158,255,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed">
+        <span>Create New Room</span>
+        <span class="material-symbols-outlined">add_circle</span>
+      </button>
+
+      <div class="flex items-center gap-4 py-2">
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent to-outline-variant/30"></div>
+        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline">or join with a code</span>
+        <div class="flex-1 h-px bg-gradient-to-l from-transparent to-outline-variant/30"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+          <input id="codeInp" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"
+            class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md py-4 px-5 text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/50 font-['Space_Grotesk'] text-xl font-black tracking-[6px] uppercase text-center transition-all"
+            placeholder="XXXXXX"/>
+        </div>
+        <button id="joinBtn" onclick="joinRoom()"
+          class="w-full h-full min-h-[56px] rounded-md bg-surface-container-highest border border-outline-variant/30 text-on-surface font-semibold hover:bg-surface-bright transition-colors flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed">
+          <span>Join Room</span>
+          <span class="material-symbols-outlined text-secondary">arrow_forward</span>
+        </button>
+      </div>
+
+      <div id="recentWrap" class="hidden">
+        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant block mb-3">Recent sessions</span>
+        <div class="flex flex-col gap-2" id="recentList"></div>
+      </div>
+
+      <div class="fb err" id="errMsg"></div>
+      <div class="fb load" id="loadMsg"></div>
+    </div>
+
+    <div class="mt-12 flex flex-wrap justify-center gap-3">
+      <span class="px-3 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>Anonymous
+      </span>
+      <span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[12px]">lock</span>Encrypted
+      </span>
+      <span class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[12px]">history_toggle_off</span>Zero Logs
+      </span>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="/" class="inline-flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors text-sm font-medium">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>Back to home
+      </a>
+    </div>
+  </div>
+</main>
+
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#000000]/90 backdrop-blur-2xl rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.6)]">
+  <a href="/" class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all active:scale-90">
+    <span class="material-symbols-outlined">forum</span>
+    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Rooms</span>
+  </a>
+  <button class="flex flex-col items-center justify-center bg-[#8455ef]/20 text-[#ba9eff] rounded-2xl px-6 py-2 shadow-[0_0_15px_rgba(186,158,255,0.3)]">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">add_circle</span>
+    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Create</span>
+  </button>
+  <button class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all">
+    <span class="material-symbols-outlined">notifications</span>
+    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Activity</span>
+  </button>
+  <button class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all">
+    <span class="material-symbols-outlined">fingerprint</span>
+    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Identity</span>
+  </button>
+</nav>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -243,30 +200,54 @@ const TEM={normal:'💬',vanish:'🔥',rapid:'⚡',confession:'🎭',study:'📚
 function rnd(){return ADJS[Math.random()*ADJS.length|0]+NOUNS[Math.random()*NOUNS.length|0]+(10+Math.random()*90|0);}
 function getU(){const v=document.getElementById('nickInp').value.trim().replace(/[^a-zA-Z0-9_]/g,'').substring(0,20);return v||rnd();}
 function genRnd(){document.getElementById('nickInp').value=rnd();}
-function pickType(t){selType=t;document.querySelectorAll('.tc').forEach(c=>c.classList.toggle('sel',c.dataset.type===t));}
+
+document.getElementById('diceBtn').onclick=function(){
+  const icon=this.querySelector('.material-symbols-outlined');
+  icon.classList.add('animate-roll');
+  setTimeout(()=>icon.classList.remove('animate-roll'),400);
+  genRnd();
+};
+
+function pickType(t){
+  selType=t;
+  document.querySelectorAll('.tc').forEach(c=>{
+    c.classList.remove('bg-primary/10','bg-secondary/10','bg-tertiary/10');
+    c.style.background='';c.style.borderColor='';c.style.boxShadow='';
+    c.className=c.className.replace(/border-2 border-\S+/g,'border-2 border-transparent');
+  });
+  const active=document.querySelector(`.tc[data-type="${t}"]`);
+  if(active){
+    const colorMap={normal:'rgba(186,158,255,.1)',vanish:'rgba(255,103,173,.08)',rapid:'rgba(186,158,255,.08)',confession:'rgba(255,103,173,.07)',study:'rgba(101,255,200,.07)'};
+    const borderMap={normal:'#ba9eff',vanish:'#ff67ad',rapid:'#ba9eff',confession:'#ff67ad',study:'#65ffc8'};
+    active.style.background=colorMap[t]||'rgba(186,158,255,.1)';
+    active.style.borderColor=borderMap[t]||'#ba9eff';
+    active.style.boxShadow=`0 0 20px ${borderMap[t]}22`;
+  }
+}
 
 function loadRecent(){
   try{
     const arr=JSON.parse(localStorage.getItem('ac_recent')||'[]').filter(r=>Date.now()-r.t<7200000);
     if(!arr.length)return;
-    document.getElementById('recentWrap').style.display='block';
+    document.getElementById('recentWrap').classList.remove('hidden');
     const list=document.getElementById('recentList');list.innerHTML='';
     arr.slice(0,2).forEach(r=>{
       const el=document.createElement('div');el.className='ri';
       const mins=Math.floor((Date.now()-r.t)/60000);
-      el.innerHTML=`<div class="ri-l"><span class="ri-em">${r.em||'💬'}</span><div><div class="ri-code">${r.code}</div><div class="ri-info">${r.type} · ${mins<1?'just now':mins+'m ago'}</div></div></div><span class="ri-go">Rejoin →</span>`;
+      el.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">${r.em||'💬'}</span><div><div class="ri-code">${r.code}</div><div class="ri-info">${r.type} · ${mins<1?'just now':mins+'m ago'}</div></div></div><span class="ri-go">Rejoin →</span>`;
       el.onclick=()=>{document.getElementById('codeInp').value=r.code;joinRoom();};
       list.appendChild(el);
     });
   }catch(e){}
 }
+
 function saveRecent(code,type){
   try{const arr=JSON.parse(localStorage.getItem('ac_recent')||'[]').filter(r=>r.code!==code);arr.unshift({code,type,em:TEM[type]||'💬',t:Date.now()});localStorage.setItem('ac_recent',JSON.stringify(arr.slice(0,5)));}catch(e){}
 }
 loadRecent();
 
-function lock(){busy=true;['createBtn','joinBtn'].forEach(id=>document.getElementById(id).disabled=true);}
-function unlock(){busy=false;['createBtn','joinBtn'].forEach(id=>document.getElementById(id).disabled=false);}
+function lock(){busy=true;['createBtn','joinBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});}
+function unlock(){busy=false;['createBtn','joinBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=false;});}
 function showErr(m){unlock();const e=document.getElementById('errMsg');e.textContent=m;e.style.display='block';document.getElementById('loadMsg').style.display='none';}
 function showLoad(m){document.getElementById('errMsg').style.display='none';const l=document.getElementById('loadMsg');l.textContent=m;l.style.display='block';}
 function clearFb(){['errMsg','loadMsg'].forEach(id=>document.getElementById(id).style.display='none');}
@@ -275,13 +256,14 @@ function redirect(code,isCreator,type){
   sessionStorage.setItem('ac_user',getU());sessionStorage.setItem('ac_room',code);
   sessionStorage.setItem('ac_creator',isCreator?'1':'0');sessionStorage.setItem('ac_type',type||'normal');
   saveRecent(code,type||'normal');
-  const card=document.querySelector('.card');
+  const card=document.querySelector('.max-w-2xl');
   card.style.transition='all .3s ease';card.style.opacity='0';card.style.transform='translateY(-12px) scale(.97)';
   setTimeout(()=>location.href='/room/'+code,280);
 }
 
 function createRoom(){if(busy)return;lock();clearFb();showLoad('⏳ Establishing secure session...');socket.emit('generate-code');}
 socket.on('code-generated',code=>redirect(code,true,selType));
+
 function joinRoom(){
   if(busy)return;
   const code=document.getElementById('codeInp').value.trim().toUpperCase();

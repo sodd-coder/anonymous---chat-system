@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>AnonChat — Secure Session</title>
-<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -17,7 +17,7 @@
   --pr:#ba9eff;--prd:#8455ef;--sec:#ff67ad;--ter:#65ffc8;
   --os:#e4e3fe;--osv:#a9a9c3;--out:#73738b;--outv:#45465c;
   --grad:linear-gradient(135deg,#ba9eff 0%,#ff67ad 100%);
-  --fh:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;
+  --fh:'Space Grotesk',sans-serif;--fb:'Manrope',sans-serif;
   --err:#ff6e84;
 }
 html,body{height:100%;height:100dvh;overflow:hidden}
@@ -39,8 +39,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
 /* ═══ HEADER ═══ */
 .hdr{
   position:relative;z-index:50;flex-shrink:0;
-  height:60px;padding:0 20px;
-  background:var(--sl);
+  height:64px;padding:0 20px;
+  background:var(--sl);border-bottom:1px solid rgba(255,255,255,0.05);box-shadow:0 8px 32px rgba(0,0,0,0.4);
   display:flex;align-items:center;gap:12px;
 }
 .hdr-logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0}
@@ -93,9 +93,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
   transition:transform .3s cubic-bezier(.34,1.56,.64,1);
 }
 @media(max-width:768px){
-  .sidebar{position:fixed;left:0;top:60px;bottom:0;z-index:200;transform:translateX(-100%)}
+  .sidebar{position:fixed;left:0;top:64px;bottom:0;z-index:200;transform:translateX(-100%)}
   .sidebar.open{transform:translateX(0)}
-  .sb-overlay{position:fixed;inset:0;top:60px;background:rgba(0,0,0,.6);z-index:199;display:none;backdrop-filter:blur(4px)}
+  .sb-overlay{position:fixed;inset:0;top:64px;background:rgba(0,0,0,.6);z-index:199;display:none;backdrop-filter:blur(4px)}
   .sb-overlay.show{display:block}
 }
 
@@ -254,7 +254,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
 @keyframes td{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
 /* REPLY BAR */
-.rbar{display:none;padding:9px 20px;background:rgba(186,158,255,.06);align-items:center;gap:10px;flex-shrink:0}
+.rbar{display:none;padding:9px 20px;background:rgba(186,158,255,.06);align-items:center;gap:10px;flex-shrink:0;border-top:1px solid rgba(186,158,255,.08)}
 .rbar.show{display:flex}
 .rbar-c{flex:1;min-width:0}
 .rbar-auth{font-family:var(--fh);font-size:11px;font-weight:800;color:var(--pr);margin-bottom:2px}
@@ -263,7 +263,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
 .rbar-x:hover{color:var(--os)}
 
 /* ═══ INPUT AREA ═══ */
-.inp-area{flex-shrink:0;padding:0 20px 12px;background:#000}
+.inp-area{flex-shrink:0;padding:0 16px 12px;background:rgba(0,0,0,0.4);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.05)}
 .emoji-panel{display:none;background:var(--sch);border-radius:20px 20px 0 0;margin:0;max-height:160px;overflow:hidden;animation:slideup .18s ease}
 @keyframes slideup{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .emoji-panel.open{display:flex;flex-direction:column}
@@ -288,7 +288,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
 .pm-ic.ter:hover{background:rgba(101,255,200,.2)}
 .pm-lbl{font-family:var(--fh);font-size:9px;font-weight:800;color:var(--out);text-transform:uppercase;letter-spacing:.8px}
 
-.rec-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(255,110,132,.06);animation:slideup .18s ease;margin:0 -20px}
+.rec-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(255,110,132,.06);animation:slideup .18s ease;margin:0 -16px}
 .rec-bar.show{display:flex}
 .rec-dot{width:9px;height:9px;border-radius:50%;background:var(--err);animation:blink 1s infinite;flex-shrink:0}
 .rec-time{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--err);flex:1}
@@ -417,20 +417,20 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
 
 <!-- HEADER -->
 <div class="hdr">
-  <a href="/" class="hdr-logo"><div class="hdr-glyph">🔐</div><div class="hdr-name">AnonChat</div></a>
+  <a href="/app" class="hdr-logo"><div class="hdr-glyph">🔐</div><div class="hdr-name">AnonChat</div></a>
   <div class="hdr-code-wrap">
     <div class="hdr-code-pill" onclick="showQR()">
       <span class="hdr-code-label">Room Code</span>
       <span class="hdr-code-val" id="hdrCode">------</span>
       <div class="hdr-code-icons">
-        <button class="hdr-ic-btn" title="Copy" onclick="copyCode();event.stopPropagation()">📋</button>
-        <button class="hdr-ic-btn" title="QR">⬛</button>
+        <button class="hdr-ic-btn" title="Copy" onclick="copyCode();event.stopPropagation()"><span class="material-symbols-outlined" style="font-size:14px">content_copy</span></button>
+        <button class="hdr-ic-btn" title="QR"><span class="material-symbols-outlined" style="font-size:14px">qr_code</span></button>
       </div>
     </div>
   </div>
   <div class="hdr-right">
     <div class="online-chip"><div class="odot"></div><span id="uCount">1</span> Online</div>
-    <button class="users-icon-btn" onclick="toggleSidebar()" title="Members">👥</button>
+    <button class="users-icon-btn" onclick="toggleSidebar()" title="Members"><span class="material-symbols-outlined" style="font-size:18px">group</span></button>
     <button class="leave-btn" onclick="openModal('leaveModal')">Leave</button>
   </div>
 </div>
@@ -491,9 +491,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
         <div class="egrid" id="eGrid"></div>
       </div>
       <div class="plus-menu" id="plusMenu">
-        <div class="pm-item" onclick="document.getElementById('fileInp').click()"><div class="pm-ic prp">📄</div><span class="pm-lbl">Files</span></div>
-        <div class="pm-item" onclick="document.getElementById('fileInp').click()"><div class="pm-ic ter">🖼️</div><span class="pm-lbl">Images</span></div>
-        <div class="pm-item" onclick="startRec()"><div class="pm-ic sec">🎤</div><span class="pm-lbl">Voice</span></div>
+        <div class="pm-item" onclick="document.getElementById('fileInp').click()"><div class="pm-ic prp"><span class="material-symbols-outlined">description</span></div><span class="pm-lbl">Files</span></div>
+        <div class="pm-item" onclick="document.getElementById('fileInp').click()"><div class="pm-ic ter"><span class="material-symbols-outlined">image</span></div><span class="pm-lbl">Images</span></div>
+        <div class="pm-item" onclick="startRec()"><div class="pm-ic sec"><span class="material-symbols-outlined">mic</span></div><span class="pm-lbl">Voice</span></div>
       </div>
       <div class="rec-bar" id="recBar">
         <div class="rec-dot"></div>
@@ -505,12 +505,12 @@ body{font-family:var(--fb);background:var(--bg);color:var(--os);display:flex;fle
       <div class="inp-row-wrap">
         <div class="inp-row-glow" id="inputGlow"></div>
         <div class="inp-row">
-          <button class="ms-btn" onclick="togglePlus()" title="Attachments"><span style="font-size:22px">+</span></button>
-          <button class="ms-btn" onclick="toggleEmoji()" title="Emoji">😊</button>
+          <button class="ms-btn" onclick="togglePlus()" title="Attachments"><span class="material-symbols-outlined">add</span></button>
+          <button class="ms-btn" onclick="toggleEmoji()" title="Emoji"><span class="material-symbols-outlined">sentiment_satisfied</span></button>
           <input class="msg-inp" type="text" id="msgInp" placeholder="Whisper something secure..." autocomplete="off" autocorrect="off" spellcheck="true" maxlength="1000"/>
           <div class="cchar" id="cchar"></div>
-          <button class="ms-btn" id="micBtn" onmousedown="startRec()" ontouchstart="startRec()" title="Voice">🎤</button>
-          <button class="send-btn" onclick="sendMsg()">↑</button>
+          <button class="ms-btn" id="micBtn" onmousedown="startRec()" ontouchstart="startRec()" title="Voice"><span class="material-symbols-outlined">mic</span></button>
+          <button class="send-btn" onclick="sendMsg()"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">send</span></button>
         </div>
       </div>
       <div class="inp-footer">End-to-End Encrypted Session · AnonChat v2.4.0</div>
