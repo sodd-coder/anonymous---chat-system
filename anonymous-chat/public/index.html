@@ -1,195 +1,226 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>AnonChat — Start a Room</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container":"#16172f","surface":"#0b0c1f","primary":"#ba9eff","secondary":"#ff67ad","tertiary":"#65ffc8","surface-container-highest":"#22233f","surface-container-high":"#1c1d37","surface-container-low":"#101127","surface-container-lowest":"#000000","on-surface":"#e4e3fe","on-surface-variant":"#a9a9c3","outline":"#73738b","outline-variant":"#45465c","on-primary":"#39008c","error":"#ff6e84","surface-bright":"#282947","primary-dim":"#8455ef"},fontFamily:{"headline":["Space Grotesk","sans-serif"],"body":["Manrope","sans-serif"]},borderRadius:{"DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px"}}}}
-</script>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
 <style>
-.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-body{font-family:'Manrope',sans-serif;background-color:#0b0c1f}
-.hide-scrollbar::-webkit-scrollbar{display:none}
-.hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#282947;border-radius:10px}
-@keyframes float-particle{0%,100%{transform:translateY(0) translateX(0) scale(1);opacity:.2}50%{transform:translateY(-40px) translateX(20px) scale(1.2);opacity:.6}75%{transform:translateY(-20px) translateX(-10px) scale(.8);opacity:.4}}
-@keyframes die-roll{0%{transform:rotate(0deg) scale(1)}25%{transform:rotate(-15deg) scale(1.1)}50%{transform:rotate(15deg) scale(1.1)}75%{transform:rotate(-10deg) scale(1.1)}100%{transform:rotate(0deg) scale(1)}}
-.animate-roll{animation:die-roll .4s ease-in-out}
-.fb{font-size:12px;margin-top:6px;display:none;padding:7px 12px;border-radius:10px;text-align:center;font-family:'Space Grotesk',sans-serif}
-.fb.err{color:#ff6e84;background:rgba(255,110,132,.06);border:1px solid rgba(255,110,132,.12)}
-.fb.load{color:#ba9eff;background:rgba(186,158,255,.06);border:1px solid rgba(186,158,255,.12)}
-.ri{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(28,29,55,.6);border-radius:14px;cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,.05);backdrop-filter:blur(10px)}
-.ri:hover{background:rgba(186,158,255,.08);border-color:rgba(186,158,255,.2);transform:translateX(3px)}
-.ri-code{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#ba9eff;letter-spacing:2px}
-.ri-info{font-size:10px;color:#73738b;margin-top:1px}
-.ri-go{font-size:11px;color:#65ffc8;font-weight:700}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0c1f;--sl:#101127;--sc:#16172f;--sch:#1c1d37;--scx:#22233f;--sb:#282947;
+  --pr:#ba9eff;--sec:#ff67ad;--ter:#65ffc8;
+  --os:#e4e3fe;--osv:#a9a9c3;--out:#73738b;
+  --grad:linear-gradient(135deg,#ba9eff 0%,#ff67ad 100%);
+  --fh:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;--err:#ff6e84;
+}
+/* ensure full viewport, no bounce scroll on iOS */
+html{height:100%;height:-webkit-fill-available}
+body{font-family:var(--fb);background:var(--bg);color:var(--os);min-height:100vh;min-height:-webkit-fill-available;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow:hidden}
+
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bo{position:absolute;border-radius:50%;filter:blur(100px);animation:bof 10s ease-in-out infinite}
+.bo1{width:450px;height:450px;background:rgba(132,85,239,.16);top:-180px;left:-180px}
+.bo2{width:380px;height:380px;background:rgba(255,103,173,.12);bottom:-130px;right:-130px;animation-delay:-4s}
+@keyframes bof{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-18px)}}
+
+/* CARD */
+.card{
+  position:relative;z-index:1;
+  background:var(--sc);border-radius:22px;
+  width:100%;max-width:440px;
+  overflow:hidden;
+  box-shadow:0 0 0 1px rgba(186,158,255,.08),0 32px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
+  animation:cin .45s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cin{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card-bar{height:3px;background:var(--grad)}
+.ci{padding:22px 22px 18px;display:flex;flex-direction:column}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.logo{display:flex;align-items:center;gap:9px}
+.lg{width:32px;height:32px;background:var(--grad);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 16px rgba(186,158,255,.4);flex-shrink:0}
+.lw{font-family:var(--fh);font-size:17px;font-weight:900;letter-spacing:-.4px}
+.tl{font-size:11px;color:var(--out);font-weight:400}
+
+/* LABELS */
+.lbl{font-family:var(--fh);font-size:9px;color:var(--osv);font-weight:700;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
+
+/* NICK */
+.nrow{display:flex;gap:7px;margin-bottom:16px}
+.ni{
+  flex:1;padding:11px 13px;
+  background:var(--scx);border:1px solid rgba(186,158,255,.07);
+  border-radius:11px;color:var(--os);
+  font-size:16px;font-family:var(--fb);
+  outline:none;transition:all .22s;-webkit-appearance:none;
+}
+.ni:focus{border-color:rgba(186,158,255,.3);box-shadow:0 0 0 3px rgba(186,158,255,.07)}
+.ni::placeholder{color:var(--out);font-size:13px}
+.rndb{
+  padding:11px 12px;
+  background:var(--scx);border:1px solid rgba(186,158,255,.07);
+  border-radius:11px;color:var(--pr);
+  font-family:var(--fh);font-size:12px;font-weight:800;
+  cursor:pointer;transition:all .2s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;min-height:44px;
+}
+.rndb:hover{border-color:rgba(186,158,255,.25);background:rgba(186,158,255,.06)}
+.rndb:active{transform:scale(.94)}
+
+/* ROOM TYPES */
+.tw{margin-bottom:16px}
+.ts{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.ts::-webkit-scrollbar{display:none}
+.tc{
+  flex-shrink:0;flex:1;min-width:60px;
+  padding:10px 6px;
+  background:var(--sch);border-radius:13px;cursor:pointer;text-align:center;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color:transparent;
+  border:1.5px solid transparent;
+  min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+}
+.tc:active{transform:scale(.94)}
+.tc.sel{transform:translateY(-3px);box-shadow:0 6px 18px rgba(186,158,255,.15)}
+.tc[data-type="normal"].sel{border-color:rgba(186,158,255,.3);background:rgba(186,158,255,.09)}
+.tc[data-type="vanish"].sel{border-color:rgba(255,103,173,.3);background:rgba(255,103,173,.09)}
+.tc[data-type="rapid"].sel{border-color:rgba(255,165,0,.3);background:rgba(255,165,0,.08)}
+.tc[data-type="confession"].sel{border-color:rgba(255,103,173,.28);background:rgba(255,103,173,.08)}
+.tc[data-type="study"].sel{border-color:rgba(101,255,200,.25);background:rgba(101,255,200,.07)}
+.tc-em{font-size:20px;display:block;transition:transform .2s}
+.tc.sel .tc-em,.tc:active .tc-em{transform:scale(1.15)}
+.tc-nm{font-family:var(--fh);font-size:9px;font-weight:800;display:block;color:var(--os)}
+.tc-ds{font-size:8px;color:var(--out);display:block;line-height:1.2}
+
+/* CREATE */
+.btncr{
+  width:100%;padding:14px;
+  background:var(--grad);color:#39008c;
+  border:none;border-radius:14px;
+  font-family:var(--fh);font-size:15px;font-weight:900;
+  cursor:pointer;margin-bottom:12px;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 6px 22px rgba(186,158,255,.35);
+  -webkit-tap-highlight-color:transparent;
+  letter-spacing:-.2px;position:relative;overflow:hidden;min-height:52px;
+}
+.btncr::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.28)}
+.btncr::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:opacity .2s}
+.btncr span{position:relative;z-index:1}
+.btncr:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(186,158,255,.5)}
+.btncr:hover::after{opacity:1}
+.btncr:active{transform:scale(.97)}
+.btncr:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* DIV */
+.div{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--sch)}
+.div span{font-size:11px;color:var(--out);white-space:nowrap}
+
+/* JOIN */
+.jrow{display:flex;gap:7px;margin-bottom:12px}
+.ci2{
+  flex:1;padding:12px 13px;
+  background:var(--scx);border:1px solid rgba(186,158,255,.07);
+  border-radius:11px;color:var(--os);
+  font-family:var(--fh);font-size:20px;font-weight:900;
+  letter-spacing:5px;text-align:center;text-transform:uppercase;
+  outline:none;transition:all .22s;-webkit-appearance:none;
+  min-height:52px;
+}
+.ci2::placeholder{letter-spacing:0;text-transform:none;color:var(--out);font-size:13px;font-weight:400;font-family:var(--fb)}
+.ci2:focus{border-color:rgba(186,158,255,.3);box-shadow:0 0 0 3px rgba(186,158,255,.07)}
+.btnj{
+  padding:12px 18px;
+  background:var(--scx);color:var(--pr);
+  border:1px solid rgba(186,158,255,.14);
+  border-radius:11px;font-family:var(--fh);font-size:13px;font-weight:800;
+  cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent;white-space:nowrap;min-height:52px;
+}
+.btnj:hover{border-color:rgba(186,158,255,.35);background:rgba(186,158,255,.06)}
+.btnj:active{transform:scale(.96)}
+.btnj:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* RECENT */
+.recs{margin-bottom:8px}
+.rl{font-family:var(--fh);font-size:9px;color:var(--out);font-weight:700;text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:6px}
+.rlist{display:flex;flex-direction:column;gap:4px}
+.ri{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--sch);border-radius:11px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;min-height:48px}
+.ri:hover{background:var(--scx);transform:translateX(3px)}
+.ri:active{transform:scale(.98)}
+.ri-l{display:flex;align-items:center;gap:9px}
+.ri-em{font-size:16px}
+.ri-code{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--pr);letter-spacing:2px}
+.ri-info{font-size:10px;color:var(--out);margin-top:1px}
+.ri-go{font-size:11px;color:var(--ter);font-weight:700}
+
+/* FEEDBACK */
+.fb{font-size:12px;margin-top:6px;display:none;padding:8px 12px;border-radius:10px;text-align:center}
+.fb.err{color:var(--err);background:rgba(255,110,132,.07);border:1px solid rgba(255,110,132,.12)}
+.fb.load{color:var(--pr);background:rgba(186,158,255,.07);border:1px solid rgba(186,158,255,.12)}
+
+/* BOTTOM */
+.btm{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;background:var(--sl);margin:8px -22px -18px;flex-wrap:wrap;gap:8px}
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{font-size:9px;color:var(--out);background:rgba(255,255,255,.04);padding:3px 9px;border-radius:9999px;font-weight:600}
+.bk{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s;font-weight:500;min-height:32px;display:flex;align-items:center}
+.bk:hover{color:var(--pr)}
 </style>
 </head>
-<body class="bg-surface text-on-surface selection:bg-primary/30 min-h-screen">
+<body>
+<div class="bg"><div class="bo bo1"></div><div class="bo bo2"></div></div>
 
-<nav class="fixed top-0 w-full z-50 bg-[#0b0c1f]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 border-b border-white/5">
-  <div class="flex items-center gap-2">
-    <div style="width:32px;height:32px;background:linear-gradient(135deg,#ba9eff,#ff67ad);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(186,158,255,.4)">
-      <span class="material-symbols-outlined text-white" style="font-size:17px;font-variation-settings:'FILL' 1">security</span>
+<div class="card">
+  <div class="card-bar"></div>
+  <div class="ci">
+    <div class="hdr">
+      <div class="logo"><div class="lg">🔐</div><div class="lw">AnonChat</div></div>
+      <div class="tl">no trace. just ghost. 👻</div>
     </div>
-    <span class="text-2xl font-bold bg-gradient-to-r from-[#ba9eff] to-[#ff67ad] bg-clip-text text-transparent font-['Space_Grotesk'] tracking-tight">AnonChat</span>
-  </div>
-  <div class="flex items-center gap-4">
-    <button class="text-[#a9a9c3] hover:text-[#ff67ad] transition-colors active:scale-95">
-      <span class="material-symbols-outlined">shutter_speed</span>
-    </button>
-    <div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20 bg-surface-container-high flex items-center justify-center">
-      <span class="material-symbols-outlined text-[#a9a9c3] text-[18px]">person</span>
-    </div>
-  </div>
-</nav>
 
-<div aria-hidden="true" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:0">
-  <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-primary/40 rounded-full blur-[1px]" style="animation:float-particle 15s infinite ease-in-out"></div>
-  <div class="absolute top-3/4 left-1/3 w-1.5 h-1.5 bg-secondary/30 rounded-full blur-[1px]" style="animation:float-particle 20s infinite ease-in-out reverse"></div>
-  <div class="absolute top-1/2 right-1/4 w-1 h-1 bg-tertiary/40 rounded-full blur-[1px]" style="animation:float-particle 18s infinite ease-in-out 2s"></div>
-  <div class="absolute top-1/3 right-1/3 w-2 h-2 bg-primary/20 rounded-full blur-[2px]" style="animation:float-particle 25s infinite linear"></div>
-  <div class="absolute bottom-1/4 right-1/2 w-1 h-1 bg-secondary/40 rounded-full blur-[1px]" style="animation:float-particle 22s infinite ease-in-out 1s"></div>
-  <div class="absolute top-2/3 left-1/2 w-1.5 h-1.5 bg-primary/30 rounded-full blur-[1px]" style="animation:float-particle 30s infinite ease-in-out"></div>
+    <label class="lbl">Your nickname (optional)</label>
+    <div class="nrow">
+      <input type="text" id="nickInp" class="ni" placeholder="Leave blank for random..." maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="rndb" onclick="genRnd()">🎲 Rnd</button>
+    </div>
+
+    <label class="lbl">Room type</label>
+    <div class="tw">
+      <div class="ts">
+        <div class="tc sel" data-type="normal" onclick="pickType('normal')"><span class="tc-em">💬</span><span class="tc-nm">Normal</span><span class="tc-ds">Standard</span></div>
+        <div class="tc" data-type="vanish" onclick="pickType('vanish')"><span class="tc-em">🔥</span><span class="tc-nm">Vanish</span><span class="tc-ds">30s delete</span></div>
+        <div class="tc" data-type="rapid" onclick="pickType('rapid')"><span class="tc-em">⚡</span><span class="tc-nm">Rapid</span><span class="tc-ds">100 chars</span></div>
+        <div class="tc" data-type="confession" onclick="pickType('confession')"><span class="tc-em">🎭</span><span class="tc-nm">Confess</span><span class="tc-ds">No names</span></div>
+        <div class="tc" data-type="study" onclick="pickType('study')"><span class="tc-em">📚</span><span class="tc-nm">Study</span><span class="tc-ds">+Prompts</span></div>
+      </div>
+    </div>
+
+    <button class="btncr" id="createBtn" onclick="createRoom()"><span>✦ Start a Room</span></button>
+
+    <div class="div"><span>or join with a code</span></div>
+
+    <div class="jrow">
+      <input type="text" id="codeInp" class="ci2" placeholder="Enter code" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text"/>
+      <button class="btnj" id="joinBtn" onclick="joinRoom()">Join →</button>
+    </div>
+
+    <div id="recsWrap" class="recs" style="display:none">
+      <span class="rl">Recent sessions</span>
+      <div class="rlist" id="recsList"></div>
+    </div>
+
+    <div class="fb err" id="errMsg"></div>
+    <div class="fb load" id="loadMsg"></div>
+
+    <div class="btm">
+      <div class="pills"><div class="pill">🔐 E2E Encrypted</div><div class="pill">👤 Anonymous</div><div class="pill">🗑️ Zero Logs</div></div>
+      <a href="/" class="bk">← Home</a>
+    </div>
+  </div>
 </div>
-
-<main class="relative pt-24 pb-32 px-6 flex flex-col items-center justify-center min-h-screen" style="z-index:1">
-  <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full -z-10"></div>
-  <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[120px] rounded-full -z-10"></div>
-
-  <div class="w-full max-w-2xl bg-surface-container/40 backdrop-blur-2xl rounded-lg p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.6)] border border-outline-variant/10 relative overflow-hidden">
-
-    <div class="text-center mb-10">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-container-high mb-4 shadow-lg shadow-black/40">
-        <span class="material-symbols-outlined text-primary text-4xl">fingerprint</span>
-      </div>
-      <h1 class="font-['Space_Grotesk'] text-4xl font-bold tracking-tight text-on-surface mb-2">AnonChat</h1>
-      <p class="text-on-surface-variant font-medium tracking-wide">no name. no face. no trace. just ghost 👻</p>
-    </div>
-
-    <div class="space-y-8">
-      <div class="space-y-3">
-        <div class="flex justify-between items-end">
-          <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Your nickname (optional)</label>
-          <a id="diceBtn" class="text-secondary hover:text-primary transition-all duration-300 flex items-center justify-center cursor-pointer" title="Generate a random nickname">
-            <span class="material-symbols-outlined text-xl">casino</span>
-          </a>
-        </div>
-        <input id="nickInp" type="text" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"
-          class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md py-4 px-5 text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-          placeholder="Leave blank for random name..."/>
-      </div>
-
-      <div class="space-y-3">
-        <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Select Room Protocol</label>
-        <div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x py-2" id="typeStrip">
-          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-primary/10 border-2 border-primary text-left snap-start shadow-[0_0_20px_rgba(186,158,255,0.15)] transition-all relative group" data-type="normal" onclick="pickType('normal')">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-xl pointer-events-none"></div>
-            <div class="relative z-10">
-              <span class="material-symbols-outlined text-primary mb-4 block text-3xl">forum</span>
-              <div class="font-bold text-on-surface text-base mb-1">Normal</div>
-              <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80">Standard persistent anonymous chat.</div>
-            </div>
-          </button>
-          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-secondary/50 hover:bg-secondary/5 transition-all group" data-type="vanish" onclick="pickType('vanish')">
-            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary mb-4 block text-3xl transition-colors">timer</span>
-            <div class="font-bold text-on-surface text-base mb-1">Vanish</div>
-            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">Messages self-delete after 30s.</div>
-          </button>
-          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-primary/50 hover:bg-primary/5 transition-all group" data-type="rapid" onclick="pickType('rapid')">
-            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-4 block text-3xl transition-colors">bolt</span>
-            <div class="font-bold text-on-surface text-base mb-1">Rapid</div>
-            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">100 char limit. Fast bursts.</div>
-          </button>
-          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-secondary/50 hover:bg-secondary/5 transition-all group" data-type="confession" onclick="pickType('confession')">
-            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary mb-4 block text-3xl transition-colors">theater_comedy</span>
-            <div class="font-bold text-on-surface text-base mb-1">Confess</div>
-            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">No usernames shown.</div>
-          </button>
-          <button class="tc flex-shrink-0 w-44 p-5 rounded-xl bg-surface-container-low border-2 border-transparent text-left snap-start hover:border-primary/50 hover:bg-primary/5 transition-all group" data-type="study" onclick="pickType('study')">
-            <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary mb-4 block text-3xl transition-colors">school</span>
-            <div class="font-bold text-on-surface text-base mb-1">Study</div>
-            <div class="text-[11px] text-on-surface-variant leading-relaxed opacity-80 group-hover:opacity-100">Study sessions + prompts.</div>
-          </button>
-        </div>
-      </div>
-
-      <button id="createBtn" onclick="createRoom()"
-        class="w-full h-16 rounded-md bg-gradient-to-r from-primary to-secondary text-on-primary font-bold text-lg font-['Space_Grotesk'] shadow-[0_10px_30px_rgba(186,158,255,0.3)] hover:shadow-[0_15px_40px_rgba(186,158,255,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed">
-        <span>Create New Room</span>
-        <span class="material-symbols-outlined">add_circle</span>
-      </button>
-
-      <div class="flex items-center gap-4 py-2">
-        <div class="flex-1 h-px bg-gradient-to-r from-transparent to-outline-variant/30"></div>
-        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline">or join with a code</span>
-        <div class="flex-1 h-px bg-gradient-to-l from-transparent to-outline-variant/30"></div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="md:col-span-2">
-          <input id="codeInp" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false"
-            class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md py-4 px-5 text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary/50 font-['Space_Grotesk'] text-xl font-black tracking-[6px] uppercase text-center transition-all"
-            placeholder="XXXXXX"/>
-        </div>
-        <button id="joinBtn" onclick="joinRoom()"
-          class="w-full h-full min-h-[56px] rounded-md bg-surface-container-highest border border-outline-variant/30 text-on-surface font-semibold hover:bg-surface-bright transition-colors flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed">
-          <span>Join Room</span>
-          <span class="material-symbols-outlined text-secondary">arrow_forward</span>
-        </button>
-      </div>
-
-      <div id="recentWrap" class="hidden">
-        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant block mb-3">Recent sessions</span>
-        <div class="flex flex-col gap-2" id="recentList"></div>
-      </div>
-
-      <div class="fb err" id="errMsg"></div>
-      <div class="fb load" id="loadMsg"></div>
-    </div>
-
-    <div class="mt-12 flex flex-wrap justify-center gap-3">
-      <span class="px-3 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>Anonymous
-      </span>
-      <span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[12px]">lock</span>Encrypted
-      </span>
-      <span class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-[12px]">history_toggle_off</span>Zero Logs
-      </span>
-    </div>
-
-    <div class="mt-8 text-center">
-      <a href="/" class="inline-flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors text-sm font-medium">
-        <span class="material-symbols-outlined text-lg">arrow_back</span>Back to home
-      </a>
-    </div>
-  </div>
-</main>
-
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#000000]/90 backdrop-blur-2xl rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.6)]">
-  <a href="/" class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all active:scale-90">
-    <span class="material-symbols-outlined">forum</span>
-    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Rooms</span>
-  </a>
-  <button class="flex flex-col items-center justify-center bg-[#8455ef]/20 text-[#ba9eff] rounded-2xl px-6 py-2 shadow-[0_0_15px_rgba(186,158,255,0.3)]">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">add_circle</span>
-    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Create</span>
-  </button>
-  <button class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all">
-    <span class="material-symbols-outlined">notifications</span>
-    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Activity</span>
-  </button>
-  <button class="flex flex-col items-center justify-center text-[#a9a9c3] px-6 py-2 hover:text-[#ff67ad] transition-all">
-    <span class="material-symbols-outlined">fingerprint</span>
-    <span class="text-[10px] font-medium uppercase tracking-widest mt-1">Identity</span>
-  </button>
-</nav>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -202,54 +233,30 @@ const TEM={normal:'💬',vanish:'🔥',rapid:'⚡',confession:'🎭',study:'📚
 function rnd(){return ADJS[Math.random()*ADJS.length|0]+NOUNS[Math.random()*NOUNS.length|0]+(10+Math.random()*90|0);}
 function getU(){const v=document.getElementById('nickInp').value.trim().replace(/[^a-zA-Z0-9_]/g,'').substring(0,20);return v||rnd();}
 function genRnd(){document.getElementById('nickInp').value=rnd();}
-
-document.getElementById('diceBtn').onclick=function(){
-  const icon=this.querySelector('.material-symbols-outlined');
-  icon.classList.add('animate-roll');
-  setTimeout(()=>icon.classList.remove('animate-roll'),400);
-  genRnd();
-};
-
-function pickType(t){
-  selType=t;
-  document.querySelectorAll('.tc').forEach(c=>{
-    c.classList.remove('bg-primary/10','bg-secondary/10','bg-tertiary/10');
-    c.style.background='';c.style.borderColor='';c.style.boxShadow='';
-    c.className=c.className.replace(/border-2 border-\S+/g,'border-2 border-transparent');
-  });
-  const active=document.querySelector(`.tc[data-type="${t}"]`);
-  if(active){
-    const colorMap={normal:'rgba(186,158,255,.1)',vanish:'rgba(255,103,173,.08)',rapid:'rgba(186,158,255,.08)',confession:'rgba(255,103,173,.07)',study:'rgba(101,255,200,.07)'};
-    const borderMap={normal:'#ba9eff',vanish:'#ff67ad',rapid:'#ba9eff',confession:'#ff67ad',study:'#65ffc8'};
-    active.style.background=colorMap[t]||'rgba(186,158,255,.1)';
-    active.style.borderColor=borderMap[t]||'#ba9eff';
-    active.style.boxShadow=`0 0 20px ${borderMap[t]}22`;
-  }
-}
+function pickType(t){selType=t;document.querySelectorAll('.tc').forEach(c=>c.classList.toggle('sel',c.dataset.type===t));}
 
 function loadRecent(){
   try{
     const arr=JSON.parse(localStorage.getItem('ac_recent')||'[]').filter(r=>Date.now()-r.t<7200000);
     if(!arr.length)return;
-    document.getElementById('recentWrap').classList.remove('hidden');
-    const list=document.getElementById('recentList');list.innerHTML='';
+    document.getElementById('recsWrap').style.display='block';
+    const list=document.getElementById('recsList');list.innerHTML='';
     arr.slice(0,2).forEach(r=>{
       const el=document.createElement('div');el.className='ri';
       const mins=Math.floor((Date.now()-r.t)/60000);
-      el.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span style="font-size:16px">${r.em||'💬'}</span><div><div class="ri-code">${r.code}</div><div class="ri-info">${r.type} · ${mins<1?'just now':mins+'m ago'}</div></div></div><span class="ri-go">Rejoin →</span>`;
+      el.innerHTML=`<div class="ri-l"><span class="ri-em">${r.em||'💬'}</span><div><div class="ri-code">${r.code}</div><div class="ri-info">${r.type} · ${mins<1?'just now':mins+'m ago'}</div></div></div><span class="ri-go">Rejoin →</span>`;
       el.onclick=()=>{document.getElementById('codeInp').value=r.code;joinRoom();};
       list.appendChild(el);
     });
   }catch(e){}
 }
-
 function saveRecent(code,type){
   try{const arr=JSON.parse(localStorage.getItem('ac_recent')||'[]').filter(r=>r.code!==code);arr.unshift({code,type,em:TEM[type]||'💬',t:Date.now()});localStorage.setItem('ac_recent',JSON.stringify(arr.slice(0,5)));}catch(e){}
 }
 loadRecent();
 
-function lock(){busy=true;['createBtn','joinBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=true;});}
-function unlock(){busy=false;['createBtn','joinBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=false;});}
+function lock(){busy=true;['createBtn','joinBtn'].forEach(id=>document.getElementById(id).disabled=true);}
+function unlock(){busy=false;['createBtn','joinBtn'].forEach(id=>document.getElementById(id).disabled=false);}
 function showErr(m){unlock();const e=document.getElementById('errMsg');e.textContent=m;e.style.display='block';document.getElementById('loadMsg').style.display='none';}
 function showLoad(m){document.getElementById('errMsg').style.display='none';const l=document.getElementById('loadMsg');l.textContent=m;l.style.display='block';}
 function clearFb(){['errMsg','loadMsg'].forEach(id=>document.getElementById(id).style.display='none');}
@@ -258,14 +265,13 @@ function redirect(code,isCreator,type){
   sessionStorage.setItem('ac_user',getU());sessionStorage.setItem('ac_room',code);
   sessionStorage.setItem('ac_creator',isCreator?'1':'0');sessionStorage.setItem('ac_type',type||'normal');
   saveRecent(code,type||'normal');
-  const card=document.querySelector('.max-w-2xl');
-  card.style.transition='all .3s ease';card.style.opacity='0';card.style.transform='translateY(-12px) scale(.97)';
-  setTimeout(()=>location.href='/room/'+code,280);
+  const card=document.querySelector('.card');
+  card.style.transition='all .28s ease';card.style.opacity='0';card.style.transform='translateY(-12px) scale(.97)';
+  setTimeout(()=>location.href='/room/'+code,260);
 }
 
 function createRoom(){if(busy)return;lock();clearFb();showLoad('⏳ Establishing secure session...');socket.emit('generate-code');}
 socket.on('code-generated',code=>redirect(code,true,selType));
-
 function joinRoom(){
   if(busy)return;
   const code=document.getElementById('codeInp').value.trim().toUpperCase();
