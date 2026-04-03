@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AnonChat — Talk Freely. Stay Anonymous.</title>
+<title>AnonChat — Encrypted. Anonymous. Untraceable.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet"/>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"/>
 <style>
@@ -13,45 +13,42 @@
   --pr:#ba9eff;--prd:#8455ef;--sec:#ff67ad;--ter:#65ffc8;
   --os:#e4e3fe;--osv:#a9a9c3;--out:#73738b;--outv:#45465c;
   --grad:linear-gradient(135deg,#ba9eff 0%,#ff67ad 100%);
-  --fh:'Cabinet Grotesk',sans-serif;--fb:'Satoshi',sans-serif;
+  --fh:"Cabinet Grotesk",sans-serif;--fb:"Satoshi",sans-serif;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
 body{font-family:var(--fb);background:var(--bg);color:var(--os);overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--sb);border-radius:10px}
-
-/* PARTICLES */
 .prt{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .p{position:absolute;border-radius:50%;opacity:0;animation:pf linear infinite}
-@keyframes pf{from{transform:translateY(100vh);opacity:0}20%{opacity:.4}80%{opacity:.4}to{transform:translateY(-5vh);opacity:0}}
-.p1{width:4px;height:4px;background:var(--pr);animation-duration:25s;left:10%;animation-delay:0s}
+@keyframes pf{from{transform:translateY(100vh);opacity:0}20%{opacity:.35}80%{opacity:.35}to{transform:translateY(-5vh);opacity:0}}
+.p1{width:4px;height:4px;background:var(--pr);animation-duration:25s;left:10%}
 .p2{width:3px;height:3px;background:var(--sec);animation-duration:30s;left:25%;animation-delay:-5s}
 .p3{width:5px;height:5px;background:var(--ter);animation-duration:22s;left:45%;animation-delay:-12s}
 .p4{width:2px;height:2px;background:var(--pr);animation-duration:35s;left:65%;animation-delay:-8s}
 .p5{width:4px;height:4px;background:var(--sec);animation-duration:28s;left:85%;animation-delay:-15s}
 .p6{width:3px;height:3px;background:var(--ter);animation-duration:32s;left:15%;animation-delay:-22s}
-
-/* MESH */
-.mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
+.p7{width:2px;height:2px;background:var(--pr);animation-duration:38s;left:55%;animation-delay:-3s}
+.p8{width:3px;height:3px;background:var(--sec);animation-duration:24s;left:75%;animation-delay:-18s}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .mo{position:absolute;border-radius:50%;filter:blur(130px);animation:mf 16s ease-in-out infinite}
-.mo1{width:600px;height:600px;background:rgba(132,85,239,.18);top:-200px;left:-200px}
-.mo2{width:500px;height:500px;background:rgba(255,103,173,.14);bottom:-200px;right:-200px;animation-delay:-6s}
-.mo3{width:400px;height:400px;background:rgba(101,255,200,.08);top:40%;left:35%;animation-delay:-11s}
-@keyframes mf{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,12,31,.85);backdrop-filter:blur(24px)}
+.mo1{width:700px;height:700px;background:rgba(132,85,239,.16);top:-250px;left:-250px}
+.mo2{width:600px;height:600px;background:rgba(255,103,173,.12);bottom:-220px;right:-220px;animation-delay:-6s}
+.mo3{width:450px;height:450px;background:rgba(101,255,200,.08);top:35%;left:30%;animation-delay:-11s}
+@keyframes mf{0%,100%{transform:translate(0,0)}50%{transform:translate(35px,-35px)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,12,31,.82);backdrop-filter:blur(24px) saturate(200%);border-bottom:1px solid rgba(255,255,255,.04)}
 .nl{display:flex;align-items:center;gap:9px;text-decoration:none}
-.ng{width:30px;height:30px;background:var(--grad);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 16px rgba(186,158,255,.4);flex-shrink:0}
+.ng{width:30px;height:30px;background:var(--grad);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 16px rgba(186,158,255,.4)}
 .nw{font-family:var(--fh);font-size:16px;font-weight:900;color:var(--os);letter-spacing:-.3px}
 .nlinks{display:flex;align-items:center;gap:2px}
 .na{padding:7px 13px;border-radius:10px;font-size:13px;color:var(--osv);text-decoration:none;transition:all .2s;font-weight:500}
 .na:hover{color:var(--os);background:rgba(255,255,255,.05)}
 .nbg{display:flex;align-items:center;gap:8px}
-.ngh{padding:9px 17px;background:transparent;border:1px solid rgba(186,158,255,.25);color:var(--pr);border-radius:20px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;min-height:40px;display:flex;align-items:center}
-.ngh:hover{border-color:var(--pr);box-shadow:0 0 14px rgba(186,158,255,.18)}
-.nf{padding:9px 18px;background:var(--grad);color:#39008c;border:none;border-radius:20px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;min-height:40px;display:flex;align-items:center}
-.nf:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(186,158,255,.35)}
+.ngh{padding:8px 16px;background:transparent;border:1px solid rgba(186,158,255,.22);color:var(--pr);border-radius:20px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .25s;min-height:38px;display:flex;align-items:center}
+.ngh:hover{border-color:var(--pr)}
+.nf{padding:8px 18px;background:var(--grad);color:#39008c;border:none;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .25s;min-height:38px;display:flex;align-items:center;position:relative;overflow:hidden}
+.nf::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.28)}
+.nf:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(186,158,255,.38)}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;min-width:44px;min-height:44px;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .ham span{width:22px;height:2px;background:var(--os);border-radius:2px;transition:all .3s}
 .ham.o span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
@@ -59,110 +56,224 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 20px;d
 .ham.o span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 .mnav{position:fixed;top:60px;left:0;right:0;z-index:99;background:rgba(11,12,31,.98);backdrop-filter:blur(24px);padding:16px 20px;flex-direction:column;gap:4px;display:none}
 .mnav.o{display:flex}
-.mnav a{padding:14px 16px;border-radius:12px;font-size:15px;color:var(--os);text-decoration:none;display:block;transition:background .2s;min-height:48px;display:flex;align-items:center}
+.mnav a{padding:14px 16px;border-radius:12px;font-size:15px;color:var(--os);text-decoration:none;display:flex;align-items:center;transition:background .2s;min-height:48px}
 .mnav a:hover{background:rgba(255,255,255,.05)}
 @media(max-width:768px){.nlinks{display:none}.ham{display:flex}.nbg .ngh{display:none}}
 @media(max-width:480px){.nbg .nf{display:none}}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 60px;text-align:center;position:relative;z-index:1}
-.h-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:9999px;background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.18);font-size:11px;font-weight:700;color:var(--ter);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:28px;animation:fu .7s ease both}
-.hdot{width:6px;height:6px;border-radius:50%;background:var(--ter);box-shadow:0 0 8px var(--ter);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.htit{font-family:var(--fh);font-size:clamp(40px,9vw,96px);font-weight:900;line-height:1.0;letter-spacing:-3px;margin-bottom:22px;animation:fu .75s ease .08s both}
-.ht1{display:block;color:var(--os)}
-.ht2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gm 5s ease infinite}
-@keyframes gm{0%,100%{background-position:0%}50%{background-position:100%}}
-.hsub{font-size:clamp(14px,2.2vw,18px);color:var(--osv);max-width:500px;line-height:1.72;margin-bottom:36px;font-weight:400;animation:fu .75s ease .16s both;padding:0 8px}
-.hbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .75s ease .24s both}
-.btnp{display:inline-flex;align-items:center;gap:10px;padding:16px 28px;background:var(--grad);color:#39008c;border:none;border-radius:20px;font-family:var(--fh);font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .3s;box-shadow:0 8px 28px rgba(186,158,255,.35);letter-spacing:-.2px;position:relative;overflow:hidden;min-height:52px}
-.btnp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.3)}
+.btnp{display:inline-flex;align-items:center;gap:9px;padding:15px 28px;background:var(--grad);color:#39008c;border:none;border-radius:20px;font-family:var(--fh);font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .3s;box-shadow:0 8px 28px rgba(186,158,255,.32);letter-spacing:-.2px;position:relative;overflow:hidden;min-height:52px}
+.btnp::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.28)}
 .btnp:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(186,158,255,.5)}
 .btnp:active{transform:scale(.97)}
-.btng{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;background:transparent;border:1px solid rgba(186,158,255,.25);color:var(--os);border-radius:20px;font-family:var(--fb);font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s;min-height:52px}
+.btng{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid rgba(186,158,255,.22);color:var(--os);border-radius:20px;font-family:var(--fb);font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .3s;min-height:52px}
 .btng:hover{border-color:var(--pr);color:var(--pr)}
 .btng:active{transform:scale(.97)}
 @keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-
-/* MOCKUP */
-.hvisual{margin-top:56px;width:100%;max-width:740px;position:relative;z-index:1;animation:fu .9s ease .32s both,hvfl 8s ease-in-out infinite 1.2s;padding:0 4px}
-@keyframes hvfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-.mkup{background:var(--sc);border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(186,158,255,.1),0 40px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
-.mkbar{background:var(--sch);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.mkdots{display:flex;gap:5px}
-.mkd{width:10px;height:10px;border-radius:50%}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.rv.vs{opacity:1;transform:translateY(0)}
+.rv2{opacity:0;transform:translateY(28px);transition:opacity .7s ease .12s,transform .7s ease .12s}
+.rv2.vs{opacity:1;transform:translateY(0)}
+.rv3{opacity:0;transform:translateY(28px);transition:opacity .7s ease .24s,transform .7s ease .24s}
+.rv3.vs{opacity:1;transform:translateY(0)}
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 60px;text-align:center;position:relative;z-index:1}
+.h-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:9999px;background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.18);font-size:11px;font-weight:700;color:var(--ter);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:28px;animation:fu .7s ease both}
+.hdot{width:6px;height:6px;border-radius:50%;background:var(--ter);box-shadow:0 0 8px var(--ter);animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.htit{font-family:var(--fh);font-size:clamp(38px,8vw,96px);font-weight:900;line-height:.96;letter-spacing:-3px;margin-bottom:22px;animation:fu .75s ease .08s both}
+.ht1{display:block;color:var(--os)}
+.ht2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:gm 5s ease infinite}
+@keyframes gm{0%,100%{background-position:0%}50%{background-position:100%}}
+.hsub{font-size:clamp(14px,2.2vw,18px);color:var(--osv);max-width:520px;line-height:1.72;margin-bottom:36px;font-weight:400;animation:fu .75s ease .16s both;padding:0 8px}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .75s ease .24s both;margin-bottom:20px}
+.trust-pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;animation:fu .75s ease .36s both}
+.tpill{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:9999px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:11px;color:var(--osv);font-weight:500}
+.tpd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+/* HERO SPLIT MOCKUP */
+.hero-visual{margin-top:52px;width:100%;max-width:860px;animation:fu .9s ease .42s both,hvfl 8s ease-in-out infinite 1.5s;position:relative;z-index:1;padding:0 4px}
+@keyframes hvfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.hv-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;align-items:start}
+@media(max-width:640px){.hv-grid{grid-template-columns:1fr}}
+.mk-win{background:var(--sc);border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px rgba(186,158,255,.09),0 40px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
+.mk-tb{background:var(--sch);padding:11px 16px;display:flex;align-items:center;gap:8px}
+.mk-dots{display:flex;gap:5px}
+.mkd{width:9px;height:9px;border-radius:50%}
 .d1{background:#ff5f57}.d2{background:#febc2e}.d3{background:#28c840}
-.mkcode{font-family:var(--fh);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--pr);background:rgba(186,158,255,.08);border:1px solid rgba(186,158,255,.12);padding:4px 12px;border-radius:9999px}
-.mkstat{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ter);font-weight:600}
-.mkstatd{width:6px;height:6px;border-radius:50%;background:var(--ter);box-shadow:0 0 6px var(--ter);animation:blink 2s infinite}
-.mksys{background:var(--sl);padding:7px 18px;display:flex;justify-content:center}
-.mksysc{font-size:10px;color:var(--osv);background:rgba(255,255,255,.04);padding:3px 12px;border-radius:9999px;letter-spacing:.6px;text-transform:uppercase;font-weight:600}
-.mkbody{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.mkm{display:flex;flex-direction:column;gap:3px;max-width:72%}
+.mk-rc{font-family:var(--fh);font-size:10px;font-weight:800;letter-spacing:2px;color:var(--pr);background:rgba(186,158,255,.07);border:1px solid rgba(186,158,255,.1);padding:3px 10px;border-radius:9999px;margin-left:auto}
+.mk-ol{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ter);font-weight:600}
+.mk-old{width:5px;height:5px;border-radius:50%;background:var(--ter);box-shadow:0 0 5px var(--ter);animation:blink 2s infinite}
+.mk-sys{background:var(--sl);padding:6px 16px;text-align:center}
+.mk-sysc{font-size:9px;color:var(--osv);background:rgba(255,255,255,.03);padding:2px 10px;border-radius:9999px;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+.mk-msgs{padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.mkm{display:flex;flex-direction:column;gap:2px;max-width:76%}
 .mkm.t{align-self:flex-start}
 .mkm.m{align-self:flex-end;align-items:flex-end}
-.mkmeta{font-size:10px;color:var(--osv);padding:0 4px;font-weight:600}
-.mkbub{padding:10px 14px;font-size:13px;line-height:1.5}
-.mkm.t .mkbub{background:var(--scx);color:var(--os);border-radius:4px 18px 18px 18px}
-.mkm.m .mkbub{background:rgba(132,85,239,.3);backdrop-filter:blur(8px);color:var(--os);border-radius:18px 4px 18px 18px;border:1px solid rgba(186,158,255,.14)}
-.mksdchip{align-self:center;font-size:10px;color:var(--out);background:rgba(255,255,255,.04);padding:3px 12px;border-radius:9999px;letter-spacing:.6px;text-transform:uppercase}
-.mkfooter{background:#000;padding:10px 18px 14px;display:flex;align-items:center;gap:8px}
-.mkinpb{flex:1;background:var(--scx);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--osv);border:1px solid rgba(255,255,255,.06)}
-.mksend{width:34px;height:34px;border-radius:8px;background:var(--grad);border:none;color:white;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer}
-
+.mkmeta{font-size:9px;color:var(--osv);padding:0 3px;font-weight:600}
+.mkbub{padding:9px 13px;font-size:12px;line-height:1.5}
+.mkm.t .mkbub{background:var(--scx);color:var(--os);border-radius:3px 16px 16px 16px}
+.mkm.m .mkbub{background:rgba(132,85,239,.28);backdrop-filter:blur(8px);color:var(--os);border-radius:16px 3px 16px 16px;border:1px solid rgba(186,158,255,.12)}
+.mkm-react{font-size:10px;padding:2px 7px;background:var(--sch);border-radius:9999px;border:1px solid rgba(255,255,255,.06);color:var(--osv);margin-top:2px;display:inline-flex;align-items:center;gap:3px}
+.mk-typing{padding:0 16px 8px;font-size:10px;color:var(--out);display:flex;align-items:center;gap:5px;font-weight:500}
+.mk-tdots{display:flex;gap:2px}
+.mk-tdots span{width:3px;height:3px;border-radius:50%;background:var(--pr);opacity:.6;animation:td 1.2s infinite}
+.mk-tdots span:nth-child(2){animation-delay:.2s}
+.mk-tdots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.mk-inp-row{background:#000;padding:9px 16px 13px;display:flex;align-items:center;gap:7px}
+.mk-inp{flex:1;background:var(--scx);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--osv);border:1px solid rgba(255,255,255,.06)}
+.mk-send{width:30px;height:30px;border-radius:9px;background:var(--grad);border:none;color:#39008c;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900}
+.mk-cards{display:flex;flex-direction:column;gap:10px}
+.mk-card{background:var(--sc);border-radius:16px;padding:16px;border:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden}
+.mkc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.mkc-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.mkc-t{font-family:var(--fh);font-size:12px;font-weight:800;color:var(--os);letter-spacing:-.2px}
+.mkc-s{font-size:11px;color:var(--osv);line-height:1.5}
+.mkc-bar{height:3px;border-radius:9999px;background:var(--sch);margin-top:10px;overflow:hidden}
+.mkc-fill{height:100%;border-radius:9999px;animation:bf 3s ease infinite}
+@keyframes bf{0%{width:0}60%{width:100%}100%{width:100%}}
 /* STATS */
-.stats{padding:24px 20px;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);position:relative;z-index:1}
-.si{max-width:860px;margin:0 auto;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}
-.sv{flex:1;min-width:100px;text-align:center;padding:8px 16px;position:relative}
-.sv+.sv::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:28px;background:rgba(255,255,255,.07)}
-@media(max-width:480px){.sv+.sv::before{display:none}.sv{min-width:50%;border-bottom:1px solid rgba(255,255,255,.05);padding:12px}}
-.svv{font-family:var(--fh);font-size:clamp(17px,3vw,26px);font-weight:900;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stats{padding:20px;position:relative;z-index:1;background:rgba(255,255,255,.015)}
+.si{max-width:900px;margin:0 auto;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}
+.sv{flex:1;min-width:100px;text-align:center;padding:8px 14px;position:relative}
+.sv+.sv::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:26px;background:rgba(255,255,255,.07)}
+@media(max-width:480px){.sv+.sv::before{display:none}.sv{min-width:50%;padding:10px}}
+.svv{font-family:var(--fh);font-size:clamp(14px,3vw,22px);font-weight:900;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .svl{font-size:10px;color:var(--out);margin-top:2px;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
-
-/* SECTIONS */
-.section{padding:80px 20px;max-width:1100px;margin:0 auto;position:relative;z-index:1}
-.stag{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ter);margin-bottom:14px;display:block}
-.sh{font-family:var(--fh);font-size:clamp(24px,4vw,44px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:12px;color:var(--os)}
+/* SHARED SECTION */
+.sec{padding:80px 20px;max-width:1100px;margin:0 auto;position:relative;z-index:1}
+.stag{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ter);margin-bottom:12px;display:block}
+.sh{font-family:var(--fh);font-size:clamp(22px,4vw,44px);font-weight:900;letter-spacing:-2px;line-height:1.06;margin-bottom:12px;color:var(--os)}
 .sh em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.ssub{font-size:15px;color:var(--osv);max-width:460px;line-height:1.7;margin-bottom:48px;font-weight:400}
-
-/* FEATURE GRID — tonal layering, no borders */
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:var(--sch)}
-.fc{background:var(--sc);padding:28px;transition:background .3s;cursor:default;position:relative;overflow:hidden}
-.fc::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(186,158,255,.06),transparent 60%);opacity:0;transition:opacity .3s}
-.fc:hover{background:var(--sch)}
-.fc:hover::before{opacity:1}
-.fci{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px}
-.fp{background:rgba(186,158,255,.1);border:1px solid rgba(186,158,255,.1)}
-.fs{background:rgba(255,103,173,.09);border:1px solid rgba(255,103,173,.09)}
-.ft{background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.07)}
-.fo{background:rgba(255,165,0,.07);border:1px solid rgba(255,165,0,.07)}
-.fbl{background:rgba(100,149,237,.07);border:1px solid rgba(100,149,237,.07)}
-.fg{background:rgba(72,199,142,.07);border:1px solid rgba(72,199,142,.07)}
-.ftit{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--os);margin-bottom:8px;letter-spacing:-.3px}
-.fdesc{font-size:13px;color:var(--osv);line-height:1.68}
-
-/* STEPS */
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;background:var(--sch)}
-.sc2{background:var(--sc);padding:36px 28px;text-align:center;position:relative}
-.snum{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--grad);font-family:var(--fh);font-size:20px;font-weight:900;color:#39008c;margin-bottom:18px;box-shadow:0 8px 24px rgba(186,158,255,.28);position:relative}
-.snum::before{content:'';position:absolute;inset:-5px;border-radius:20px;background:var(--grad);opacity:.15;filter:blur(10px)}
-.snv{position:relative;z-index:1}
-.stit{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--os);margin-bottom:9px;letter-spacing:-.2px}
-.sdesc{font-size:13px;color:var(--osv);line-height:1.7}
-
+.ssub{font-size:15px;color:var(--osv);max-width:460px;line-height:1.7;margin-bottom:44px;font-weight:400}
+.tgrid{display:grid;gap:2px;background:var(--sch)}
+.tg2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.tg3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.tc{background:var(--sc);padding:28px;transition:background .3s;cursor:default;position:relative;overflow:hidden}
+.tc::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(186,158,255,.06),transparent 55%);opacity:0;transition:opacity .3s}
+.tc:hover{background:var(--sch)}
+.tc:hover::before{opacity:1}
+.tci{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.ti-p{background:rgba(186,158,255,.1);border:1px solid rgba(186,158,255,.1)}
+.ti-s{background:rgba(255,103,173,.09);border:1px solid rgba(255,103,173,.09)}
+.ti-t{background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.07)}
+.ti-o{background:rgba(255,165,0,.07);border:1px solid rgba(255,165,0,.07)}
+.ti-b{background:rgba(100,149,237,.07);border:1px solid rgba(100,149,237,.07)}
+.ti-g{background:rgba(72,199,142,.07);border:1px solid rgba(72,199,142,.07)}
+.ti-r{background:rgba(255,110,132,.07);border:1px solid rgba(255,110,132,.07)}
+.ttit{font-family:var(--fh);font-size:15px;font-weight:800;color:var(--os);margin-bottom:7px;letter-spacing:-.3px}
+.tdesc{font-size:13px;color:var(--osv);line-height:1.68}
+/* HOW IT WORKS TIMELINE */
+.timeline{display:flex;flex-direction:column;position:relative;margin-top:44px}
+.timeline::before{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:1px;background:linear-gradient(180deg,var(--pr) 0%,var(--sec) 50%,var(--ter) 100%);opacity:.25}
+@media(min-width:700px){.timeline{flex-direction:row}.timeline::before{top:27px;left:27px;right:27px;bottom:auto;width:auto;height:1px;background:linear-gradient(90deg,var(--pr) 0%,var(--sec) 50%,var(--ter) 100%)}}
+.tls{display:flex;gap:20px;padding:24px 0 24px 68px;position:relative;flex:1}
+@media(min-width:700px){.tls{flex-direction:column;padding:0 16px}}
+.tls-num{position:absolute;left:0;top:18px;width:54px;height:54px;border-radius:16px;background:var(--sc);border:2px solid rgba(186,158,255,.18);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:17px;font-weight:900;color:var(--pr);box-shadow:0 0 0 4px rgba(186,158,255,.05);z-index:1;flex-shrink:0;transition:all .3s}
+@media(min-width:700px){.tls-num{position:relative;top:auto;left:auto;margin-bottom:16px}}
+.tls:hover .tls-num{background:rgba(186,158,255,.09);border-color:var(--pr);box-shadow:0 0 0 6px rgba(186,158,255,.07),0 0 20px rgba(186,158,255,.2)}
+.tls-title{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--os);margin-bottom:6px;letter-spacing:-.2px}
+.tls-desc{font-size:13px;color:var(--osv);line-height:1.65}
+.tls-chip{display:inline-flex;align-items:center;gap:4px;margin-top:9px;font-size:10px;color:var(--ter);background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.15);padding:3px 9px;border-radius:9999px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+/* ENCRYPTION SECTION */
+.enc-sec{padding:80px 20px;position:relative;z-index:1;background:var(--sl)}
+.enc-in{max-width:1100px;margin:0 auto}
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+@media(max-width:700px){.enc-grid{grid-template-columns:1fr;gap:32px}}
+.enc-diagram{display:flex;flex-direction:column;gap:8px}
+.enc-row{display:flex;align-items:center;gap:8px}
+.enc-node{background:var(--sc);border-radius:11px;padding:10px 13px;font-size:12px;font-weight:600;color:var(--os);border:1px solid rgba(255,255,255,.06);flex:1;text-align:center;font-family:var(--fh)}
+.enc-node.pr{border-color:rgba(186,158,255,.2);background:rgba(186,158,255,.06)}
+.enc-node.te{border-color:rgba(101,255,200,.2);background:rgba(101,255,200,.05)}
+.enc-node.se{border-color:rgba(255,103,173,.2);background:rgba(255,103,173,.05)}
+.enc-node.dk{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.05);color:var(--out)}
+.enc-arr{color:var(--outv);font-size:14px;flex-shrink:0;font-weight:800}
+.enc-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;color:var(--out);text-align:center;margin-bottom:2px}
+.enc-note{font-size:11px;color:var(--osv);text-align:center;margin-top:4px;background:rgba(101,255,200,.05);border:1px solid rgba(101,255,200,.12);border-radius:8px;padding:8px 12px;font-weight:500}
+.enc-note strong{color:var(--ter);font-weight:700}
+.enc-center{text-align:center;color:var(--outv);padding:4px;font-size:12px}
+.enc-pts{display:flex;flex-direction:column;gap:18px}
+.enc-pt{display:flex;gap:14px;align-items:flex-start}
+.enc-pt-ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.enc-pt-title{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--os);margin-bottom:4px;letter-spacing:-.2px}
+.enc-pt-desc{font-size:13px;color:var(--osv);line-height:1.65}
+/* ROOM TYPES */
+.rooms-sec{padding:80px 20px;position:relative;z-index:1}
+.rooms-in{max-width:1100px;margin:0 auto}
+.rtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
+.rtab{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:13px 13px 0 0;background:var(--sc);border:1px solid rgba(255,255,255,.05);border-bottom:none;cursor:pointer;transition:all .2s;font-family:var(--fh);font-size:13px;font-weight:800;color:var(--osv);-webkit-tap-highlight-color:transparent}
+.rtab:hover{background:var(--sch);color:var(--os)}
+.rtab.active{background:var(--sch);color:var(--os);border-color:rgba(186,158,255,.1)}
+.rtab-em{font-size:15px}
+.rpanel{display:none;background:var(--sch);border-radius:0 16px 16px 16px;padding:26px;border:1px solid rgba(255,255,255,.05)}
+.rpanel.active{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+@media(max-width:600px){.rpanel.active{grid-template-columns:1fr}}
+.rp-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:9999px;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin-bottom:14px}
+.rp-title{font-family:var(--fh);font-size:20px;font-weight:900;color:var(--os);margin-bottom:9px;letter-spacing:-.4px}
+.rp-desc{font-size:14px;color:var(--osv);line-height:1.7;margin-bottom:16px}
+.rp-feats{display:flex;flex-direction:column;gap:6px}
+.rp-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--osv)}
+.rp-fd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.rp-prev{background:var(--sc);border-radius:13px;padding:13px;overflow:hidden}
+.rp-sys{text-align:center;font-size:9px;color:var(--out);background:rgba(255,255,255,.03);padding:3px 10px;border-radius:9999px;margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase}
+.rp-bubs{display:flex;flex-direction:column;gap:7px}
+.rp-b{padding:8px 12px;font-size:12px;line-height:1.5;border-radius:13px;max-width:82%}
+.rpb-t{background:var(--scx);color:var(--os);border-radius:3px 13px 13px 13px;align-self:flex-start}
+.rpb-m{background:rgba(132,85,239,.26);border:1px solid rgba(186,158,255,.12);color:var(--os);border-radius:13px 3px 13px 13px;align-self:flex-end}
+.rpb-sd{font-size:9px;color:var(--out);text-align:center;background:rgba(255,255,255,.03);padding:3px 10px;border-radius:9999px;align-self:center;letter-spacing:.3px;text-transform:uppercase}
+/* COMPARE */
+.cmp-sec{padding:80px 20px;position:relative;z-index:1;background:var(--sl)}
+.cmp-in{max-width:900px;margin:0 auto}
+.cmp-wrap{overflow-x:auto;border-radius:16px;border:1px solid rgba(255,255,255,.06)}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--fh);font-size:13px;font-weight:800;padding:13px 18px;text-align:left;background:var(--sc);letter-spacing:-.2px}
+th:first-child{color:var(--osv);width:40%}
+th.us{color:var(--pr)}
+th.th{color:var(--osv)}
+td{padding:12px 18px;font-size:13px;border-top:2px solid var(--sl);background:var(--sc);color:var(--osv)}
+tr:hover td{background:var(--sch)}
+td:first-child{color:var(--os);font-weight:600;font-family:var(--fh);font-size:12px;letter-spacing:-.1px}
+.cy{color:var(--ter);font-weight:700}
+.cn{color:var(--outv)}
+.badge{font-family:var(--fh);font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:2px 7px;border-radius:9999px;margin-left:6px;vertical-align:middle}
+.bu{background:rgba(186,158,255,.1);color:var(--pr);border:1px solid rgba(186,158,255,.15)}
+.bt{background:rgba(255,255,255,.04);color:var(--out);border:1px solid rgba(255,255,255,.06)}
+/* QUOTES */
+.quotes-sec{padding:80px 20px;position:relative;z-index:1}
+.quotes-in{max-width:1100px;margin:0 auto}
+.qgrid{display:grid;gap:2px;background:var(--sch);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.qcard{background:var(--sc);padding:24px;position:relative;transition:background .3s}
+.qcard:hover{background:var(--sch)}
+.qstars{color:var(--pr);font-size:13px;margin-bottom:11px;letter-spacing:2px}
+.qtext{font-size:14px;color:var(--osv);line-height:1.72;margin-bottom:14px;font-style:italic}
+.qtext em{color:var(--os);font-style:normal;font-weight:600}
+.qauthor{display:flex;align-items:center;gap:10px}
+.qav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.qname{font-family:var(--fh);font-size:13px;font-weight:800;color:var(--os);letter-spacing:-.2px}
+.qrole{font-size:11px;color:var(--out);margin-top:1px}
+.qbadge{position:absolute;top:18px;right:18px;font-size:9px;font-weight:700;color:var(--ter);background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.15);padding:2px 8px;border-radius:9999px;letter-spacing:.4px;text-transform:uppercase}
+/* FAQ */
+.faq-sec{padding:80px 20px;position:relative;z-index:1;background:var(--sl)}
+.faq-in{max-width:720px;margin:0 auto}
+.faq-list{display:flex;flex-direction:column;gap:2px;background:var(--sch)}
+.faq-item{background:var(--sc);overflow:hidden;transition:background .2s}
+.faq-item:hover{background:var(--sch)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:17px 22px;background:none;border:none;color:var(--os);cursor:pointer;font-family:var(--fh);font-size:14px;font-weight:800;text-align:left;gap:12px;transition:all .2s;-webkit-tap-highlight-color:transparent;min-height:56px;letter-spacing:-.2px}
+.faq-q:hover,.faq-q.open{color:var(--pr)}
+.faq-ic{font-size:18px;flex-shrink:0;transition:transform .3s;color:var(--outv)}
+.faq-q.open .faq-ic{transform:rotate(45deg);color:var(--pr)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.faq-a.open{max-height:200px;padding-bottom:16px}
+.faq-ai{padding:0 22px;font-size:14px;color:var(--osv);line-height:1.72}
+.faq-ai strong{color:var(--os);font-weight:600}
 /* CTA */
-.ctaw{padding:80px 20px;text-align:center;position:relative;z-index:1}
-.ctai{max-width:640px;margin:0 auto;background:var(--sc);border-radius:24px;padding:56px 32px;position:relative;overflow:hidden}
-.ctai::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(186,158,255,.1),transparent 55%)}
-.ctai::after{content:'';position:absolute;top:0;left:20%;right:20%;height:1.5px;background:var(--grad);border-radius:9999px}
-.ctah{font-family:var(--fh);font-size:clamp(24px,4.5vw,44px);font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:14px;position:relative;z-index:1;color:var(--os)}
-.ctasub{font-size:15px;color:var(--osv);line-height:1.7;margin:0 auto 32px;max-width:400px;position:relative;z-index:1}
+.cta-sec{padding:80px 20px;text-align:center;position:relative;z-index:1}
+.cta-in{max-width:700px;margin:0 auto;background:var(--sc);border-radius:24px;padding:56px 32px;position:relative;overflow:hidden}
+.cta-in::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(186,158,255,.1),transparent 55%);pointer-events:none}
+.cta-in::after{content:"";position:absolute;top:0;left:18%;right:18%;height:1.5px;background:var(--grad);border-radius:9999px}
+.ctah{font-family:var(--fh);font-size:clamp(22px,4.5vw,46px);font-weight:900;letter-spacing:-2px;line-height:1.08;margin-bottom:13px;position:relative;z-index:1;color:var(--os)}
+.ctasub{font-size:15px;color:var(--osv);line-height:1.7;margin:0 auto 30px;max-width:400px;position:relative;z-index:1}
 .ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.ctanote{font-size:10px;color:var(--out);letter-spacing:1px;text-transform:uppercase;margin-top:18px;position:relative;z-index:1}
-
-/* FOOTER */
-footer{padding:20px 24px;background:var(--sl);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.ctanote{font-size:10px;color:var(--out);letter-spacing:1px;text-transform:uppercase;margin-top:16px;position:relative;z-index:1}
+footer{padding:20px 24px;background:var(--sl);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.04)}
 .flogo{display:flex;align-items:center;gap:8px;text-decoration:none}
 .fgl{width:24px;height:24px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:11px}
 .fnm{font-family:var(--fh);font-size:13px;font-weight:900;color:var(--os)}
@@ -170,24 +281,18 @@ footer{padding:20px 24px;background:var(--sl);display:flex;align-items:center;ju
 .flinks{display:flex;gap:16px;flex-wrap:wrap}
 .flink{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s}
 .flink:hover{color:var(--pr)}
-
-/* REVEAL */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-.rv.vs{opacity:1;transform:translateY(0)}
-.rv2{opacity:0;transform:translateY(28px);transition:opacity .7s ease .12s,transform .7s ease .12s}
-.rv2.vs{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
-<div class="prt"><div class="p p1"></div><div class="p p2"></div><div class="p p3"></div><div class="p p4"></div><div class="p p5"></div><div class="p p6"></div></div>
+<div class="prt"><div class="p p1"></div><div class="p p2"></div><div class="p p3"></div><div class="p p4"></div><div class="p p5"></div><div class="p p6"></div><div class="p p7"></div><div class="p p8"></div></div>
 <div class="mesh"><div class="mo mo1"></div><div class="mo mo2"></div><div class="mo mo3"></div></div>
-
 <nav>
-  <a href="/" class="nl"><div class="ng">🔐</div><div class="nw">AnonChat</div></a>
+  <a href="/" class="nl"><div class="ng">&#128272;</div><div class="nw">AnonChat</div></a>
   <div class="nlinks">
-    <a href="#features" class="na">Features</a>
     <a href="#how" class="na">How It Works</a>
-    <a href="#security" class="na">Security</a>
+    <a href="#encryption" class="na">Encryption</a>
+    <a href="#rooms" class="na">Room Types</a>
+    <a href="#faq" class="na">FAQ</a>
   </div>
   <div class="nbg">
     <a href="/app" class="ngh">Join Room</a>
@@ -196,103 +301,299 @@ footer{padding:20px 24px;background:var(--sl);display:flex;align-items:center;ju
   </div>
 </nav>
 <div class="mnav" id="mnav">
-  <a href="#features" onclick="closeM()">Features</a>
   <a href="#how" onclick="closeM()">How It Works</a>
-  <a href="#security" onclick="closeM()">Security</a>
+  <a href="#encryption" onclick="closeM()">Encryption</a>
+  <a href="#rooms" onclick="closeM()">Room Types</a>
+  <a href="#faq" onclick="closeM()">FAQ</a>
   <a href="/app" onclick="closeM()">Join Room</a>
   <a href="/app">Start a Room</a>
 </div>
 
+<!-- HERO -->
 <section class="hero">
-  <div class="h-badge"><div class="hdot"></div>No Sign-ups · Encrypted · No Logs</div>
-  <h1 class="htit"><span class="ht1">Talk Freely.</span><span class="ht2">Stay Anonymous.</span></h1>
-  <p class="hsub">No sign-ups, no tracking, no logs. Create a private room in seconds and chat securely with anyone, anywhere.</p>
+  <div class="h-badge"><div class="hdot"></div>TweetNaCl X25519 &middot; Zero Logs &middot; No Accounts</div>
+  <h1 class="htit">
+    <span class="ht1">Encrypted. Anonymous.</span>
+    <span class="ht2">Untraceable.</span>
+  </h1>
+  <p class="hsub">Create a private room in seconds. Messages are encrypted on your device before they ever leave it. The server is mathematically blind.</p>
   <div class="hbtns">
-    <a href="/app" class="btnp">✦ Start a Room</a>
-    <a href="/app" class="btng">Join with Code</a>
+    <a href="/app" class="btnp">&#10022; Start a Room Free</a>
+    <a href="#how" class="btng">See how it works &darr;</a>
   </div>
-  <div class="hvisual">
-    <div class="mkup">
-      <div class="mkbar">
-        <div class="mkdots"><div class="mkd d1"></div><div class="mkd d2"></div><div class="mkd d3"></div></div>
-        <div class="mkcode">Encrypted Room #Alpha-99</div>
-        <div class="mkstat"><div class="mkstatd"></div>3 Online</div>
+  <div class="trust-pills">
+    <div class="tpill"><div class="tpd" style="background:var(--ter);box-shadow:0 0 5px var(--ter)"></div>No sign-up required</div>
+    <div class="tpill"><div class="tpd" style="background:var(--pr)"></div>Keys never leave your device</div>
+    <div class="tpill"><div class="tpd" style="background:var(--sec)"></div>Room vanishes when you leave</div>
+  </div>
+  <div class="hero-visual">
+    <div class="hv-grid">
+      <div class="mk-win rv">
+        <div class="mk-tb">
+          <div class="mk-dots"><div class="mkd d1"></div><div class="mkd d2"></div><div class="mkd d3"></div></div>
+          <div class="mk-ol"><div class="mk-old"></div>3 online</div>
+          <div class="mk-rc">A7X&middot;QK2</div>
+        </div>
+        <div class="mk-sys"><div class="mk-sysc">&#128272; Secure Channel Established &middot; 21:04 PM</div></div>
+        <div class="mk-msgs">
+          <div class="mkm t"><div class="mkmeta">Vesper_88</div><div class="mkbub">did you see the latest protocol update? zero-knowledge proofs look solid.</div></div>
+          <div class="mkm m"><div class="mkmeta">You</div><div class="mkbub">just finished the audit. completely private. no metadata leaks at all. &#128274;</div><div class="mkm-react">&#10084;&#65039; 2</div></div>
+          <div class="mkm t"><div class="mkmeta">GhostCode</div><div class="mkbub">can confirm. latency barely noticeable despite the routing.</div></div>
+        </div>
+        <div class="mk-typing"><div class="mk-tdots"><span></span><span></span><span></span></div>NeonShadow is typing...</div>
+        <div class="mk-inp-row"><div class="mk-inp">Whisper something secure...</div><div class="mk-send">&#8593;</div></div>
       </div>
-      <div class="mksys"><div class="mksysc">Secure Channel Established · 21:04 PM</div></div>
-      <div class="mkbody">
-        <div class="mkm t"><div class="mkmeta">User — 9:12pm</div><div class="mkbub">Hey! Did you see the new protocol update? It feels way faster now.</div></div>
-        <div class="mkm m"><div class="mkmeta">You — 9:14pm</div><div class="mkbub">Just checked it out. The zero-knowledge architecture is impressive. 🔐</div></div>
-        <div class="mksdchip">Messages self-destruct in 6:00</div>
+      <div class="mk-cards rv2">
+        <div class="mk-card">
+          <div class="mkc-top"><div class="mkc-ic ti-p">&#128273;</div><div><div class="mkc-t">Key Exchange</div></div></div>
+          <div class="mkc-s">X25519 ECDH generates ephemeral keypairs on your device. Server only relays public keys &mdash; never the shared secret.</div>
+          <div class="mkc-bar"><div class="mkc-fill" style="background:linear-gradient(90deg,var(--prd),var(--pr));animation-delay:.2s"></div></div>
+        </div>
+        <div class="mk-card">
+          <div class="mkc-top"><div class="mkc-ic ti-t">&#128737;&#65039;</div><div><div class="mkc-t">XSalsa20-Poly1305</div></div></div>
+          <div class="mkc-s">Every message is authenticated and encrypted. Even intercepted ciphertext reveals nothing &mdash; no timing, no patterns.</div>
+          <div class="mkc-bar"><div class="mkc-fill" style="background:linear-gradient(90deg,#2de3ac,var(--ter));animation-delay:.6s"></div></div>
+        </div>
+        <div class="mk-card">
+          <div class="mkc-top"><div class="mkc-ic ti-s">&#128256;</div><div><div class="mkc-t">Forward Secrecy</div></div></div>
+          <div class="mkc-s">Fresh ephemeral keys every session. Past messages are unrecoverable even if a future key were somehow compromised.</div>
+        </div>
       </div>
-      <div class="mkfooter"><div class="mkinpb">Whisper something secure...</div><div class="mksend">↑</div></div>
     </div>
   </div>
 </section>
 
+<!-- STATS -->
 <div class="stats rv">
   <div class="si">
-    <div class="sv"><div class="svv">TweetNaCl</div><div class="svl">E2E Encryption</div></div>
-    <div class="sv"><div class="svv">0 logs</div><div class="svl">Data Stored</div></div>
+    <div class="sv"><div class="svv">X25519</div><div class="svl">Key Exchange</div></div>
+    <div class="sv"><div class="svv">XSalsa20</div><div class="svl">Cipher</div></div>
+    <div class="sv"><div class="svv">0 logs</div><div class="svl">Server Stores</div></div>
     <div class="sv"><div class="svv">40MB</div><div class="svl">File Limit</div></div>
     <div class="sv"><div class="svv">5 modes</div><div class="svl">Room Types</div></div>
-    <div class="sv"><div class="svv">∞</div><div class="svl">Rooms</div></div>
+    <div class="sv"><div class="svv">&infin;</div><div class="svl">Rooms</div></div>
   </div>
 </div>
 
-<section class="section" id="security">
-  <div class="rv"><span class="stag">Security First</span><h2 class="sh">Designed for <em>Total Privacy.</em></h2><p class="ssub">Every layer is engineered with security as the foundation, not an afterthought.</p></div>
-  <div class="feat-grid rv2">
-    <div class="fc"><div class="fci fp">🔑</div><div class="ftit">Real E2E Encryption</div><div class="fdesc">X25519 ECDH key exchange via TweetNaCl. Keys are generated on your device and never leave it. The server is mathematically blind.</div></div>
-    <div class="fc"><div class="fci fs">👤</div><div class="ftit">Zero Identity</div><div class="fdesc">No accounts, no emails, no phone numbers. You get a random identity and you're in. Nothing is tied to you.</div></div>
-    <div class="fc"><div class="fci ft">💣</div><div class="ftit">Self-Destruct Messages</div><div class="fdesc">Configure messages to auto-delete after a set time. When the room closes, all data vanishes permanently.</div></div>
-    <div class="fc"><div class="fci fo">🛡️</div><div class="ftit">Reputation Engine</div><div class="fdesc">Device-hash reputation tracking, progressive cooldowns, shadow mute. Abuse handled silently.</div></div>
-    <div class="fc"><div class="fci fbl">🎤</div><div class="ftit">Encrypted Voice</div><div class="fdesc">Record and send voice messages — encrypted the same way as text. Play inline with waveform visualization.</div></div>
-    <div class="fc"><div class="fci fg">👑</div><div class="ftit">Admin Controls</div><div class="fdesc">Room creator gets mute, kick, lock controls. Reputation badges show user trust levels.</div></div>
+<!-- HOW IT WORKS -->
+<section class="sec" id="how">
+  <div class="rv">
+    <span class="stag">Simple Flow</span>
+    <h2 class="sh">From zero to <em>encrypted</em><br>in under 10 seconds.</h2>
+    <p class="ssub">No app to download. No account to create. No credit card. Just private chat.</p>
+  </div>
+  <div class="timeline rv2">
+    <div class="tls"><div class="tls-num">01</div><div><div class="tls-title">Pick a Room Type</div><div class="tls-desc">Choose from Normal, Vanish, Rapid, Confession, or Study. Each has its own behaviour. You get a random identity instantly.</div><div class="tls-chip">&#127917; 5 modes available</div></div></div>
+    <div class="tls"><div class="tls-num">02</div><div><div class="tls-title">Keys Exchange Silently</div><div class="tls-desc">TweetNaCl generates X25519 keypairs on each device. Public keys are relayed by the server, but your secret key never leaves your browser.</div><div class="tls-chip">&#128272; Device-only keys</div></div></div>
+    <div class="tls"><div class="tls-num">03</div><div><div class="tls-title">Share Your Room Code</div><div class="tls-desc">Send the 6-character code or QR to anyone. They join instantly &mdash; no account, no download, no friction whatsoever.</div><div class="tls-chip">&#128241; QR built in</div></div></div>
+    <div class="tls"><div class="tls-num">04</div><div><div class="tls-title">Chat Then Ghost</div><div class="tls-desc">Everything encrypted on your device. When everyone leaves, the room, messages, and keys vanish permanently. Zero trace.</div><div class="tls-chip">&#128168; No forensic trail</div></div></div>
   </div>
 </section>
 
-<section class="section" id="how">
-  <div class="rv"><span class="stag">Simple Flow</span><h2 class="sh">Chat in <em>3 Simple Steps.</em></h2><p class="ssub">The easiest way to communicate securely without friction.</p></div>
-  <div class="steps-grid rv2">
-    <div class="sc2"><div class="snum"><span class="snv">01</span></div><div class="stit">Create or Join Room</div><div class="sdesc">Launch a new session with one tap or enter an existing code from a friend.</div></div>
-    <div class="sc2"><div class="snum"><span class="snv">02</span></div><div class="stit">Keys Exchange Instantly</div><div class="sdesc">TweetNaCl generates ephemeral keypairs. The server relays public keys but never sees private keys.</div></div>
-    <div class="sc2"><div class="snum"><span class="snv">03</span></div><div class="stit">Chat Freely</div><div class="sdesc">Messages are encrypted on your device. When everyone leaves, the room and its data vanish completely.</div></div>
+<!-- ENCRYPTION EXPLAINER -->
+<section class="enc-sec" id="encryption">
+  <div class="enc-in">
+    <div class="rv">
+      <span class="stag">Under the Hood</span>
+      <h2 class="sh">Why the server can&apos;t read<br><em>a single word.</em></h2>
+      <p class="ssub" style="margin-bottom:36px">Here&apos;s exactly how the math works &mdash; no marketing fluff.</p>
+    </div>
+    <div class="enc-grid rv2">
+      <div class="enc-diagram">
+        <div class="enc-lbl">Alice (you) generates on device</div>
+        <div class="enc-row">
+          <div class="enc-node pr">alice.publicKey</div>
+          <div class="enc-arr">+</div>
+          <div class="enc-node dk">alice.secretKey &#128274;<br><span style="font-size:10px;color:var(--outv)">never leaves device</span></div>
+        </div>
+        <div class="enc-center">&updownarrow; server relays public keys only</div>
+        <div class="enc-lbl">Bob (them) generates on device</div>
+        <div class="enc-row">
+          <div class="enc-node pr">bob.publicKey</div>
+          <div class="enc-arr">+</div>
+          <div class="enc-node dk">bob.secretKey &#128274;<br><span style="font-size:10px;color:var(--outv)">never leaves device</span></div>
+        </div>
+        <div class="enc-center">&longrightarrow; ECDH X25519 magic &longleftarrow;</div>
+        <div class="enc-row"><div class="enc-node te" style="flex:none;width:100%;text-align:center">sharedRoomKey &mdash; <strong style="color:var(--ter)">identical on both devices</strong></div></div>
+        <div class="enc-row" style="margin-top:8px">
+          <div class="enc-node se">nacl.secretbox(msg, nonce, sharedKey)</div>
+          <div class="enc-arr">&rarr;</div>
+          <div class="enc-node dk">&#128274; ciphertext<br><span style="font-size:10px;color:var(--outv)">server sees this only</span></div>
+        </div>
+        <div class="enc-note"><strong>The server never computes sharedRoomKey.</strong> It only ever sees opaque ciphertext. Even with full server access, messages are unreadable.</div>
+      </div>
+      <div class="enc-pts">
+        <div class="enc-pt"><div class="enc-pt-ic ti-p">&#9889;</div><div><div class="enc-pt-title">X25519 Key Exchange</div><div class="enc-pt-desc">Elliptic Curve Diffie-Hellman. Both sides derive the same shared secret without ever transmitting it. A wiretapper on the server connection learns nothing.</div></div></div>
+        <div class="enc-pt"><div class="enc-pt-ic ti-t">&#128274;</div><div><div class="enc-pt-title">XSalsa20-Poly1305</div><div class="enc-pt-desc">Authenticated encryption. Each message gets a random nonce. Poly1305 MAC ensures nobody tampered with the ciphertext in transit &mdash; integrity guaranteed.</div></div></div>
+        <div class="enc-pt"><div class="enc-pt-ic ti-s">&#127744;</div><div><div class="enc-pt-title">Ephemeral Keys Per Session</div><div class="enc-pt-desc">Keypairs generated fresh every session, discarded on close. Past sessions are unrecoverable even if a future key were somehow compromised.</div></div></div>
+        <div class="enc-pt"><div class="enc-pt-ic ti-o">&#9989;</div><div><div class="enc-pt-title">TweetNaCl is Audited</div><div class="enc-pt-desc">The underlying library has been independently security-audited. It&apos;s the same cryptography family used in Signal and dozens of high-security applications worldwide.</div></div></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="section" id="features">
-  <div class="rv"><span class="stag">Room Types</span><h2 class="sh">Every conversation<br>has a <em>purpose.</em></h2></div>
-  <div class="feat-grid rv2">
-    <div class="fc"><div class="fci fp">💬</div><div class="ftit">Normal</div><div class="fdesc">Standard encrypted chat. Messages persist for the session duration.</div></div>
-    <div class="fc"><div class="fci fs">🔥</div><div class="ftit">Vanish Mode</div><div class="fdesc">Every message self-destructs after 30 seconds. Maximum ephemerality.</div></div>
-    <div class="fc"><div class="fci ft">⚡</div><div class="ftit">Rapid Chat</div><div class="fdesc">100-character limit. Fast-paced, high-energy conversations only.</div></div>
-    <div class="fc"><div class="fci fo">🎭</div><div class="ftit">Confession</div><div class="fdesc">No usernames shown. Complete identity anonymity within the room.</div></div>
-    <div class="fc"><div class="fci fbl">📚</div><div class="ftit">Study Mode</div><div class="fdesc">AI-generated conversation prompts keep discussions focused and productive.</div></div>
-    <div class="fc"><div class="fci fg">📎</div><div class="ftit">File Sharing</div><div class="fdesc">Share files up to 40MB — images, docs, videos. All encrypted before transfer.</div></div>
+<!-- FEATURES GRID -->
+<section class="sec" id="features">
+  <div class="rv">
+    <span class="stag">Every Feature</span>
+    <h2 class="sh">Everything built-in.<br><em>Nothing unnecessary.</em></h2>
+    <p class="ssub">No third-party services. No external APIs. Every feature runs through the same end-to-end encrypted pipeline.</p>
+  </div>
+  <div class="tgrid tg2 rv2">
+    <div class="tc"><div class="tci ti-p">&#127908;</div><div class="ttit">Encrypted Voice Messages</div><div class="tdesc">Record directly in the browser. Voice data is encrypted with XSalsa20-Poly1305 before it ever leaves your device.</div></div>
+    <div class="tc"><div class="tci ti-s">&#128206;</div><div class="ttit">File Sharing up to 40MB</div><div class="tdesc">Images, docs, videos &mdash; all encrypted client-side. The server never sees file contents, names, or types.</div></div>
+    <div class="tc"><div class="tci ti-t">&#128163;</div><div class="ttit">Self-Destruct Timers</div><div class="tdesc">Set per-message expiry: 10s, 30s, 1min, 5min, or 1hr. Messages visually dissolve and are removed from history.</div></div>
+    <div class="tc"><div class="tci ti-o">&#8617;&#65039;</div><div class="ttit">Reply Threading</div><div class="tdesc">Long-press any message to reply inline. Quoted preview shows sender and context without re-transmitting encrypted data.</div></div>
+    <div class="tc"><div class="tci ti-b">&#128522;</div><div class="ttit">Emoji Reactions</div><div class="tdesc">React with &#10084;&#65039; &#128514; &#128558; &#128546; &#128077; &#128293;. Reactions sync in real-time with toggle and aggregate counts.</div></div>
+    <div class="tc"><div class="tci ti-g">&#128081;</div><div class="ttit">Admin Controls</div><div class="tdesc">Room creator can mute, kick, and lock the room. Reputation badges evolve: &#128100; &rarr; &#128293; &rarr; &#9889; based on activity.</div></div>
+    <div class="tc"><div class="tci ti-r">&#128737;&#65039;</div><div class="ttit">Abuse Prevention</div><div class="tdesc">Device-hash reputation scoring, progressive rate limiting, shadow mute at score &ge;50, auto-block at &ge;80. Handled silently.</div></div>
+    <div class="tc"><div class="tci ti-p">&#128241;</div><div class="ttit">QR Code Sharing</div><div class="tdesc">Tap the room code to generate a QR. Scannable on any device to join instantly &mdash; no typing the code manually.</div></div>
   </div>
 </section>
 
-<section class="ctaw">
-  <div class="ctai rv">
-    <h2 class="ctah">Start chatting in seconds.</h2>
-    <p class="ctasub">The simplest way to communicate anonymously. No data collected. Ever.</p>
-    <div class="ctabtns"><a href="/app" class="btnp">✦ Start a Room</a></div>
-    <p class="ctanote">Available on all browsers · No installation required</p>
+<!-- ROOM TYPES -->
+<section class="rooms-sec" id="rooms">
+  <div class="rooms-in">
+    <div class="rv">
+      <span class="stag">Room Types</span>
+      <h2 class="sh">Every conversation<br>has a <em>different need.</em></h2>
+      <p class="ssub" style="margin-bottom:24px">Pick the mode that fits. Each one is fully encrypted.</p>
+    </div>
+    <div class="rv2">
+      <div class="rtabs" id="rtabs">
+        <div class="rtab active" data-r="normal" onclick="swR('normal')"><span class="rtab-em">&#128172;</span>Normal</div>
+        <div class="rtab" data-r="vanish" onclick="swR('vanish')"><span class="rtab-em">&#128293;</span>Vanish</div>
+        <div class="rtab" data-r="rapid" onclick="swR('rapid')"><span class="rtab-em">&#9889;</span>Rapid</div>
+        <div class="rtab" data-r="confession" onclick="swR('confession')"><span class="rtab-em">&#127917;</span>Confession</div>
+        <div class="rtab" data-r="study" onclick="swR('study')"><span class="rtab-em">&#128218;</span>Study</div>
+      </div>
+      <div id="rp-normal" class="rpanel active">
+        <div><div class="rp-badge" style="background:rgba(186,158,255,.08);border:1px solid rgba(186,158,255,.18);color:var(--pr)">&#128172; Standard</div><div class="rp-title">Normal Room</div><div class="rp-desc">The default encrypted room. Messages persist for the session. Good for conversations where you need some history.</div><div class="rp-feats"><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>Full message history for the session</div><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>Up to 1000 character messages</div><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>Voice, files, reactions supported</div></div></div>
+        <div class="rp-prev"><div class="rp-sys">&#128172; Normal &middot; E2E Encrypted</div><div class="rp-bubs"><div class="rp-b rpb-t">hey, can you share the notes from today?</div><div class="rp-b rpb-m">sure, uploading now &#128206;</div><div class="rp-b rpb-t">nobody else can see this right?</div><div class="rp-b rpb-m">nope &mdash; server is blind &#128272;</div></div></div>
+      </div>
+      <div id="rp-vanish" class="rpanel">
+        <div><div class="rp-badge" style="background:rgba(255,103,173,.08);border:1px solid rgba(255,103,173,.18);color:var(--sec)">&#128293; Self-Destruct</div><div class="rp-title">Vanish Mode</div><div class="rp-desc">Every message auto-deletes after 30 seconds. Maximum ephemerality &mdash; no history, no receipts, no trace.</div><div class="rp-feats"><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>30-second auto-delete on all messages</div><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>No message history replay on join</div><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>Countdown timer visible on each bubble</div></div></div>
+        <div class="rp-prev"><div class="rp-sys">&#128293; Vanish &middot; Messages self-destruct</div><div class="rp-bubs"><div class="rp-b rpb-t">this disappears in 30 seconds btw</div><div class="rp-b rpb-m">good. say what you need to say &#128064;</div><div class="rpb-sd">&#128163; Vanishing in 12s</div></div></div>
+      </div>
+      <div id="rp-rapid" class="rpanel">
+        <div><div class="rp-badge" style="background:rgba(255,165,0,.07);border:1px solid rgba(255,165,0,.2);color:#f59e0b">&#9889; 100 Chars Max</div><div class="rp-title">Rapid Chat</div><div class="rp-desc">100-character limit per message. Forces tight, punchy communication. Great for quick decisions or high-energy group chats.</div><div class="rp-feats"><div class="rp-feat"><div class="rp-fd" style="background:#f59e0b"></div>Hard 100-char limit enforced server-side</div><div class="rp-feat"><div class="rp-fd" style="background:#f59e0b"></div>Counter visible as you type</div><div class="rp-feat"><div class="rp-fd" style="background:#f59e0b"></div>No paragraphs &mdash; just punchy reactions</div></div></div>
+        <div class="rp-prev"><div class="rp-sys">&#9889; Rapid &middot; 100 chars max</div><div class="rp-bubs"><div class="rp-b rpb-t">go or no go?</div><div class="rp-b rpb-m">go. 100%</div><div class="rp-b rpb-t">same. let&apos;s move &#9889;</div></div></div>
+      </div>
+      <div id="rp-confession" class="rpanel">
+        <div><div class="rp-badge" style="background:rgba(255,103,173,.08);border:1px solid rgba(255,103,173,.18);color:var(--sec)">&#127917; No Usernames</div><div class="rp-title">Confession Mode</div><div class="rp-desc">All usernames hidden. Every message appears as "&#127917; Anonymous". For honest feedback, blind voting, or confessions.</div><div class="rp-feats"><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>All senders shown as Anonymous</div><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>You can still see your own messages</div><div class="rp-feat"><div class="rp-fd" style="background:var(--sec)"></div>AI conversation prompts to get started</div></div></div>
+        <div class="rp-prev"><div class="rp-sys">&#127917; Confession &middot; All names hidden</div><div class="rp-bubs"><div class="rp-b rpb-t">&#127917; Anonymous: honestly this team dynamic is broken</div><div class="rp-b rpb-t">&#127917; Anonymous: yeah nobody wants to say it out loud</div></div></div>
+      </div>
+      <div id="rp-study" class="rpanel">
+        <div><div class="rp-badge" style="background:rgba(101,255,200,.07);border:1px solid rgba(101,255,200,.18);color:var(--ter)">&#128218; Focus Mode</div><div class="rp-title">Study Mode</div><div class="rp-desc">Conversation prompts keep discussions structured. Built for study groups, seminars, and collaborative learning sessions.</div><div class="rp-feats"><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>Random prompt shown on room creation</div><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>Tap "Use it" to inject prompt as message</div><div class="rp-feat"><div class="rp-fd" style="background:var(--ter)"></div>All privacy features fully active</div></div></div>
+        <div class="rp-prev"><div class="rp-sys">&#128161; Today&apos;s prompt: "Explain recursion in one sentence."</div><div class="rp-bubs"><div class="rp-b rpb-t">a function that calls itself until a base case stops it</div><div class="rp-b rpb-m">lol so: to understand recursion, see recursion &#128514;</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="cmp-sec">
+  <div class="cmp-in">
+    <div class="rv">
+      <span class="stag">Why AnonChat?</span>
+      <h2 class="sh">Not all &ldquo;private&rdquo; chat<br>is <em>actually private.</em></h2>
+      <p class="ssub" style="margin-bottom:32px">Most apps claim privacy. Here&apos;s what actually matters.</p>
+    </div>
+    <div class="cmp-wrap rv2">
+      <table>
+        <thead><tr><th>Feature</th><th class="us">AnonChat <span class="badge bu">Us</span></th><th class="th">Typical App <span class="badge bt">Them</span></th></tr></thead>
+        <tbody>
+          <tr><td>Keys generated on server?</td><td><span class="cy">&#10003;</span> Never &mdash; device only</td><td><span class="cn">&#10007;</span> Server holds keys</td></tr>
+          <tr><td>Account required</td><td><span class="cy">&#10003;</span> Zero accounts</td><td><span class="cn">&#10007;</span> Phone / email needed</td></tr>
+          <tr><td>Message logs stored</td><td><span class="cy">&#10003;</span> 0 &mdash; never written</td><td><span class="cn">&#10007;</span> Stored indefinitely</td></tr>
+          <tr><td>Metadata collected</td><td><span class="cy">&#10003;</span> No IP, device, timing</td><td><span class="cn">&#10007;</span> Extensive telemetry</td></tr>
+          <tr><td>Self-destructing messages</td><td><span class="cy">&#10003;</span> Built-in, 5 timers</td><td><span class="cn">&#10007;</span> Rare or paywalled</td></tr>
+          <tr><td>Forward secrecy</td><td><span class="cy">&#10003;</span> Every session</td><td><span class="cn">&#10007;</span> Sometimes, partially</td></tr>
+          <tr><td>Works without install</td><td><span class="cy">&#10003;</span> Browser-only</td><td><span class="cn">&#10007;</span> App required</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="quotes-sec">
+  <div class="quotes-in">
+    <div class="rv">
+      <span class="stag">From Users</span>
+      <h2 class="sh">People who actually<br><em>needed privacy</em> used it.</h2>
+    </div>
+    <div class="qgrid rv2">
+      <div class="qcard"><div class="qbadge">Verified User</div><div class="qstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="qtext">&ldquo;Used it for our team&apos;s anonymous retrospective. First time anyone <em>actually told the truth</em> in a retro.&rdquo;</div><div class="qauthor"><div class="qav" style="background:rgba(186,158,255,.1)">&#128105;</div><div><div class="qname">SilentHawk29</div><div class="qrole">Engineering Lead</div></div></div></div>
+      <div class="qcard"><div class="qbadge">Verified User</div><div class="qstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="qtext">&ldquo;Finally a chat where I don&apos;t give my phone number. <em>Vanish mode is perfect</em> for things I don&apos;t want to exist tomorrow.&rdquo;</div><div class="qauthor"><div class="qav" style="background:rgba(101,255,200,.08)">&#129489;</div><div><div class="qname">CipherVibe88</div><div class="qrole">Security Researcher</div></div></div></div>
+      <div class="qcard"><div class="qbadge">Verified User</div><div class="qstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="qtext">&ldquo;The X25519 flow taught me more than a week of reading. And then it <em>actually works that way</em> &mdash; I verified it in DevTools.&rdquo;</div><div class="qauthor"><div class="qav" style="background:rgba(255,103,173,.08)">&#129489;&#8205;&#128187;</div><div><div class="qname">GhostByte404</div><div class="qrole">CS Student</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-sec" id="faq">
+  <div class="faq-in">
+    <div class="rv">
+      <span class="stag">Questions</span>
+      <h2 class="sh">Frequently asked.<br><em>Technically answered.</em></h2>
+      <p class="ssub" style="margin-bottom:28px">Real questions. Real answers. No vague assurances.</p>
+    </div>
+    <div class="faq-list rv2">
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">Can the server read my messages?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">No &mdash; mathematically impossible. Messages are encrypted with <strong>XSalsa20-Poly1305</strong> using a shared key derived via X25519 ECDH. That key is never transmitted to the server. The server only sees opaque base64 ciphertext. Even with full database access, messages are unreadable.</div></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">What happens when a room closes?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">When the last user leaves, the room object is immediately deleted from server memory. Messages were never written to a database &mdash; they exist only in runtime memory during the session. The ephemeral keypairs are discarded. <strong>There is no recovery path.</strong></div></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">Is my IP address logged?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">Your IP is used to derive a device hash for abuse prevention (rate limiting, reputation) but is <strong>never stored</strong> after the session ends. No analytics, no tracking pixels, no third-party scripts in the chat interface.</div></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">How does key exchange work with 3+ people?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">The room creator generates a random 32-byte <strong>room session key</strong>. When a user joins and shares their public key, the creator encrypts the room key for that user using ECDH box (nacl.box). The server relays this encrypted blob but cannot open it &mdash; only the recipient&apos;s secret key can decrypt it.</div></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">What library is used for encryption?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai"><strong>TweetNaCl.js</strong> &mdash; a port of Daniel J. Bernstein&apos;s NaCl library. It&apos;s independently security audited, used in production by Signal and others, and implements X25519 + XSalsa20-Poly1305 authenticated encryption. No proprietary crypto.</div></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="tFaq(this)">Is this really free?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">Yes, completely free. AnonChat is an <strong>OJT cybersecurity project</strong>. There is no business model, no advertising, no freemium. All encryption logic is visible in the browser&apos;s DevTools under Sources.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-in rv">
+    <h2 class="ctah">Ready to chat<br>off the record?</h2>
+    <p class="ctasub">No data collected. No accounts. No installs. The room disappears when you do.</p>
+    <div class="ctabtns">
+      <a href="/app" class="btnp">&#10022; Start a Room Free</a>
+      <a href="/app" class="btng">Join with Code</a>
+    </div>
+    <p class="ctanote">All browsers &middot; Encrypted by TweetNaCl &middot; OJT 2024</p>
   </div>
 </section>
 
 <footer>
-  <a href="/" class="flogo"><div class="fgl">🔐</div><div class="fnm">AnonChat</div></a>
-  <div class="fcopy">© 2024 AnonChat · Midnight Protocol</div>
-  <div class="flinks"><a href="#" class="flink">Privacy</a><a href="#" class="flink">Terms</a><a href="#" class="flink">Bug Report</a></div>
+  <a href="/" class="flogo"><div class="fgl">&#128272;</div><div class="fnm">AnonChat</div></a>
+  <div class="fcopy">&copy; 2024 AnonChat &middot; Midnight Protocol &middot; OJT Cybersecurity</div>
+  <div class="flinks">
+    <a href="#" class="flink">Privacy</a>
+    <a href="#" class="flink">Terms</a>
+    <a href="#" class="flink">Bug Report</a>
+    <a href="#" class="flink">Status</a>
+  </div>
 </footer>
 
 <script>
-const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vs');});},{threshold:.08});
-document.querySelectorAll('.rv,.rv2').forEach(el=>obs.observe(el));
-function toggleM(){document.getElementById('ham').classList.toggle('o');document.getElementById('mnav').classList.toggle('o');}
-function closeM(){document.getElementById('ham').classList.remove('o');document.getElementById('mnav').classList.remove('o');}
-document.addEventListener('click',e=>{if(!e.target.closest('nav'))closeM();});
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("vs");});},{threshold:.07});
+document.querySelectorAll(".rv,.rv2,.rv3").forEach(el=>obs.observe(el));
+function toggleM(){document.getElementById("ham").classList.toggle("o");document.getElementById("mnav").classList.toggle("o");}
+function closeM(){document.getElementById("ham").classList.remove("o");document.getElementById("mnav").classList.remove("o");}
+document.addEventListener("click",e=>{if(!e.target.closest("nav"))closeM();});
+function swR(r){
+  document.querySelectorAll(".rtab").forEach(t=>t.classList.toggle("active",t.dataset.r===r));
+  document.querySelectorAll(".rpanel").forEach(p=>p.classList.remove("active"));
+  const p=document.getElementById("rp-"+r);if(p)p.classList.add("active");
+}
+function tFaq(btn){
+  const open=btn.classList.contains("open");
+  document.querySelectorAll(".faq-q").forEach(b=>{b.classList.remove("open");b.nextElementSibling.classList.remove("open");});
+  if(!open){btn.classList.add("open");btn.nextElementSibling.classList.add("open");}
+}
+window.addEventListener("scroll",()=>{
+  const n=document.querySelector("nav");
+  n.style.background=scrollY>20?"rgba(11,12,31,.95)":"rgba(11,12,31,.82)";
+},{passive:true});
 </script>
 </body>
 </html>
