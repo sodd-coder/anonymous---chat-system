@@ -351,20 +351,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Admin: set anonymous mode
-  socket.on('admin-set-anon', ({ roomCode, anon }) => {
-    if (!rooms[roomCode] || rooms[roomCode].creator !== socket.username) return;
-    rooms[roomCode].config = rooms[roomCode].config || {};
-    rooms[roomCode].config.noUsernames = anon;
-    io.to(roomCode).emit('admin-anon-changed', anon);
-  });
 
-  // Admin: set rate limit
-  socket.on('admin-set-rate', ({ roomCode, limit }) => {
-    if (!rooms[roomCode] || rooms[roomCode].creator !== socket.username) return;
-    rooms[roomCode].rateLimit = Math.max(1, Math.min(100, limit));
-    io.to(roomCode).emit('admin-rate-changed', { limit: rooms[roomCode].rateLimit });
-  });
 
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, '0.0.0.0', () => console.log(`AnonChat running on port ${PORT}`));
