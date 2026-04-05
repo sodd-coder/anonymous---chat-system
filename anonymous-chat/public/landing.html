@@ -220,7 +220,7 @@ footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;ju
 <div class="orb orb2"></div>
 <nav>
   <a href="/" class="n-logo">
-    <div class="n-glyph">&#128272;</div>
+    <div class="n-glyph" style="background:transparent;padding:0;width:44px;height:29px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
     <div>
       <span class="n-name">Midnight Protocol</span>
       <span class="n-sub">&nbsp;by AnonChat</span>
@@ -253,13 +253,13 @@ footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;ju
   </h1>
   <p class="hero-sub">Create a private room in seconds. Messages are encrypted on your device before they leave it. The server sees only ciphertext.</p>
   <div class="hero-btns">
-    <a href="/app" class="hero-btn-p">&#10022; Start a Room Free</a>
+    <a href="/app" class="hero-btn-p">Start a Room Free</a>
     <a href="#how" class="hero-btn-g">How it works &darr;</a>
   </div>
   <div class="trust-row">
-    <div class="trust-pill">No sign-up</div>
-    <div class="trust-pill">Keys stay on device</div>
-    <div class="trust-pill">Room vanishes on exit</div>
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>No sign-up</div>
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Keys stay on device</div>
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Room vanishes on exit</div>
   </div>
   <div class="hero-visual">
     <div class="mockup">
@@ -268,12 +268,12 @@ footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;ju
         <div class="mock-online"><div class="mock-online-dot"></div>3 online</div>
         <div class="mock-room">MP&#183;X7K</div>
       </div>
-      <div class="mock-sys">&#128272; Secure session active &middot; X25519+AES-GCM &middot; 21:04</div>
+      <div class="mock-sys">Secure session active &middot; X25519+AES-GCM &middot; 21:04</div>
       <div class="mock-body">
         <div class="msg-them"><div class="msg-name">Vesper_88</div><div class="msg-bub">did you audit the new handshake? proofs look solid</div></div>
         <div class="msg-me"><div class="msg-name">You</div><div class="msg-bub">just finished. no metadata leaks at all &#128274;</div></div>
         <div class="msg-them"><div class="msg-name">GhostCode</div><div class="msg-bub">confirmed. latency barely noticeable too</div></div>
-        <div class="msg-sd">&#128163; Self-destructs in 5:00</div>
+        <div class="msg-sd"> Self-destructs in 5:00</div>
       </div>
       <div class="mock-typing"><div class="mock-dots-anim"><span></span><span></span><span></span></div>NeonShadow is typing&hellip;</div>
       <div class="mock-inp">
@@ -316,14 +316,14 @@ footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;ju
     <p class="sec-sub">No third-party services. Every feature runs through the same E2E pipeline.</p>
   </div>
   <div class="feat-grid rv2">
-    <div class="feat-card"><div class="feat-icon fi-p">&#127908;</div><div class="feat-title">Encrypted Voice Messages</div><div class="feat-desc">Record in-browser. Encrypted with AES-GCM before leaving your device.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-s">&#128206;</div><div class="feat-title">File Sharing up to 40MB</div><div class="feat-desc">Images, docs, videos — all encrypted client-side. Server never sees contents.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-t">&#128163;</div><div class="feat-title">Self-Destruct Timers</div><div class="feat-desc">10s, 30s, 1min, 5min, or 1hr. Messages dissolve automatically.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-o">&#8617;&#65039;</div><div class="feat-title">Reply Threading</div><div class="feat-desc">Long-press to reply inline. Quoted preview, no re-transmission of encrypted data.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-b">&#9881;&#65039;</div><div class="feat-title">Settings Panel</div><div class="feat-desc">Switch encryption modes, regenerate keys, configure ephemeral vs stored messages.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-g">&#127912;</div><div class="feat-title">Themes System</div><div class="feat-desc">Dark, Light, Cyberpunk, Minimal. Instant apply, persisted in localStorage.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-p">&#128081;</div><div class="feat-title">Admin Controls</div><div class="feat-desc">Mute, kick, lock, rate limit, anonymous mode. All validated server-side.</div></div>
-    <div class="feat-card"><div class="feat-icon fi-s">&#128241;</div><div class="feat-title">QR Sharing</div><div class="feat-desc">Tap room code to generate QR. Scannable to join instantly on any device.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-p"><svg viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v1H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a3 3 0 0 0-3-3z"/><circle cx="12" cy="13" r="2" fill="#7c6aff" stroke="none"/></svg></div><div class="feat-title">Encrypted Voice Messages</div><div class="feat-desc">Record in-browser. Encrypted with AES-GCM before leaving your device.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-s"><svg viewBox="0 0 24 24" fill="none" stroke="#ff5fa0" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="feat-title">File Sharing up to 40MB</div><div class="feat-desc">Images, docs, videos — all encrypted client-side. Server never sees contents.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-t"><svg viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="feat-title">Self-Destruct Timers</div><div class="feat-desc">10s, 30s, 1min, 5min, or 1hr. Messages dissolve automatically.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-o"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg></div><div class="feat-title">Reply Threading</div><div class="feat-desc">Long-press to reply inline. Quoted preview, no re-transmission of encrypted data.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-b"><svg viewBox="0 0 24 24" fill="none" stroke="#638fdd" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><div class="feat-title">Settings Panel</div><div class="feat-desc">Switch encryption modes, regenerate keys, configure ephemeral vs stored messages.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-g"><svg viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg></div><div class="feat-title">Themes System</div><div class="feat-desc">Dark, Light, Cyberpunk, Minimal. Instant apply, persisted in localStorage.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-p"><svg viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="feat-title">Admin Controls</div><div class="feat-desc">Mute, kick, lock, rate limit, anonymous mode. All validated server-side.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-s"><svg viewBox="0 0 24 24" fill="none" stroke="#ff5fa0" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="feat-title">QR Sharing</div><div class="feat-desc">Tap room code to generate QR. Scannable to join instantly on any device.</div></div>
   </div>
 </section>
 </div>
@@ -384,15 +384,15 @@ footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;ju
     <h2 class="cta-title">Chat off the record.</h2>
     <p class="cta-sub">No data collected. No accounts. No installs. The room disappears when you do.</p>
     <div class="cta-btns">
-      <a href="/app" class="hero-btn-p">&#10022; Start a Room Free</a>
+      <a href="/app" class="hero-btn-p">Start a Room Free</a>
       <a href="/app" class="hero-btn-g">Join with Code</a>
     </div>
-    <p class="cta-note">All browsers &middot; Encrypted &middot; OJT 2024</p>
+    <p class="cta-note">Available on all browsers &middot; No installation required &middot; OJT 2024</p>
   </div>
 </section>
 
 <footer>
-  <a href="/" class="f-logo"><div class="f-glyph">&#128272;</div><div class="f-name">Midnight Protocol</div></a>
+  <a href="/" class="f-logo"><div class="f-glyph" style="background:transparent;padding:0;width:38px;height:25px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div><div class="f-name">Midnight Protocol</div></a>
   <div class="f-copy">&copy; 2024 Midnight Protocol &middot; OJT Cybersecurity Project</div>
   <div class="f-links">
     <a href="#" class="f-link">Privacy</a>

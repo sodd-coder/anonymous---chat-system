@@ -142,14 +142,8 @@ body{
 }
 [data-theme="light"] .sidebar,[data-theme="minimal"] .sidebar{border-right-color:rgba(0,0,0,.07)}
 @media(max-width:768px){
-  .sidebar{
-    position:fixed;left:0;right:0;bottom:0;width:100%;z-index:200;
-    border-radius:18px 18px 0 0;border-right:none;
-    transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);
-    max-height:78vh;border-top:1px solid rgba(255,255,255,.06);
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  .sidebar.open{transform:translateY(0)}
+  .sidebar{display:none!important}
+  .sb-overlay{display:none!important}
 }
 .sb-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:10px auto 0;flex-shrink:0}
 @media(min-width:769px){.sb-handle{display:none}}
@@ -427,6 +421,56 @@ body{
 .toast.err{background:rgba(255,95,95,.13);border:1px solid rgba(255,95,95,.25);color:var(--err)}
 .toast.ok{background:rgba(0,229,160,.09);border:1px solid rgba(0,229,160,.22);color:var(--ter)}
 .toast.info{background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.22);color:var(--pr)}
+
+/* SETTINGS TRIGGER BUTTON */
+.settings-trigger-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:9px;
+  background:var(--scx);border:1px solid var(--inp-bd);
+  color:var(--osv);cursor:pointer;
+  transition:all .2s;-webkit-tap-highlight-color:transparent;
+  min-width:36px;min-height:36px;
+}
+.settings-trigger-btn:hover{background:rgba(124,106,255,.1);border-color:rgba(124,106,255,.3);color:var(--pr)}
+.settings-trigger-btn:active{transform:scale(.93)}
+
+/* SETTINGS MODAL */
+.settings-modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);
+  z-index:1001;display:none;align-items:flex-end;justify-content:center;padding:0;
+}
+.settings-modal-ov.show{display:flex}
+@media(min-width:540px){.settings-modal-ov{align-items:center;padding:20px}}
+.settings-modal{
+  background:var(--sc);width:100%;max-width:480px;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 48px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;
+  max-height:88vh;overflow:hidden;
+  animation:smIn .28s cubic-bezier(.32,.72,0,1);
+  position:relative;
+}
+@media(min-width:540px){.settings-modal{border-radius:18px;max-height:82vh}}
+@keyframes smIn{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.settings-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.sm-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:12px auto 0;flex-shrink:0}
+@media(min-width:540px){.sm-handle{display:none}}
+.sm-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0}
+.sm-title{font-size:16px;font-weight:700;letter-spacing:-.3px;color:var(--os)}
+.sm-close{background:none;border:none;color:var(--osv);font-size:20px;cursor:pointer;padding:4px;-webkit-tap-highlight-color:transparent;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s}
+.sm-close:hover{background:rgba(255,255,255,.07);color:var(--os)}
+
+/* settings tabs */
+.sm-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);margin:12px 20px 0;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.sm-tabs::-webkit-scrollbar{display:none}
+[data-theme="light"] .sm-tabs,[data-theme="minimal"] .sm-tabs{border-bottom-color:rgba(0,0,0,.08)}
+.sm-tab{flex-shrink:0;padding:9px 16px;background:none;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--osv);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.sm-tab:hover{color:var(--os)}
+.sm-tab.active{color:var(--pr);border-bottom-color:var(--pr)}
+.sm-tab svg{width:14px;height:14px;flex-shrink:0}
+.sm-body{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
+.sm-panel{display:none}
+.sm-panel.active{display:block}
 </style>
 </head>
 <body>
@@ -439,7 +483,7 @@ body{
 <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
 <!-- HEADER -->
 <header class="hdr">
-  <a href="/" class="hdr-brand"><div class="hdr-glyph">&#128272;</div><span class="hdr-name">Midnight Protocol</span></a>
+  <a href="/" class="hdr-brand"><div class="hdr-glyph" style="background:transparent;padding:0;width:52px;height:34px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div><span class="hdr-name">Midnight Protocol</span></a>
   <div class="hdr-mid">
     <div class="room-pill" onclick="showQR()">
       <span class="room-pill-lbl">Room</span>
@@ -450,7 +494,10 @@ body{
   <div class="hdr-r">
     <div class="enc-badge connecting" id="encBadge"><div class="enc-badge-dot"></div><span class="enc-badge-text" id="encBadgeTxt">Connecting</span></div>
     <button class="online-count" onclick="toggleSb()"><div class="online-dot"></div><span id="uCount">1</span></button>
-    <button class="leave-btn" onclick="openModal('leaveModal')">Leave</button>
+    <button class="settings-trigger-btn" onclick="openSettings()" aria-label="Settings" title="Settings">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M17.66 2.34a14 14 0 0 1 0 19.32M6.34 2.34a14 14 0 0 0 0 19.32"/></svg>
+</button>
+<button class="leave-btn" onclick="openModal('leaveModal')">Leave</button>
   </div>
 </header>
 <!-- BANNERS -->
@@ -680,6 +727,10 @@ function changeEncMode(m){
   toast(m==="e2e"?"&#128272; E2E encryption active":m==="transport"?"&#9888;&#65039; Transport mode":"&#128683; Encryption disabled",m==="e2e"?"ok":m==="transport"?"info":"err");
 }
 function updateEncUI(){
+  // sync settings modal chips
+  ["smEncChip","smEncInfo"].forEach(id=>{const el=document.getElementById(id);if(!el)return;});
+  const smC=document.getElementById("smEncChip"),smI=document.getElementById("smEncInfo");
+  if(smC){if(encMode==="e2e"&&roomKey){smC.className="chip chip-secure";smC.textContent="E2E Active";if(smI)smI.textContent="X25519 ECDH + XSalsa20-Poly1305";}else if(encMode==="transport"){smC.className="chip chip-warn";smC.textContent="Transport";}else{smC.className="chip chip-off";smC.textContent="Unencrypted";}}
   const chip=document.getElementById("encChip"),info=document.getElementById("encInfo"),badge=document.getElementById("encBadge"),btxt=document.getElementById("encBadgeTxt"),bmode=document.getElementById("bEncMode");
   if(encMode==="e2e"&&roomKey){
     chip.className="chip chip-secure";chip.textContent="E2E Active";
@@ -768,8 +819,8 @@ socket.on("you-were-kicked",()=>{alert("You were removed.");sessionStorage.clear
 socket.on("user-muted",u=>addSys(u+" was muted"));
 socket.on("user-unmuted",u=>addSys(u+" was unmuted"));
 socket.on("user-kicked",u=>addSys(u+" was removed"));
-socket.on("room-lock-changed",locked=>{const btn=document.getElementById("lockBtn");btn.textContent=locked?"&#128275; Unlock Room":"&#128274; Lock Room";locked?showBnr("bLocked"):hideBnr("bLocked");toast(locked?"&#128274; Room locked":"&#128275; Room unlocked","info");});
-socket.on("admin-anon-changed",anon=>{document.getElementById("anonToggle").checked=anon;toast(anon?"&#127917; Anonymous mode on":"&#127917; Anonymous mode off","info");});
+socket.on("room-lock-changed",locked=>{const btn=document.getElementById("lockBtn");if(btn)btn.innerHTML=locked?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5v4"/></svg>Unlock Room':'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock Room';const btn2=document.getElementById("smLockBtn");if(btn2)btn2.textContent=locked?"Unlock Room":"Lock Room";locked?showBnr("bLocked"):hideBnr("bLocked");toast(locked?"Room locked":"Room unlocked","info");});
+socket.on("admin-anon-changed",anon=>{document.getElementById("smAnonToggle").checked=anon;toast(anon?"&#127917; Anonymous mode on":"&#127917; Anonymous mode off","info");});
 socket.on("admin-rate-changed",({limit})=>toast("Rate limit: "+limit+"/5s","info"));
 socket.on("report-received",()=>toast("&#10003; Report submitted","ok"));
 socket.on("message-seen",({msgId,username:by})=>{const el=document.querySelector('[data-msgid="'+msgId+'"]');if(el){let s=el.querySelector(".msg-seen");if(!s){s=document.createElement("div");s.className="msg-seen";el.appendChild(s);}s.textContent="&#10003;&#10003; "+by;}});
@@ -866,7 +917,7 @@ function adminMute(t){const m=userListData.find(u=>u.username===t)?.isMuted;sock
 function adminKick(t){if(confirm("Remove "+t+"?"))socket.emit("admin-kick",{roomCode,targetUsername:t});}
 function adminLock(){socket.emit("admin-lock",{roomCode});}
 function toggleAnon(v){socket.emit("admin-set-anon",{roomCode,anon:v});}
-function applyRate(){const v=parseInt(document.getElementById("rateInput").value);if(v>0)socket.emit("admin-set-rate",{roomCode,limit:v});}
+function applyRate(){const v=parseInt(document.getElementById("smRateInput").value);if(v>0)socket.emit("admin-set-rate",{roomCode,limit:v});}
 function reportU(t){if(confirm("Report "+t+"?"))socket.emit("report-user",{roomCode,targetUsername:t});}
 
 // PROMPT
@@ -932,5 +983,135 @@ document.addEventListener("click",e=>{
   ["leaveModal","qrModal","sdModal"].forEach(id=>{if(e.target===document.getElementById(id))closeModal(id);});
 });
 </script>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-modal-ov" id="settingsModal">
+  <div class="settings-modal">
+    <div class="sm-handle"></div>
+    <div class="sm-head">
+      <div class="sm-title">Settings</div>
+      <button class="sm-close" onclick="closeSettings()">&#10005;</button>
+    </div>
+    <div class="sm-tabs">
+      <button class="sm-tab active" data-stab="security" onclick="swSTAB('security')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security
+      </button>
+      <button class="sm-tab" data-stab="themes" onclick="swSTAB('themes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Theme
+      </button>
+      <button id="settingsAdminTab" class="sm-tab" data-stab="admin" onclick="swSTAB('admin')" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 11 17 17 14 14"/></svg>
+        Admin
+      </button>
+      <button class="sm-tab" data-stab="users" onclick="swSTAB('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </button>
+    </div>
+    <div class="sm-body">
+      <!-- SECURITY PANEL -->
+      <div class="sm-panel active" id="spanel-security">
+        <div class="sb-section">Encryption Status</div>
+        <div class="enc-status" id="smEncStatus">
+          <div class="enc-status-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="color:var(--ter)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="chip chip-secure" id="smEncChip">E2E Active</div>
+            <div class="enc-status-sub" id="smEncInfo">X25519 ECDH + XSalsa20-Poly1305</div>
+          </div>
+        </div>
+        <div class="setting-block">
+          <div class="setting-title">Encryption Mode</div>
+          <div class="setting-sub">E2E: keys on device only. Transport: server-derived. None: testing only.</div>
+          <select id="smEncMode" class="sel-input" onchange="changeEncMode(this.value)">
+            <option value="e2e">End-to-End (X25519 + AES-GCM)</option>
+            <option value="transport">Transport Encryption (AES-GCM)</option>
+            <option value="none">None (testing only)</option>
+          </select>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Regenerate Keys</div>
+          <div class="setting-sub">Generate a fresh X25519 keypair and re-distribute the session key to all peers.</div>
+          <button class="btn-block" onclick="regenKeys()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Regenerate Keys
+          </button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Ephemeral messages</div>
+            <div class="toggle-sl">Delete history when room closes</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="smEphemerToggle" checked/><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Self-Destruct Timer</div>
+          <div class="setting-sub">Auto-expire your messages after a set time.</div>
+          <button class="btn-block" onclick="closeSettings();openModal('sdModal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Configure Timer
+          </button>
+        </div>
+      </div>
+
+      <!-- THEMES PANEL -->
+      <div class="sm-panel" id="spanel-themes">
+        <div class="sb-section">UI Theme</div>
+        <div class="theme-grid">
+          <div class="theme-card" data-t="dark" onclick="applyTheme('dark')"><div class="theme-swatch"><div class="theme-half" style="background:#08090f"></div><div class="theme-half" style="background:#7c6aff"></div></div><div class="theme-name">Default Dark</div></div>
+          <div class="theme-card" data-t="light" onclick="applyTheme('light')"><div class="theme-swatch"><div class="theme-half" style="background:#f0f1f8"></div><div class="theme-half" style="background:#5e47e8"></div></div><div class="theme-name">Light</div></div>
+          <div class="theme-card" data-t="cyberpunk" onclick="applyTheme('cyberpunk')"><div class="theme-swatch"><div class="theme-half" style="background:#020208"></div><div class="theme-half" style="background:#00f5ff"></div></div><div class="theme-name">Cyberpunk</div></div>
+          <div class="theme-card" data-t="minimal" onclick="applyTheme('minimal')"><div class="theme-swatch"><div class="theme-half" style="background:#fafafa"></div><div class="theme-half" style="background:#374151"></div></div><div class="theme-name">Minimal</div></div>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-sub">Theme applies instantly and persists across sessions.</div>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div class="sm-panel" id="spanel-admin">
+        <div class="sb-section">Room Control</div>
+        <div class="admin-block">
+          <div class="admin-lbl">Lock / Unlock Room</div>
+          <div class="admin-sl">Prevents new members from joining this session.</div>
+          <button class="btn-block" id="smLockBtn" onclick="adminLock()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Lock Room
+          </button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Anonymous Mode</div>
+            <div class="toggle-sl">Hide all usernames for everyone</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="smAnonToggle" onchange="toggleAnon(this.checked)"/><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="sep"></div>
+        <div class="admin-block">
+          <div class="admin-lbl">Message Rate Limit</div>
+          <div class="admin-sl">Max messages per 5-second window per user.</div>
+          <div class="rate-row">
+            <input type="number" id="smRateInput" class="rate-input" min="1" max="100" value="10"/>
+            <span class="rate-lbl">msgs / 5s</span>
+            <button class="btn-sm" onclick="applyRate()">Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS PANEL -->
+      <div class="sm-panel" id="spanel-users">
+        <div class="sb-section">Connected Members</div>
+        <div id="smUsersList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
