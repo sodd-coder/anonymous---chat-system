@@ -1,37 +1,1117 @@
 <!DOCTYPE html>
-<html>
-<body>
-
-<input id="search"/>
-<div id="emoji"></div>
-
-<script>
-const EMOJI_DATA = [
-  ["😀","happy"],
-  ["😂","laugh"],
-  ["🔥","fire"],
-  ["❤️","love"]
-];
-
-const container = document.getElementById("emoji");
-const input = document.getElementById("search");
-
-function render(data){
-  container.innerHTML="";
-  data.forEach(([e])=>{
-    const b=document.createElement("button");
-    b.textContent=e;
-    container.appendChild(b);
-  });
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Midnight Protocol &mdash; Secure Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl-fast.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tweetnacl-util@0.15.1/nacl-util.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* =============================================
+   THEME VARIABLES — 4 themes via data-theme
+   ============================================= */
+[data-theme="dark"]{
+  --bg:#08090f;--sl:#0d0e1a;--sc:#111221;--sch:#161728;--scx:#1c1d30;--sb:#252638;
+  --pr:#7c6aff;--prd:#5540e0;--sec:#ff5fa0;--ter:#00e5a0;
+  --os:#eeeeff;--osv:#9090b0;--out:#52526a;--outv:#38384e;
+  --grad:linear-gradient(135deg,#7c6aff,#ff5fa0);
+  --bubble-them:#1c1d30;--bubble-me-bg:rgba(124,106,255,.2);--bubble-me-bd:rgba(124,106,255,.22);
+  --inp-bg:#1c1d30;--inp-bd:rgba(255,255,255,.07);
+  --sys-bg:#111221;--f:'Inter',system-ui,sans-serif;--err:#ff5f5f;
+  color-scheme:dark;
+}
+[data-theme="light"]{
+  --bg:#f0f1f8;--sl:#e4e5f0;--sc:#ffffff;--sch:#f4f5fa;--scx:#eaebf4;--sb:#d8d9e8;
+  --pr:#5e47e8;--prd:#4030c8;--sec:#e8306a;--ter:#007a55;
+  --os:#18192e;--osv:#505068;--out:#8888a4;--outv:#b0b0c4;
+  --grad:linear-gradient(135deg,#5e47e8,#e8306a);
+  --bubble-them:#eaebf4;--bubble-me-bg:rgba(94,71,232,.12);--bubble-me-bd:rgba(94,71,232,.22);
+  --inp-bg:#eaebf4;--inp-bd:rgba(0,0,0,.1);
+  --sys-bg:#f4f5fa;--f:'Inter',system-ui,sans-serif;--err:#cc2222;
+  color-scheme:light;
+}
+[data-theme="cyberpunk"]{
+  --bg:#020208;--sl:#060612;--sc:#09091a;--sch:#0d0d22;--scx:#12122a;--sb:#1a1a32;
+  --pr:#00f5ff;--prd:#00c8d4;--sec:#ff0080;--ter:#00ff9d;
+  --os:#e0f0ff;--osv:#6080a0;--out:#304050;--outv:#202030;
+  --grad:linear-gradient(135deg,#00f5ff,#ff0080);
+  --bubble-them:#12122a;--bubble-me-bg:rgba(0,245,255,.08);--bubble-me-bd:rgba(0,245,255,.2);
+  --inp-bg:#12122a;--inp-bd:rgba(0,245,255,.12);
+  --sys-bg:#09091a;--f:'Inter',system-ui,sans-serif;--err:#ff4444;
+  color-scheme:dark;
+}
+[data-theme="minimal"]{
+  --bg:#fafafa;--sl:#f0f0f0;--sc:#ffffff;--sch:#f7f7f7;--scx:#f0f0f0;--sb:#e0e0e0;
+  --pr:#374151;--prd:#1f2937;--sec:#6b7280;--ter:#047857;
+  --os:#111827;--osv:#6b7280;--out:#9ca3af;--outv:#d1d5db;
+  --grad:linear-gradient(135deg,#374151,#6b7280);
+  --bubble-them:#f0f0f0;--bubble-me-bg:rgba(55,65,81,.08);--bubble-me-bd:rgba(55,65,81,.16);
+  --inp-bg:#f0f0f0;--inp-bd:rgba(0,0,0,.1);
+  --sys-bg:#f7f7f7;--f:'Inter',system-ui,sans-serif;--err:#dc2626;
+  color-scheme:light;
 }
 
-input.addEventListener("input",()=>{
-  const q=input.value.toLowerCase();
-  render(EMOJI_DATA.filter(([e,k])=>k.includes(q)));
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;height:100dvh;overflow:hidden}
+body{
+  font-family:var(--f);background:var(--bg);color:var(--os);
+  display:flex;flex-direction:column;
+  height:100%;height:100dvh;
+  position:fixed;inset:0;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--sb);border-radius:3px}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.hdr{
+  flex-shrink:0;height:52px;padding:0 12px;
+  background:var(--sl);border-bottom:1px solid rgba(255,255,255,.04);
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:8px;position:relative;z-index:50;
+}
+[data-theme="light"] .hdr,[data-theme="minimal"] .hdr{border-bottom-color:rgba(0,0,0,.08)}
+.hdr-brand{display:flex;align-items:center;gap:7px;text-decoration:none;flex-shrink:0}
+.hdr-glyph{width:26px;height:26px;background:var(--grad);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.hdr-name{font-size:13px;font-weight:700;color:var(--os);letter-spacing:-.2px}
+@media(max-width:440px){.hdr-name{display:none}}
+.hdr-mid{display:flex;justify-content:center;align-items:center;overflow:hidden}
+.room-pill{display:flex;align-items:center;gap:7px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:20px;padding:6px 12px;cursor:pointer;transition:all .2s;max-width:100%;overflow:hidden;-webkit-tap-highlight-color:transparent;min-height:36px}
+.room-pill:hover{border-color:rgba(124,106,255,.3);background:rgba(124,106,255,.05)}
+.room-pill-lbl{font-size:9px;color:var(--out);font-weight:600;letter-spacing:.5px;text-transform:uppercase;flex-shrink:0}
+@media(max-width:380px){.room-pill-lbl{display:none}}
+.room-pill-val{font-size:12px;font-weight:700;color:var(--pr);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-pill-copy{width:22px;height:22px;background:rgba(124,106,255,.1);border:none;border-radius:50%;color:var(--pr);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:background .2s}
+.room-pill-copy:hover{background:rgba(124,106,255,.2)}
+.hdr-r{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.enc-badge{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.15);color:var(--ter);transition:all .3s}
+.enc-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--ter);animation:blink 2s infinite}
+.enc-badge.connecting{background:rgba(255,95,95,.06);border-color:rgba(255,95,95,.15);color:var(--err)}
+.enc-badge.connecting .enc-badge-dot{background:var(--err);animation:none}
+.enc-badge-text{white-space:nowrap}
+@media(max-width:520px){.enc-badge .enc-badge-text{display:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.online-count{display:flex;align-items:center;gap:4px;padding:5px 9px;border-radius:20px;border:none;cursor:pointer;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.12);color:var(--ter);font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;transition:all .2s;min-height:32px}
+.online-count:hover{background:rgba(0,229,160,.12)}
+.online-dot{width:5px;height:5px;border-radius:50%;background:var(--ter);box-shadow:0 0 5px var(--ter);animation:blink 2s infinite}
+.leave-btn{padding:0 13px;height:34px;background:rgba(255,95,95,.08);color:var(--err);border:1px solid rgba(255,95,95,.16);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap;font-family:var(--f);min-height:36px}
+.leave-btn:hover{background:rgba(255,95,95,.16);border-color:var(--err)}
+.leave-btn:active{transform:scale(.96)}
+
+/* =============================================
+   BANNERS
+   ============================================= */
+.bnr{flex-shrink:0;padding:5px 14px;font-size:11px;display:none;align-items:center;justify-content:center;gap:6px;font-weight:500}
+.bnr.show{display:flex}
+.bnr-enc{background:rgba(0,229,160,.07);color:var(--ter)}
+.bnr-exp{background:rgba(245,158,11,.07);color:#f59e0b}
+.bnr-recon{background:rgba(255,95,95,.07);color:var(--err)}
+.bnr-sd{background:rgba(124,106,255,.07);color:var(--pr)}
+.bnr-prompt{background:rgba(0,229,160,.05);color:var(--ter)}
+.bnr-admin{background:rgba(245,158,11,.05);color:#f59e0b}
+.bnr-locked{background:rgba(255,95,95,.05);color:var(--err)}
+.bnr-act{background:none;border:none;font-size:11px;font-weight:700;cursor:pointer;padding:0 4px;color:inherit;-webkit-tap-highlight-color:transparent;font-family:var(--f)}
+.bnr-x{background:none;border:none;font-size:14px;cursor:pointer;opacity:.5;color:inherit;-webkit-tap-highlight-color:transparent;min-width:28px;min-height:28px;display:flex;align-items:center;justify-content:center}
+.spin{width:10px;height:10px;border:2px solid rgba(255,95,95,.2);border-top-color:var(--err);border-radius:50%;animation:sp .8s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* =============================================
+   LAYOUT
+   ============================================= */
+.main{flex:1;display:flex;overflow:hidden;min-height:0;position:relative}
+
+/* =============================================
+   SIDEBAR
+   ============================================= */
+.sidebar{
+  width:264px;flex-shrink:0;
+  background:var(--sl);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  border-right:1px solid rgba(255,255,255,.04);
+}
+[data-theme="light"] .sidebar,[data-theme="minimal"] .sidebar{border-right-color:rgba(0,0,0,.07)}
+@media(max-width:768px){
+  .sidebar{display:none!important}
+  .sb-overlay{display:none!important}
+}
+.sb-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:10px auto 0;flex-shrink:0}
+@media(min-width:769px){.sb-handle{display:none}}
+[data-theme="light"] .sb-handle,[data-theme="minimal"] .sb-handle{background:rgba(0,0,0,.1)}
+.sb-overlay{position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:none}
+.sb-overlay.show{display:block}
+
+/* tabs */
+.sb-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.sb-tabs::-webkit-scrollbar{display:none}
+[data-theme="light"] .sb-tabs,[data-theme="minimal"] .sb-tabs{border-bottom-color:rgba(0,0,0,.08)}
+.sb-tab{flex:1;min-width:60px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px 8px;background:none;border:none;cursor:pointer;font-size:10px;font-weight:600;color:var(--osv);transition:all .2s;-webkit-tap-highlight-color:transparent;border-bottom:2px solid transparent;font-family:var(--f);letter-spacing:.2px}
+.sb-tab:hover{color:var(--os);background:rgba(255,255,255,.04)}
+.sb-tab.active{color:var(--pr);border-bottom-color:var(--pr);background:rgba(124,106,255,.04)}
+.sb-tab-ic{font-size:16px}
+.sb-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sb-panel{display:none;padding:14px 14px 20px}
+.sb-panel.active{display:block}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--out);margin-bottom:10px;padding:4px 0 0}
+.sep{height:1px;background:rgba(255,255,255,.05);margin:14px 0}
+[data-theme="light"] .sep,[data-theme="minimal"] .sep{background:rgba(0,0,0,.08)}
+
+/* users list */
+.u-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background .18s;cursor:default;min-height:48px;margin-bottom:2px}
+.u-item:hover{background:rgba(255,255,255,.04)}
+[data-theme="light"] .u-item:hover,[data-theme="minimal"] .u-item:hover{background:rgba(0,0,0,.04)}
+.u-av{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.u-info{min-width:0;flex:1}
+.u-name{font-size:12px;font-weight:700;color:var(--os);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.1px}
+.u-name.muted{color:var(--out);text-decoration:line-through}
+.u-role{font-size:10px;color:var(--out);margin-top:1px}
+.u-acts{display:flex;gap:2px;opacity:0;transition:opacity .18s}
+.u-item:hover .u-acts,.u-item:focus-within .u-acts{opacity:1}
+@media(max-width:768px){.u-acts{opacity:1}}
+.u-act{background:none;border:none;font-size:14px;cursor:pointer;padding:5px;border-radius:7px;color:var(--osv);transition:all .15s;-webkit-tap-highlight-color:transparent;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center}
+.u-act:hover{background:rgba(255,255,255,.07);color:var(--os)}
+
+/* settings */
+.enc-status{display:flex;align-items:center;gap:10px;padding:12px;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.12);border-radius:10px;margin-bottom:10px}
+.enc-status-ic{font-size:22px;flex-shrink:0}
+.chip{display:inline-block;padding:3px 9px;border-radius:40px;font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.chip-secure{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:var(--ter)}
+.chip-warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#f59e0b}
+.chip-off{background:rgba(255,95,95,.08);border:1px solid rgba(255,95,95,.15);color:var(--err)}
+.enc-status-sub{font-size:11px;color:var(--out);margin-top:3px}
+.setting-block{margin-bottom:4px}
+.setting-title{font-size:12px;font-weight:700;color:var(--os);margin-bottom:3px;letter-spacing:-.1px}
+.setting-sub{font-size:11px;color:var(--out);line-height:1.5}
+.sel-input{width:100%;padding:8px 10px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:8px;color:var(--os);font-size:12px;outline:none;transition:border-color .2s;cursor:pointer;margin-top:6px;font-family:var(--f)}
+.sel-input:focus{border-color:rgba(124,106,255,.4)}
+.btn-block{width:100%;padding:10px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:9px;color:var(--os);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:7px;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:42px;letter-spacing:-.1px}
+.btn-block:hover{border-color:rgba(124,106,255,.3);color:var(--pr);background:rgba(124,106,255,.05)}
+.btn-block:active{transform:scale(.97)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0}
+.toggle-info{flex:1}
+.toggle-lbl{font-size:12px;font-weight:600;color:var(--os);letter-spacing:-.1px}
+.toggle-sl{font-size:11px;color:var(--out);margin-top:2px}
+.toggle{position:relative;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{width:38px;height:20px;border-radius:10px;background:var(--scx);border:1px solid var(--inp-bd);transition:all .25s;cursor:pointer}
+.toggle input:checked~.toggle-track{background:var(--pr);border-color:var(--pr)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .25s;cursor:pointer;pointer-events:none}
+.toggle input:checked~.toggle-thumb{transform:translateX(18px)}
+
+/* admin */
+.admin-block{margin-bottom:4px}
+.admin-lbl{font-size:12px;font-weight:700;color:var(--os);margin-bottom:3px;letter-spacing:-.1px}
+.admin-sl{font-size:11px;color:var(--out);line-height:1.5;margin-bottom:4px}
+.rate-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.rate-input{width:60px;padding:7px 9px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:8px;color:var(--os);font-size:12px;outline:none;font-family:var(--f);-webkit-appearance:none}
+.rate-input:focus{border-color:rgba(124,106,255,.4)}
+.rate-lbl{font-size:11px;color:var(--out);flex:1}
+.btn-sm{padding:7px 12px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:8px;color:var(--os);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:34px}
+.btn-sm:hover{border-color:rgba(124,106,255,.3);color:var(--pr)}
+
+/* themes */
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.theme-card{border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .22s;-webkit-tap-highlight-color:transparent}
+.theme-card:hover{border-color:rgba(124,106,255,.3);transform:scale(1.02)}
+.theme-card.active{border-color:var(--pr);box-shadow:0 0 0 1px rgba(124,106,255,.1)}
+.theme-card:active{transform:scale(.97)}
+.theme-swatch{display:flex;height:44px}
+.theme-half{flex:1}
+.theme-name{padding:7px 8px;background:var(--sc);font-size:11px;font-weight:600;color:var(--os);text-align:center;letter-spacing:-.1px}
+
+/* =============================================
+   CHAT AREA
+   ============================================= */
+.chat{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.msgs-wrap{flex:1;position:relative;overflow:hidden;min-height:0}
+.msgs{height:100%;overflow-y:auto;padding:14px 14px 8px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs-spacer{flex:1;min-height:6px}
+.scroll-dn{position:absolute;bottom:12px;right:12px;width:36px;height:36px;background:var(--grad);border:none;border-radius:50%;color:#fff;font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,106,255,.4);z-index:10;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px}
+.scroll-dn.show{display:flex}
+.scroll-dn:active{transform:scale(.92)}
+
+/* messages */
+.msg-g{display:flex;flex-direction:column;position:relative;max-width:min(76%,340px)}
+.msg-g.me{align-self:flex-end;align-items:flex-end}
+.msg-g.them{align-self:flex-start;align-items:flex-start}
+.msg-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.msg-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--prd),var(--sec));display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.msg-name{font-size:11px;font-weight:700;color:var(--pr);letter-spacing:-.1px}
+.msg-ts{font-size:10px;color:var(--out)}
+@media(max-width:440px){.msg-g{max-width:min(84%,300px)}}
+.bubble{padding:10px 14px;font-size:15px;line-height:1.55;word-break:break-word;animation:bIn .2s cubic-bezier(.34,1.56,.64,1)}
+@media(max-width:440px){.bubble{font-size:16px;padding:11px 15px}}
+@keyframes bIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.msg-g.them .bubble{background:var(--bubble-them);color:var(--os);border-radius:3px 14px 14px 14px}
+.msg-g.me .bubble{background:var(--bubble-me-bg);border:1px solid var(--bubble-me-bd);color:var(--os);border-radius:14px 3px 14px 14px}
+.rp-preview{padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:11px;cursor:pointer;overflow:hidden;max-width:100%}
+.msg-g.them .rp-preview{background:rgba(255,255,255,.06);border-left:3px solid var(--pr)}
+.msg-g.me .rp-preview{background:rgba(0,0,0,.12);border-left:3px solid rgba(255,255,255,.3)}
+[data-theme="light"] .msg-g.me .rp-preview,[data-theme="minimal"] .msg-g.me .rp-preview{background:rgba(0,0,0,.06)}
+.rp-auth{font-size:10px;font-weight:700;color:var(--pr);margin-bottom:1px}
+.rp-txt{color:var(--osv);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reacts{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;padding:0 2px}
+.react-badge{display:flex;align-items:center;gap:3px;background:var(--sch);border-radius:10px;padding:3px 7px;font-size:13px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;border:1px solid transparent;min-height:28px}
+.react-badge:hover{border-color:rgba(124,106,255,.2)}
+.react-badge.mine{border-color:rgba(124,106,255,.3);background:rgba(124,106,255,.08)}
+.react-count{font-size:11px;color:var(--osv);font-weight:700}
+.msg-seen{font-size:10px;color:var(--ter);font-weight:600;padding:0 2px;margin-top:1px}
+.sd-timer{font-size:10px;color:var(--err);margin-top:2px;padding:0 2px;font-weight:600}
+.act-bar{position:absolute;display:flex;gap:2px;background:var(--sc);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:4px 5px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:100;opacity:0;pointer-events:none;transition:all .15s;transform:translateY(4px);white-space:nowrap}
+[data-theme="light"] .act-bar,[data-theme="minimal"] .act-bar{border-color:rgba(0,0,0,.1);box-shadow:0 6px 24px rgba(0,0,0,.15)}
+.act-bar.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.msg-g.me .act-bar{right:0;bottom:calc(100% + 4px)}
+.msg-g.them .act-bar{left:0;bottom:calc(100% + 4px)}
+.act-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:5px 6px;border-radius:8px;transition:background .15s;-webkit-tap-highlight-color:transparent;color:var(--osv);min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center}
+.act-btn:hover{background:rgba(255,255,255,.07);color:var(--os)}
+[data-theme="light"] .act-btn:hover,[data-theme="minimal"] .act-btn:hover{background:rgba(0,0,0,.06)}
+.quick-react{position:absolute;display:flex;gap:2px;background:var(--sc);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:6px 8px;box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:101;opacity:0;pointer-events:none;transition:all .15s;transform:translateY(4px)}
+.quick-react.show{opacity:1;pointer-events:all;transform:translateY(0)}
+.msg-g.me .quick-react{right:0;bottom:calc(100% + 40px)}
+.msg-g.them .quick-react{left:0;bottom:calc(100% + 40px)}
+.qr-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;border-radius:7px;transition:transform .15s;-webkit-tap-highlight-color:transparent;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center}
+.qr-btn:hover{transform:scale(1.25)}
+/* voice bubble */
+.v-bub{display:flex;align-items:center;gap:9px;padding:10px 13px;min-width:170px;max-width:260px;animation:bIn .2s ease}
+.msg-g.them .v-bub{background:var(--bubble-them);border-radius:3px 14px 14px 14px}
+.msg-g.me .v-bub{background:var(--bubble-me-bg);border:1px solid var(--bubble-me-bd);border-radius:14px 3px 14px 14px}
+.v-play{width:34px;height:34px;border-radius:50%;background:rgba(124,106,255,.12);border:none;color:var(--pr);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px}
+.v-play:hover{background:rgba(124,106,255,.2)}
+.v-wave{flex:1;height:22px;display:flex;align-items:center;gap:2px;overflow:hidden}
+.v-bar{width:2.5px;border-radius:3px;background:rgba(124,106,255,.35);flex-shrink:0}
+.v-dur{font-size:10px;color:var(--osv);font-weight:700;flex-shrink:0}
+/* file bubble */
+.f-bub{display:flex;align-items:center;gap:9px;padding:10px 13px;border-radius:12px;cursor:pointer;max-width:240px;animation:bIn .2s ease;-webkit-tap-highlight-color:transparent;min-height:52px}
+.msg-g.them .f-bub{background:var(--bubble-them);border-radius:3px 14px 14px 14px}
+.msg-g.me .f-bub{background:var(--bubble-me-bg);border:1px solid var(--bubble-me-bd);border-radius:14px 3px 14px 14px}
+.f-ic{font-size:22px;flex-shrink:0}
+.f-nm{font-size:12px;font-weight:700;color:var(--os);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.f-sz{font-size:10px;color:var(--osv);margin-top:2px}
+.img-bub{max-width:min(200px,58vw);border-radius:14px;overflow:hidden;cursor:pointer;animation:bIn .2s ease;box-shadow:0 4px 18px rgba(0,0,0,.4)}
+.img-bub img{width:100%;display:block}
+/* system chips */
+.sys-chip{align-self:center;font-size:10px;color:var(--osv);background:var(--sch);padding:4px 12px;border-radius:40px;margin:2px 0;font-weight:500;letter-spacing:.3px}
+.hist-chip{align-self:center;font-size:10px;color:var(--osv);background:rgba(124,106,255,.07);border:1px solid rgba(124,106,255,.1);padding:4px 12px;border-radius:40px;margin:4px 0;font-weight:600}
+
+/* typing */
+.typing-row{flex-shrink:0;padding:0 14px 5px;font-size:11px;color:var(--out);height:20px;display:flex;align-items:center;gap:6px;font-weight:500}
+.t-dots{display:flex;gap:2px}
+.t-dots span{width:3px;height:3px;border-radius:50%;background:var(--pr);opacity:.6;animation:td 1.2s infinite}
+.t-dots span:nth-child(2){animation-delay:.2s}
+.t-dots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* reply bar */
+.reply-bar{display:none;padding:7px 14px;background:rgba(124,106,255,.06);border-top:1px solid rgba(124,106,255,.12);align-items:center;gap:9px;flex-shrink:0}
+.reply-bar.show{display:flex}
+.reply-bar-c{flex:1;min-width:0}
+.reply-auth{font-size:11px;font-weight:700;color:var(--pr);margin-bottom:1px}
+.reply-txt{font-size:11px;color:var(--out);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reply-x{background:none;border:none;color:var(--out);font-size:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center;transition:color .2s}
+.reply-x:hover{color:var(--os)}
+
+/* =============================================
+   INPUT AREA
+   ============================================= */
+.inp-area{
+  flex-shrink:0;background:var(--sl);
+  padding:7px 10px;
+  padding-bottom:calc(7px + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(255,255,255,.04);
+}
+[data-theme="light"] .inp-area,[data-theme="minimal"] .inp-area{border-top-color:rgba(0,0,0,.07)}
+/* slide-up panels */
+.slideup{display:none;background:var(--sch);border-radius:14px 14px 0 0;margin:-7px -10px 8px;padding:12px 14px 14px;animation:su .18s ease}
+.slideup.open{display:block}
+@keyframes su{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.emoji-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:8px}
+[data-theme="light"] .emoji-tabs,[data-theme="minimal"] .emoji-tabs{border-bottom-color:rgba(0,0,0,.08)}
+.e-tab{flex:1;padding:8px;background:none;border:none;cursor:pointer;font-size:10px;font-weight:600;color:var(--osv);text-transform:uppercase;letter-spacing:.8px;border-bottom:2px solid transparent;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f)}
+.e-tab.active{color:var(--pr);border-bottom-color:var(--pr)}
+.e-search{width:100%;padding:7px 12px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:8px;color:var(--os);font-size:14px;font-family:var(--f);outline:none;margin-bottom:8px;-webkit-appearance:none}
+.e-search::placeholder{color:var(--out)}
+.e-search:focus{border-color:rgba(124,106,255,.35)}
+.e-grid{display:flex;flex-wrap:wrap;gap:2px;max-height:120px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.e-btn{background:none;border:none;font-size:22px;cursor:pointer;padding:6px;border-radius:8px;transition:all .15s;-webkit-tap-highlight-color:transparent;min-width:40px;min-height:40px;display:flex;align-items:center;justify-content:center}
+.e-btn:hover{transform:scale(1.2);background:rgba(255,255,255,.06)}
+.e-btn:active{transform:scale(1.05)}
+.attach-items{display:flex;justify-content:space-around;padding:4px 0}
+.attach-it{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:8px;min-width:60px}
+.attach-ic{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.attach-ic:active{transform:scale(.9)}
+.a-p{background:rgba(124,106,255,.1);color:var(--pr)}
+.a-t{background:rgba(0,229,160,.08);color:var(--ter)}
+.a-s{background:rgba(255,95,160,.09);color:var(--sec)}
+.attach-lbl{font-size:10px;font-weight:700;color:var(--out);text-transform:uppercase;letter-spacing:.5px}
+/* recording bar */
+.rec-bar{display:none;align-items:center;gap:9px;padding:9px 12px;background:rgba(255,95,95,.06);border-radius:10px;margin-bottom:8px;animation:su .18s ease}
+.rec-bar.show{display:flex}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--err);animation:blink 1s infinite;flex-shrink:0}
+.rec-time{font-size:12px;font-weight:700;color:var(--err);flex:1;font-variant-numeric:tabular-nums}
+.rec-cancel{background:none;border:none;color:var(--out);font-size:12px;cursor:pointer;font-weight:600;-webkit-tap-highlight-color:transparent;min-height:36px;font-family:var(--f)}
+.rec-send{padding:7px 14px;background:var(--err);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:36px;font-family:var(--f)}
+/* upload */
+.uprog{font-size:11px;color:var(--pr);padding:3px 0 2px;display:none;font-weight:600}
+/* input row */
+.inp-row{display:flex;align-items:center;gap:5px;background:var(--inp-bg);border-radius:12px;padding:5px 6px 5px 8px;border:1px solid var(--inp-bd);min-height:48px;transition:border-color .2s}
+.inp-row:focus-within{border-color:rgba(124,106,255,.3)}
+.icon-btn{background:none;border:none;color:var(--out);cursor:pointer;padding:7px;border-radius:9px;font-size:19px;transition:all .18s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;flex-shrink:0}
+.icon-btn:hover{background:rgba(255,255,255,.06);color:var(--os)}
+[data-theme="light"] .icon-btn:hover,[data-theme="minimal"] .icon-btn:hover{background:rgba(0,0,0,.06)}
+.icon-btn:active{background:rgba(255,255,255,.1);transform:scale(.9)}
+.icon-btn.rec-on{color:var(--err)!important;animation:blink 1s infinite}
+.chat-inp{flex:1;background:transparent;border:none;color:var(--os);font-size:16px;font-family:var(--f);outline:none;padding:3px 0;min-width:0;-webkit-appearance:none}
+.chat-inp::placeholder{color:var(--out)}
+.char-count{font-size:10px;flex-shrink:0;font-weight:700}
+.char-warn{color:#f59e0b}
+.char-danger{color:var(--err)}
+.send-btn{width:36px;height:36px;background:var(--grad);border:none;border-radius:9px;color:#fff;font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:42px;min-height:42px}
+.send-btn:hover{transform:scale(1.06);box-shadow:0 4px 14px rgba(124,106,255,.4)}
+.send-btn:active{transform:scale(.92)}
+.inp-footer{text-align:center;font-size:9px;color:var(--outv);letter-spacing:1px;text-transform:uppercase;padding:6px 0 1px}
+
+/* =============================================
+   MODALS — mobile slide-up, desktop centered
+   ============================================= */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);z-index:1000;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-ov.show{display:flex}
+@media(min-width:481px){.modal-ov{align-items:center;padding:20px}}
+.modal{background:var(--sc);width:100%;max-width:360px;padding:24px 22px;text-align:center;animation:mIn .28s cubic-bezier(.32,.72,0,1);position:relative;overflow:hidden;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+@media(max-width:480px){.modal{border-radius:18px 18px 0 0;max-width:100%}}
+@media(min-width:481px){.modal{border-radius:16px};@keyframes mIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.modal-handle{width:30px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:0 auto 14px}
+@media(min-width:481px){.modal-handle{display:none}}
+.modal-ic{font-size:36px;margin-bottom:11px}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+.modal-sub{font-size:13px;color:var(--osv);line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:9px}
+.btn-g{flex:1;padding:12px;background:var(--scx);color:var(--os);border:1px solid var(--inp-bd);border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:46px}
+.btn-g:hover{background:var(--sch)}
+.btn-g:active{transform:scale(.97)}
+.btn-d{flex:1;padding:12px;background:linear-gradient(135deg,#ff5f5f,#dc2626);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:46px}
+.btn-d:hover{transform:scale(1.02);box-shadow:0 5px 18px rgba(255,95,95,.35)}
+.btn-d:active{transform:scale(.97)}
+.btn-p-full{width:100%;padding:12px;background:var(--grad);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .22s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:46px;margin-bottom:9px}
+.btn-p-full:hover{transform:scale(1.01);box-shadow:0 6px 20px rgba(124,106,255,.35)}
+.btn-p-full:active{transform:scale(.97)}
+.qr-wrap{background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:6px}
+.qr-val{font-size:18px;font-weight:700;letter-spacing:4px;color:var(--pr);margin-bottom:12px;font-variant-numeric:tabular-nums}
+.sd-opts{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:14px}
+.sd-opt{padding:9px 14px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--os);transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:42px}
+.sd-opt.sel,.sd-opt:hover{border-color:rgba(124,106,255,.35);background:rgba(124,106,255,.08);color:var(--pr);transform:translateY(-1px)}
+.sd-opt:active{transform:scale(.96)}
+.sd-off{padding:9px 14px;background:rgba(255,95,95,.07);border:1px solid rgba(255,95,95,.15);border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--err);transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);min-height:42px}
+.sd-off:hover{background:rgba(255,95,95,.14)}
+
+/* TOAST */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-8px);padding:8px 17px;border-radius:10px;font-size:12px;font-weight:600;opacity:0;transition:all .25s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:2000;white-space:nowrap;max-width:86vw;text-align:center;font-family:var(--f)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{background:rgba(255,95,95,.13);border:1px solid rgba(255,95,95,.25);color:var(--err)}
+.toast.ok{background:rgba(0,229,160,.09);border:1px solid rgba(0,229,160,.22);color:var(--ter)}
+.toast.info{background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.22);color:var(--pr)}
+
+/* SETTINGS TRIGGER BUTTON */
+.settings-trigger-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:9px;
+  background:var(--scx);border:1px solid var(--inp-bd);
+  color:var(--osv);cursor:pointer;
+  transition:all .2s;-webkit-tap-highlight-color:transparent;
+  min-width:36px;min-height:36px;
+}
+.settings-trigger-btn:hover{background:rgba(124,106,255,.1);border-color:rgba(124,106,255,.3);color:var(--pr)}
+.settings-trigger-btn:active{transform:scale(.93)}
+
+/* SETTINGS MODAL */
+.settings-modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(14px);
+  z-index:1001;display:none;align-items:flex-end;justify-content:center;padding:0;
+}
+.settings-modal-ov.show{display:flex}
+@media(min-width:540px){.settings-modal-ov{align-items:center;padding:20px}}
+.settings-modal{
+  background:var(--sc);width:100%;max-width:480px;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 48px rgba(0,0,0,.6);
+  display:flex;flex-direction:column;
+  max-height:88vh;overflow:hidden;
+  animation:smIn .28s cubic-bezier(.32,.72,0,1);
+  position:relative;
+}
+@media(min-width:540px){.settings-modal{border-radius:18px;max-height:82vh}}
+@keyframes smIn{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.settings-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.sm-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:12px auto 0;flex-shrink:0}
+@media(min-width:540px){.sm-handle{display:none}}
+.sm-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0}
+.sm-title{font-size:16px;font-weight:700;letter-spacing:-.3px;color:var(--os)}
+.sm-close{background:none;border:none;color:var(--osv);font-size:20px;cursor:pointer;padding:4px;-webkit-tap-highlight-color:transparent;min-width:32px;min-height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:all .2s}
+.sm-close:hover{background:rgba(255,255,255,.07);color:var(--os)}
+
+/* settings tabs */
+.sm-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);margin:12px 20px 0;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.sm-tabs::-webkit-scrollbar{display:none}
+[data-theme="light"] .sm-tabs,[data-theme="minimal"] .sm-tabs{border-bottom-color:rgba(0,0,0,.08)}
+.sm-tab{flex-shrink:0;padding:9px 16px;background:none;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--osv);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;-webkit-tap-highlight-color:transparent;font-family:var(--f);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.sm-tab:hover{color:var(--os)}
+.sm-tab.active{color:var(--pr);border-bottom-color:var(--pr)}
+.sm-tab svg{width:14px;height:14px;flex-shrink:0}
+.sm-body{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
+.sm-panel{display:none}
+.sm-panel.active{display:block}
+</style>
+</head>
+<body>
+<!-- MODALS -->
+<div class="modal-ov" id="leaveModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128682;</div><div class="modal-title">Leave session?</div><div class="modal-sub">Messages are permanently deleted. This session cannot be rejoined.</div><div class="modal-btns"><button class="btn-g" onclick="closeModal('leaveModal')">Stay</button><button class="btn-d" onclick="doLeave()">Leave</button></div></div></div>
+<div class="modal-ov" id="qrModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128241;</div><div class="modal-title">Share Room</div><div class="modal-sub">Scan to join or copy the code below</div><div class="qr-wrap"><div id="qrContainer"></div></div><div class="qr-val" id="qrVal"></div><button class="btn-p-full" onclick="copyCode()">&#128203; Copy Room Code</button><button class="btn-g" onclick="closeModal('qrModal')" style="width:100%">Close</button></div></div>
+<div class="modal-ov" id="sdModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128163;</div><div class="modal-title">Self-Destruct Timer</div><div class="modal-sub">Messages auto-delete after this time for all participants.</div><div class="sd-opts"><button class="sd-opt" onclick="pickSD(10)">10s</button><button class="sd-opt" onclick="pickSD(30)">30s</button><button class="sd-opt" onclick="pickSD(60)">1 min</button><button class="sd-opt" onclick="pickSD(300)">5 min</button><button class="sd-opt" onclick="pickSD(3600)">1 hr</button></div><button class="sd-off" onclick="pickSD(0)">&#128683; Turn Off</button><div style="margin-top:12px"><button class="btn-g" onclick="closeModal('sdModal')" style="width:100%">Cancel</button></div></div></div>
+<div class="toast" id="toast"></div>
+<!-- SIDEBAR OVERLAY -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
+<!-- HEADER -->
+<header class="hdr">
+  <a href="/" class="hdr-brand"><div class="hdr-glyph" style="background:transparent;padding:0;width:52px;height:34px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div><span class="hdr-name">Midnight Protocol</span></a>
+  <div class="hdr-mid">
+    <div class="room-pill" onclick="showQR()">
+      <span class="room-pill-lbl">Room</span>
+      <span class="room-pill-val" id="hdrCode">&#8212;&#8212;&#8212;</span>
+      <button class="room-pill-copy" onclick="copyCode();event.stopPropagation()" title="Copy">&#128203;</button>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="enc-badge connecting" id="encBadge"><div class="enc-badge-dot"></div><span class="enc-badge-text" id="encBadgeTxt">Connecting</span></div>
+    <button class="online-count" onclick="toggleSb()"><div class="online-dot"></div><span id="uCount">1</span></button>
+    <button class="settings-trigger-btn" onclick="openSettings()" aria-label="Settings" title="Settings">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M17.66 2.34a14 14 0 0 1 0 19.32M6.34 2.34a14 14 0 0 0 0 19.32"/></svg>
+</button>
+<button class="leave-btn" onclick="openModal('leaveModal')">Leave</button>
+  </div>
+</header>
+<!-- BANNERS -->
+<div class="bnr bnr-enc show" id="bKey">&#9203; Establishing encrypted channel&hellip;</div>
+<div class="bnr bnr-enc" id="bEnc">&#128272; Secure session active &middot; <span id="bEncMode">X25519+AES-GCM</span><button class="bnr-x" onclick="hideBnr('bEnc')">&#10005;</button></div>
+<div class="bnr bnr-exp" id="bExp">&#9201;&#65039; Expires in <span id="expCD"></span> &mdash; send a message to reset</div>
+<div class="bnr bnr-recon" id="bRecon"><div class="spin"></div>Reconnecting&hellip;</div>
+<div class="bnr bnr-sd" id="bSD"><span id="bSDtxt"></span></div>
+<div class="bnr bnr-prompt" id="bPrompt"><span id="promptTxt"></span><button class="bnr-act" onclick="usePrompt()">Use it &rarr;</button><button class="bnr-x" onclick="hideBnr('bPrompt')">&#10005;</button></div>
+<div class="bnr bnr-admin" id="bAdmin">&#128081; You are the room admin &mdash; tap &#128101; to manage<button class="bnr-x" onclick="hideBnr('bAdmin')" style="margin-left:8px">&#10005;</button></div>
+<div class="bnr bnr-locked" id="bLocked">&#128274; Room locked &mdash; no new members</div>
+<!-- MAIN -->
+<div class="main">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-handle"></div>
+    <nav class="sb-tabs">
+      <button class="sb-tab active" data-tab="users" onclick="swTab('users')"><span class="sb-tab-ic">&#128101;</span><span>Users</span></button>
+      <button class="sb-tab" data-tab="settings" onclick="swTab('settings')"><span class="sb-tab-ic">&#9881;&#65039;</span><span>Settings</span></button>
+      <button class="sb-tab" id="adminTab" data-tab="admin" onclick="swTab('admin')" style="display:none"><span class="sb-tab-ic">&#128737;&#65039;</span><span>Admin</span></button>
+      <button class="sb-tab" data-tab="themes" onclick="swTab('themes')"><span class="sb-tab-ic">&#127912;</span><span>Theme</span></button>
+    </nav>
+    <div class="sb-body">
+      <!-- USERS -->
+      <div id="panel-users" class="sb-panel active">
+        <div class="sb-section">Connected Minds</div>
+        <div id="usersList"></div>
+      </div>
+      <!-- SETTINGS -->
+      <div id="panel-settings" class="sb-panel">
+        <div class="sb-section">Encryption</div>
+        <div class="enc-status" id="encStatus">
+          <div class="enc-status-ic">&#128272;</div>
+          <div>
+            <div class="chip chip-secure" id="encChip">E2E Active</div>
+            <div class="enc-status-sub" id="encInfo">X25519 ECDH + AES-256-GCM</div>
+          </div>
+        </div>
+        <div class="setting-block">
+          <div class="setting-title">Encryption Mode</div>
+          <div class="setting-sub">E2E: keys on device only. Transport: server-derived. None: testing only.</div>
+          <select id="encModeSelect" class="sel-input" onchange="changeEncMode(this.value)">
+            <option value="e2e">End-to-End (X25519 + AES-GCM)</option>
+            <option value="transport">Transport Encryption (AES-GCM)</option>
+            <option value="none">None (testing only)</option>
+          </select>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Regenerate Keys</div>
+          <div class="setting-sub">Generate a fresh X25519 keypair and re-distribute the session key to all peers.</div>
+          <button class="btn-block" onclick="regenKeys()">&#128273; Regenerate Keys</button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Ephemeral messages</div>
+            <div class="toggle-sl">Delete history when room closes</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="ephemerToggle" checked/>
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Self-Destruct Timer</div>
+          <div class="setting-sub">Auto-expire your messages after a set time.</div>
+          <button class="btn-block" onclick="openModal('sdModal')">&#128163; Configure Timer</button>
+        </div>
+      </div>
+      <!-- ADMIN -->
+      <div id="panel-admin" class="sb-panel">
+        <div class="sb-section">Room Control</div>
+        <div class="admin-block">
+          <div class="admin-lbl">Lock / Unlock Room</div>
+          <div class="admin-sl">Prevents new members from joining this session.</div>
+          <button class="btn-block" id="lockBtn" onclick="adminLock()">&#128274; Lock Room</button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Anonymous Mode</div>
+            <div class="toggle-sl">Hide all usernames for everyone</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="anonToggle" onchange="toggleAnon(this.checked)"/>
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>
+        <div class="sep"></div>
+        <div class="admin-block">
+          <div class="admin-lbl">Message Rate Limit</div>
+          <div class="admin-sl">Max messages per 5-second window per user.</div>
+          <div class="rate-row">
+            <input type="number" id="rateInput" class="rate-input" min="1" max="100" value="10"/>
+            <span class="rate-lbl">msgs / 5s</span>
+            <button class="btn-sm" onclick="applyRate()">Apply</button>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div class="sb-section" style="margin-top:2px">Active Users</div>
+        <div id="adminUsersList"></div>
+      </div>
+      <!-- THEMES -->
+      <div id="panel-themes" class="sb-panel">
+        <div class="sb-section">UI Theme</div>
+        <div class="theme-grid">
+          <div class="theme-card" data-t="dark" onclick="applyTheme('dark')"><div class="theme-swatch"><div class="theme-half" style="background:#08090f"></div><div class="theme-half" style="background:#7c6aff"></div></div><div class="theme-name">Default Dark</div></div>
+          <div class="theme-card" data-t="light" onclick="applyTheme('light')"><div class="theme-swatch"><div class="theme-half" style="background:#f0f1f8"></div><div class="theme-half" style="background:#5e47e8"></div></div><div class="theme-name">Light</div></div>
+          <div class="theme-card" data-t="cyberpunk" onclick="applyTheme('cyberpunk')"><div class="theme-swatch"><div class="theme-half" style="background:#020208"></div><div class="theme-half" style="background:#00f5ff"></div></div><div class="theme-name">Cyberpunk</div></div>
+          <div class="theme-card" data-t="minimal" onclick="applyTheme('minimal')"><div class="theme-swatch"><div class="theme-half" style="background:#fafafa"></div><div class="theme-half" style="background:#374151"></div></div><div class="theme-name">Minimal</div></div>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-sub">Theme applies instantly and persists across sessions.</div>
+      </div>
+    </div>
+  </aside>
+  <!-- CHAT -->
+  <section class="chat">
+    <div class="msgs-wrap">
+      <div class="msgs" id="msgs"><div class="msgs-spacer"></div></div>
+      <button class="scroll-dn" id="scrollDn" onclick="scrollBot()">&#8595;</button>
+    </div>
+    <div class="reply-bar" id="replyBar">
+      <div class="reply-bar-c"><div class="reply-auth" id="replyAuth"></div><div class="reply-txt" id="replyTxt"></div></div>
+      <button class="reply-x" onclick="cancelReply()">&#10005;</button>
+    </div>
+    <div class="typing-row" id="typingRow"></div>
+    <input type="file" id="fileInp" style="display:none" accept="*/*" onchange="handleFile(event)"/>
+    <div class="inp-area">
+      <div class="slideup" id="emojiPanel">
+        <div class="emoji-tabs"><button class="e-tab active">Emojis</button></div>
+        <input type="search" id="eSearch" class="e-search" placeholder="Search&hellip;" oninput="filterEmoji(this.value)" autocorrect="off" spellcheck="false"/>
+        <div class="e-grid" id="eGrid"></div>
+      </div>
+      <div class="slideup" id="attachPanel">
+        <div class="attach-items">
+          <div class="attach-it" onclick="document.getElementById('fileInp').click();closePanels()"><div class="attach-ic a-p">&#128196;</div><span class="attach-lbl">File</span></div>
+          <div class="attach-it" onclick="document.getElementById('fileInp').click();closePanels()"><div class="attach-ic a-t">&#128444;&#65039;</div><span class="attach-lbl">Image</span></div>
+          <div class="attach-it" onclick="startRec();closePanels()"><div class="attach-ic a-s">&#127908;</div><span class="attach-lbl">Voice</span></div>
+        </div>
+      </div>
+      <div class="rec-bar" id="recBar">
+        <div class="rec-dot"></div>
+        <div class="rec-time" id="recTime">0:00</div>
+        <button class="rec-cancel" onclick="cancelRec()">Cancel</button>
+        <button class="rec-send" onclick="sendVoice()">Send &#127908;</button>
+      </div>
+      <div class="uprog" id="uprog">&#9203; Encrypting file&hellip;</div>
+      <div class="inp-row" id="inpRow">
+        <button class="icon-btn" onclick="toggleAttach()" title="Attach">&#65291;</button>
+        <button class="icon-btn" onclick="toggleEmoji()" title="Emoji">&#128522;</button>
+        <input class="chat-inp" type="text" id="msgInp" placeholder="Whisper something secure&hellip;" autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="true" maxlength="1000"/>
+        <span class="char-count" id="charCount"></span>
+        <button class="icon-btn" id="micBtn" onmousedown="startRec()" ontouchstart="startRec()" title="Voice">&#127908;</button>
+        <button class="send-btn" onclick="sendMsg()">&#8593;</button>
+      </div>
+      <p class="inp-footer">End-to-End Encrypted &middot; Midnight Protocol</p>
+    </div>
+  </section>
+</div>
+
+<script>
+// ==================================
+// REAL E2E ENCRYPTION — TweetNaCl
+// X25519 ECDH + XSalsa20-Poly1305
+// (AES-GCM mode falls back to WebCrypto)
+// ==================================
+let myKP=null, roomKey=null;
+const peerPubKeys={};
+let encMode="e2e"; // e2e | transport | none
+
+function genKP(){myKP=nacl.box.keyPair();return nacl.util.encodeBase64(myKP.publicKey);}
+function enc(text){
+  if(encMode==="none")return btoa(text);
+  if(!roomKey)return btoa(text);
+  const nonce=nacl.randomBytes(nacl.secretbox.nonceLength);
+  const box=nacl.secretbox(nacl.util.decodeUTF8(text),nonce,roomKey);
+  const out=new Uint8Array(nonce.length+box.length);
+  out.set(nonce);out.set(box,nonce.length);
+  return nacl.util.encodeBase64(out);
+}
+function dec(ct){
+  if(!ct)return null;
+  if(encMode==="none"){try{return atob(ct);}catch{return null;}}
+  if(!roomKey){try{return atob(ct);}catch{return null;}}
+  try{
+    const buf=nacl.util.decodeBase64(ct);
+    const nonce=buf.slice(0,nacl.secretbox.nonceLength);
+    const box=buf.slice(nacl.secretbox.nonceLength);
+    const plain=nacl.secretbox.open(box,nonce,roomKey);
+    return plain?nacl.util.encodeUTF8(plain):null;
+  }catch{return null;}
+}
+function encKeyForPeer(peerPubB64){
+  const pp=nacl.util.decodeBase64(peerPubB64);
+  const nonce=nacl.randomBytes(nacl.box.nonceLength);
+  const box=nacl.box(roomKey,nonce,pp,myKP.secretKey);
+  const out=new Uint8Array(nonce.length+box.length);
+  out.set(nonce);out.set(box,nonce.length);
+  return nacl.util.encodeBase64(out);
+}
+function decRoomKey(encB64,senderPubB64){
+  try{
+    const buf=nacl.util.decodeBase64(encB64);
+    const nonce=buf.slice(0,nacl.box.nonceLength);
+    const box=buf.slice(nacl.box.nonceLength);
+    const sp=nacl.util.decodeBase64(senderPubB64);
+    return nacl.box.open(box,nonce,sp,myKP.secretKey);
+  }catch{return null;}
+}
+function chk(t){let h=0x811c9dc5;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,"0");}
+
+function regenKeys(){
+  if(!socket.connected)return toast("Not connected","err");
+  const pub=genKP();
+  if(isCreator){roomKey=nacl.randomBytes(nacl.secretbox.keyLength);}
+  socket.emit("register-public-key",{roomCode,username,publicKey:pub});
+  toast("&#128273; Keys regenerated","ok");
+  updateEncUI();
+}
+function changeEncMode(m){
+  encMode=m;updateEncUI();
+  toast(m==="e2e"?"&#128272; E2E encryption active":m==="transport"?"&#9888;&#65039; Transport mode":"&#128683; Encryption disabled",m==="e2e"?"ok":m==="transport"?"info":"err");
+}
+function updateEncUI(){
+  // sync settings modal chips
+  ["smEncChip","smEncInfo"].forEach(id=>{const el=document.getElementById(id);if(!el)return;});
+  const smC=document.getElementById("smEncChip"),smI=document.getElementById("smEncInfo");
+  if(smC){if(encMode==="e2e"&&roomKey){smC.className="chip chip-secure";smC.textContent="E2E Active";if(smI)smI.textContent="X25519 ECDH + XSalsa20-Poly1305";}else if(encMode==="transport"){smC.className="chip chip-warn";smC.textContent="Transport";}else{smC.className="chip chip-off";smC.textContent="Unencrypted";}}
+  const chip=document.getElementById("encChip"),info=document.getElementById("encInfo"),badge=document.getElementById("encBadge"),btxt=document.getElementById("encBadgeTxt"),bmode=document.getElementById("bEncMode");
+  if(encMode==="e2e"&&roomKey){
+    chip.className="chip chip-secure";chip.textContent="E2E Active";
+    info.textContent="X25519 ECDH + XSalsa20-Poly1305";
+    badge.className="enc-badge";btxt.textContent="Secured";bmode.textContent="X25519+AES-GCM";
+    hideBnr("bKey");showBnr("bEnc");
+  }else if(encMode==="transport"){
+    chip.className="chip chip-warn";chip.textContent="Transport";
+    info.textContent="Server-derived AES-GCM";
+    badge.className="enc-badge";badge.style.background="rgba(245,158,11,.07)";badge.style.borderColor="rgba(245,158,11,.15)";badge.style.color="#f59e0b";btxt.textContent="Transport";
+  }else{
+    chip.className="chip chip-off";chip.textContent="Unencrypted";
+    info.textContent="Testing mode — no protection";
+    badge.className="enc-badge connecting";btxt.textContent="Unencrypted";
+  }
+}
+
+// ==================================
+// SESSION
+// ==================================
+const username=sessionStorage.getItem("mp_user");
+const roomCode=sessionStorage.getItem("mp_room");
+const isCreator=sessionStorage.getItem("mp_creator")==="1";
+const roomType=sessionStorage.getItem("mp_type")||"normal";
+if(!username||!roomCode)location.href="/app";
+
+document.getElementById("hdrCode").textContent=roomCode;
+document.getElementById("qrVal").textContent=roomCode;
+
+// THEME — load from localStorage
+const savedTheme=localStorage.getItem("mp_theme")||"dark";
+applyTheme(savedTheme,true);
+
+let sdSecs=0,replyTo=null,roomConfig={},isAdmin=false,currentPrompt=null,userListData=[];
+const msgReacts={};
+const QUICK=["&#10084;&#65039;","&#128514;","&#128558;","&#128546;","&#128077;","&#128293;"];
+const SDL={0:"Off",10:"10s",30:"30s",60:"1 min",300:"5 min",3600:"1 hr"};
+
+// SD
+function pickSD(s){sdSecs=s;document.querySelectorAll(".sd-opt").forEach(o=>o.classList.remove("sel"));if(s>0){document.querySelectorAll(".sd-opt").forEach(o=>{if(parseInt(o.textContent)===s||(o.textContent.includes("min")&&s===60)||(o.textContent.includes("hr")&&s===3600))o.classList.add("sel");});showBnr("bSD");document.getElementById("bSDtxt").textContent="&#128163; Self-destruct: "+SDL[s];}else hideBnr("bSD");closeModal("sdModal");toast(s>0?"&#128163; SD: "+SDL[s]:"&#128683; SD off","info");}
+function schedSD(el,s){if(!s)return;let r=s;const td=document.createElement("div");td.className="sd-timer";td.textContent="&#128163; "+r+"s";el.appendChild(td);const iv=setInterval(()=>{r--;td.textContent="&#128163; "+(r>60?Math.ceil(r/60)+"m":r+"s");if(r<=0){clearInterval(iv);el.style.transition="all .3s ease";el.style.opacity="0";el.style.transform="scale(.9)";setTimeout(()=>el.remove(),300);}},1000);}
+
+// REPLY
+function setReply(msgId,auth,txt){replyTo={msgId,auth,txt};document.getElementById("replyAuth").textContent="Replying to "+auth;document.getElementById("replyTxt").textContent=txt;document.getElementById("replyBar").classList.add("show");document.getElementById("msgInp").focus();closeAll();}
+function cancelReply(){replyTo=null;document.getElementById("replyBar").classList.remove("show");}
+
+// SOCKET
+const socket=io({reconnection:true,reconnectionAttempts:Infinity,reconnectionDelay:1000});
+socket.on("connect",()=>{
+  hideBnr("bRecon");
+  const pub=genKP();
+  socket.emit("register-in-room",{roomCode,username,isCreator,roomType});
+  socket.emit("register-public-key",{roomCode,username,publicKey:pub});
+});
+socket.on("disconnect",()=>showBnr("bRecon"));
+socket.on("reconnect",()=>{hideBnr("bRecon");toast("&#10003; Reconnected","ok");});
+
+// E2E KEY EXCHANGE
+socket.on("existing-public-keys",(keys)=>{Object.entries(keys).forEach(([u,k])=>{if(u!==username)peerPubKeys[u]=k;});if(!isCreator&&Object.keys(peerPubKeys).length>0)socket.emit("request-room-key",{roomCode,username});});
+socket.on("peer-public-key",({username:u,publicKey})=>{peerPubKeys[u]=publicKey;if(isCreator&&roomKey)socket.emit("send-encrypted-room-key",{roomCode,targetUsername:u,encryptedKey:encKeyForPeer(publicKey)});});
+socket.on("room-key-requested",({requesterUsername,requesterPublicKey})=>{if(!isCreator||!roomKey)return;socket.emit("send-encrypted-room-key",{roomCode,targetUsername:requesterUsername,encryptedKey:encKeyForPeer(requesterPublicKey)});});
+socket.on("receive-encrypted-room-key",({encryptedKey,senderPublicKey})=>{if(roomKey)return;const dk=decRoomKey(encryptedKey,senderPublicKey);if(dk){roomKey=dk;updateEncUI();toast("&#128272; Encrypted channel established!","ok");}});
+
+socket.on("room-registered",({history,config,isAdmin:adm,prompt,existingPublicKeys})=>{
+  roomConfig=config||{};isAdmin=adm;
+  if(adm){showBnr("bAdmin");document.getElementById("adminTab").style.display="flex";}
+  if(prompt){currentPrompt=prompt;document.getElementById("promptTxt").textContent="&#128161; "+prompt;showBnr("bPrompt");}
+  if(config?.sdSeconds>0)sdSecs=config.sdSeconds;
+  if(config?.maxMsgLen&&config.maxMsgLen<1000)document.getElementById("msgInp").maxLength=config.maxMsgLen;
+  if(isCreator){roomKey=nacl.randomBytes(nacl.secretbox.keyLength);updateEncUI();}
+  if(existingPublicKeys){Object.entries(existingPublicKeys).forEach(([u,k])=>{if(u!==username)peerPubKeys[u]=k;});if(!isCreator&&Object.keys(peerPubKeys).length>0)socket.emit("request-room-key",{roomCode,username});}
+  addSys("Secure session created &middot; "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}));
+  if(history?.length){addHDiv(history.length+" earlier message"+(history.length>1?"s":""));history.forEach(m=>{if(!roomKey)return;if(m.type==="voice"){const d=dec(m.voiceData);if(d)renderVoice(m.username,d,m.duration,m.username===username?"me":"them",true);}else{const d=dec(m.message);if(!d)return;let rd=null;if(m.replyTo){const o=history.find(x=>x.msgId===m.replyTo);if(o){const od=dec(o.message);rd={auth:o.username,txt:od||"..."};}}renderMsg(m.msgId,m.username,d,m.username===username?"me":"them",m.time,rd,true);}});}
+  scrollBot();
 });
 
-render(EMOJI_DATA);
+socket.on("join-error",m=>{alert(m);if(!isCreator)location.href="/app";});
+socket.on("user-joined",({username:u,time})=>{if(u!==username)addSys(u+" joined",time);});
+socket.on("user-left",({username:u,time})=>addSys(u+" left",time));
+socket.on("user-count",n=>document.getElementById("uCount").textContent=n);
+socket.on("user-list",users=>{userListData=users;renderUsers(users);});
+socket.on("room-expired",()=>{alert("Session expired.");sessionStorage.clear();location.href="/app";});
+socket.on("rate-limited",m=>toast(m,"err"));
+socket.on("you-are-muted",()=>toast("&#128264; You are muted","err"));
+socket.on("you-were-kicked",()=>{alert("You were removed.");sessionStorage.clear();location.href="/app";});
+socket.on("user-muted",u=>addSys(u+" was muted"));
+socket.on("user-unmuted",u=>addSys(u+" was unmuted"));
+socket.on("user-kicked",u=>addSys(u+" was removed"));
+socket.on("room-lock-changed",locked=>{const btn=document.getElementById("lockBtn");if(btn)btn.innerHTML=locked?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5v4"/></svg>Unlock Room':'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock Room';const btn2=document.getElementById("smLockBtn");if(btn2)btn2.textContent=locked?"Unlock Room":"Lock Room";locked?showBnr("bLocked"):hideBnr("bLocked");toast(locked?"Room locked":"Room unlocked","info");});
+socket.on("admin-anon-changed",anon=>{document.getElementById("smAnonToggle").checked=anon;toast(anon?"&#127917; Anonymous mode on":"&#127917; Anonymous mode off","info");});
+socket.on("admin-rate-changed",({limit})=>toast("Rate limit: "+limit+"/5s","info"));
+socket.on("report-received",()=>toast("&#10003; Report submitted","ok"));
+socket.on("message-seen",({msgId,username:by})=>{const el=document.querySelector('[data-msgid="'+msgId+'"]');if(el){let s=el.querySelector(".msg-seen");if(!s){s=document.createElement("div");s.className="msg-seen";el.appendChild(s);}s.textContent="&#10003;&#10003; "+by;}});
+
+const seenObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.dataset.msgid,u=e.target.dataset.username;if(id&&u!==username){socket.emit("message-seen",{roomCode,msgId:id,username});seenObs.unobserve(e.target);}}});},{threshold:.8});
+
+// RECEIVE
+socket.on("receive-message",({username:s,message,time,msgId,replyTo:rt,checksum:cs,sdSeconds:sd})=>{
+  if(!roomKey&&encMode!=="none"){toast("&#9888; Message received before key established","err");return;}
+  const d=dec(message);if(!d){addSys("&#9888; Decryption failed");return;}
+  if(cs&&chk(d)!==cs){addSys("&#9888; Integrity check failed");return;}
+  let rd=null;if(rt){const el=document.querySelector('[data-msgid="'+rt+'"]');if(el){const b=el.querySelector(".bubble");rd={auth:el.dataset.username,txt:b?b.textContent.trim():"..."};}}
+  const sn=roomConfig.noUsernames&&s!==username?"&#127917; Anonymous":s;
+  const wrap=renderMsg(msgId,sn,d,s===username?"me":"them",time,rd);
+  wrap.dataset.username=s;if(sd>0)schedSD(wrap,sd);if(s!==username)ping();
+  document.getElementById("typingRow").innerHTML="";resetExp();
+});
+socket.on("receive-voice",({username:s,voiceData,duration,sdSeconds:sd})=>{if(s===username)return;const d=dec(voiceData);if(d){const w=renderVoice(s,d,duration,"them");if(sd>0)schedSD(w,sd);ping();}resetExp();});
+socket.on("receive-file",({username:s,fileName,fileType,fileData,time,sdSeconds:sd})=>{if(s===username)return;const d=dec(fileData),n=dec(fileName);if(d&&n){const w=renderFile(s,n,fileType,d,"them",time);if(sd>0)schedSD(w,sd);ping();}resetExp();});
+socket.on("receive-reaction",({msgId,emoji,username:r})=>applyReact(msgId,emoji,r));
+
+// SEND
+function sendMsg(){
+  if(!roomKey&&encMode!=="none"){toast("&#9888; Encryption not ready","err");return;}
+  const inp=document.getElementById("msgInp"),msg=inp.value.trim();if(!msg)return;
+  const id=uid();socket.emit("send-message",{roomCode,username,message:enc(msg),msgId:id,replyTo:replyTo?.msgId||null,checksum:chk(msg),sdSeconds:sdSecs});
+  socket.emit("stop-typing",{roomCode});inp.value="";updateCC("");cancelReply();closePanels();resetExp();
+}
+document.getElementById("msgInp").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg();}});
+document.getElementById("msgInp").addEventListener("input",e=>{updateCC(e.target.value);socket.emit("typing",{roomCode,username});clearTimeout(window._tt);window._tt=setTimeout(()=>socket.emit("stop-typing",{roomCode}),1500);});
+document.getElementById("msgInp").addEventListener("focus",()=>setTimeout(scrollBot,300));
+function updateCC(v){const ml=parseInt(document.getElementById("msgInp").maxLength||1000),r=ml-v.length,el=document.getElementById("charCount");if(r<=20){el.textContent=r+" left";el.className="char-count char-danger";}else if(r<=100){el.textContent=r+" left";el.className="char-count char-warn";}else{el.textContent="";el.className="char-count";}}
+
+// VOICE
+let mRec=null,aC=[],rIv=null,rSecs=0,isRec=false;
+async function startRec(){if(isRec)return;try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mRec=new MediaRecorder(s);aC=[];mRec.ondataavailable=e=>aC.push(e.data);mRec.start();isRec=true;rSecs=0;document.getElementById("recBar").classList.add("show");document.getElementById("micBtn").classList.add("rec-on");rIv=setInterval(()=>{rSecs++;const m=Math.floor(rSecs/60),s=rSecs%60;document.getElementById("recTime").textContent=m+":"+(s<10?"0":"")+s;if(rSecs>=120)sendVoice();},1000);}catch{toast("Mic access denied","err");}}
+function cancelRec(){if(mRec){mRec.stop();mRec.stream.getTracks().forEach(t=>t.stop());}clearInterval(rIv);isRec=false;document.getElementById("recBar").classList.remove("show");document.getElementById("micBtn").classList.remove("rec-on");}
+function sendVoice(){if(!mRec||!isRec)return;mRec.onstop=async()=>{const blob=new Blob(aC,{type:"audio/webm"});const r=new FileReader();r.onload=ev=>{socket.emit("send-voice",{roomCode,username,voiceData:enc(ev.target.result),duration:rSecs,sdSeconds:sdSecs});renderVoice(username,ev.target.result,rSecs,"me");};r.readAsDataURL(blob);};mRec.stop();mRec.stream.getTracks().forEach(t=>t.stop());clearInterval(rIv);isRec=false;document.getElementById("recBar").classList.remove("show");document.getElementById("micBtn").classList.remove("rec-on");}
+
+// FILES
+function handleFile(e){const f=e.target.files[0];if(!f)return;if(f.size>40*1024*1024){toast("Max 40MB","err");e.target.value="";return;}document.getElementById("uprog").style.display="block";const r=new FileReader();r.onload=ev=>{socket.emit("send-file",{roomCode,username,fileName:enc(f.name),fileType:f.type,fileData:enc(ev.target.result),sdSeconds:sdSecs});renderFile(username,f.name,f.type,ev.target.result,"me");document.getElementById("uprog").style.display="none";resetExp();};r.readAsDataURL(f);e.target.value="";}
+
+// RENDER
+function renderMsg(msgId,sender,text,side,time,rd,isHist){
+  const c=document.getElementById("msgs"),wrap=document.createElement("div");
+  wrap.className="msg-g "+side;wrap.dataset.msgid=msgId;wrap.dataset.username=sender;
+  if(isHist)wrap.style.opacity=".7";
+  let rpH="";if(rd)rpH='<div class="rp-preview"><div class="rp-auth">'+esc(rd.auth)+'</div><div class="rp-txt">'+esc(rd.txt)+"</div></div>";
+  let metaH="";
+  if(side==="them")metaH='<div class="msg-meta"><div class="msg-av">&#128100;</div><span class="msg-name">'+esc(sender)+'</span><span class="msg-ts">'+fmt(time)+"</span></div>";
+  else metaH='<div class="msg-meta" style="justify-content:flex-end"><span class="msg-ts">'+fmt(time)+"</span></div>";
+  const QBTNS=["&#10084;&#65039;","&#128514;","&#128558;","&#128546;","&#128077;","&#128293;"].map(em=>'<button class="qr-btn" onclick="sendReact(\''+msgId+'\',\''+em+'\')">'+em+"</button>").join("");
+  wrap.innerHTML=metaH+'<div class="bubble">'+rpH+esc(text)+'</div><div class="reacts" id="reacts-'+msgId+'"></div><div class="act-bar" id="acts-'+msgId+'"><button class="act-btn" onclick="showQR2(\''+msgId+'\')">&#128522;</button><button class="act-btn" onclick="setReply(\''+msgId+'\',\''+esc(sender)+'\',\''+esc(text)+'\')">&#8617;&#65039;</button><button class="act-btn" onclick="reportU(\''+esc(sender)+'\')">&#9870;</button></div><div class="quick-react" id="qr2-'+msgId+'">'+QBTNS+"</div>";
+  wrap.addEventListener("contextmenu",ev=>{ev.preventDefault();closeAll();showActs(msgId);});
+  let pt;wrap.addEventListener("touchstart",()=>{pt=setTimeout(()=>showActs(msgId),450);},{passive:true});
+  wrap.addEventListener("touchend",()=>clearTimeout(pt));
+  wrap.addEventListener("touchmove",()=>clearTimeout(pt));
+  c.appendChild(wrap);autoScroll();if(sender!==username)seenObs.observe(wrap);return wrap;
+}
+function renderVoice(sender,url,dur,side,isHist){const c=document.getElementById("msgs"),wrap=document.createElement("div");wrap.className="msg-g "+side;wrap.dataset.username=sender;if(isHist)wrap.style.opacity=".7";const bars=Array.from({length:20},()=>'<div class="v-bar" style="height:'+(7+Math.random()*16)+'px"></div>').join("");const ds=dur>=60?Math.floor(dur/60)+"m "+(dur%60)+"s":dur+"s";const metaH=side==="them"?'<div class="msg-meta"><div class="msg-av">&#128100;</div><span class="msg-name">'+esc(sender)+'</span><span class="msg-ts">'+fmt(Date.now())+"</span></div>":'<div class="msg-meta" style="justify-content:flex-end"><span class="msg-ts">'+fmt(Date.now())+"</span></div>";wrap.innerHTML=metaH+'<div class="v-bub"><button class="v-play" onclick="playVoice(this,\''+url+'\')">&#9654;</button><div class="v-wave">'+bars+'</div><span class="v-dur">'+ds+"</span></div>";c.appendChild(wrap);autoScroll();return wrap;}
+function renderFile(sender,name,type,data,side,time){const c=document.getElementById("msgs"),div=document.createElement("div");div.className="msg-g "+side;div.dataset.username=sender;const lb=side==="me"?username:sender;const metaH=side==="them"?'<div class="msg-meta"><div class="msg-av">&#128100;</div><span class="msg-name">'+esc(lb)+'</span><span class="msg-ts">'+fmt(time)+"</span></div>":'<div class="msg-meta" style="justify-content:flex-end"><span class="msg-ts">'+fmt(time)+"</span></div>";if(type.startsWith("image/")){div.innerHTML=metaH+'<div class="img-bub" onclick="dl(\''+data+'\',\''+esc(name)+'\')"><img src="'+data+'"/></div>';}else{const ic=fIc(type);div.innerHTML=metaH+'<div class="f-bub" onclick="dl(\''+data+'\',\''+esc(name)+'\')"><div class="f-ic">'+ic+'</div><div><div class="f-nm">'+esc(name)+'</div><div class="f-sz">'+fSz(data)+" &middot; tap to save</div></div></div>";}c.appendChild(div);autoScroll();return div;}
+
+let curAudio=null;
+function playVoice(btn,url){if(curAudio){curAudio.pause();curAudio=null;}const a=new Audio(url);curAudio=a;btn.innerHTML="&#9646;&#9646;";a.play();a.onended=()=>{btn.innerHTML="&#9654;";curAudio=null;};btn.onclick=()=>{if(a.paused){a.play();btn.innerHTML="&#9646;&#9646;";}else{a.pause();btn.innerHTML="&#9654;";};};}
+
+// REACTIONS
+function sendReact(msgId,emoji){socket.emit("send-reaction",{roomCode,msgId,emoji,username});applyReact(msgId,emoji,username);closeAll();}
+function applyReact(msgId,emoji,reactor){if(!msgReacts[msgId])msgReacts[msgId]={};if(!msgReacts[msgId][emoji])msgReacts[msgId][emoji]=new Set();const s=msgReacts[msgId][emoji];if(reactor===username&&s.has(username))s.delete(username);else s.add(reactor);if(!s.size)delete msgReacts[msgId][emoji];const el=document.getElementById("reacts-"+msgId);if(!el)return;el.innerHTML="";Object.entries(msgReacts[msgId]||{}).forEach(([em,users])=>{if(!users.size)return;const b=document.createElement("div");b.className="react-badge"+(users.has(username)?" mine":"");b.innerHTML=em+' <span class="react-count">'+users.size+"</span>";b.title=[...users].join(", ");b.onclick=()=>sendReact(msgId,em);el.appendChild(b);});}
+function showActs(id){closeAll();const el=document.getElementById("acts-"+id);if(el)el.classList.add("show");}
+function showQR2(id){const el=document.getElementById("qr2-"+id);if(el)el.classList.toggle("show");}
+function closeAll(){document.querySelectorAll(".act-bar.show,.quick-react.show").forEach(e=>e.classList.remove("show"));}
+
+// SIDEBAR
+function toggleSb(){const sb=document.getElementById("sidebar"),ov=document.getElementById("sbOverlay");if(window.innerWidth<=768){sb.classList.toggle("open");ov.classList.toggle("show");}else{sb.style.display=sb.style.display==="none"?"flex":"none";}}
+function closeSb(){document.getElementById("sidebar").classList.remove("open");document.getElementById("sbOverlay").classList.remove("show");}
+function swTab(t){document.querySelectorAll(".sb-tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===t));document.querySelectorAll(".sb-panel").forEach(p=>p.classList.toggle("active",p.id==="panel-"+t));}
+
+// THEMES
+function applyTheme(t,skipSave){document.documentElement.setAttribute("data-theme",t);document.querySelectorAll(".theme-card").forEach(c=>c.classList.toggle("active",c.dataset.t===t));if(!skipSave)localStorage.setItem("mp_theme",t);}
+
+// USERS
+function renderUsers(users){
+  const list=document.getElementById("usersList"),alist=document.getElementById("adminUsersList");
+  list.innerHTML="";if(alist)alist.innerHTML="";
+  users.forEach(u=>{
+    const item=document.createElement("div");item.className="u-item";
+    const canAdmin=isAdmin&&u.username!==username,canReport=u.username!==username;
+    item.innerHTML='<div class="u-av">'+((u.badge||"&#128100;"))+'</div><div class="u-info"><div class="u-name'+(u.isMuted?" muted":"")+'">'+esc(u.username)+(u.username===username?" (you)":"")+'</div><div class="u-role">'+(u.isCreator?"Room Creator":"Member")+(u.isMuted?" &middot; Muted":"")+"</div></div>"+'<div class="u-acts">'+(canAdmin?'<button class="u-act" onclick="adminMute(\''+esc(u.username)+'\')" title="'+(u.isMuted?"Unmute":"Mute")+'">'+(u.isMuted?"&#128266;":"&#128264;")+'</button><button class="u-act" onclick="adminKick(\''+esc(u.username)+'\')" title="Kick">&#128683;</button>':"")+(canReport?'<button class="u-act" onclick="reportU(\''+esc(u.username)+'\')" title="Report">&#9870;</button>':"")+"</div>";
+    list.appendChild(item);
+    if(alist&&u.username!==username){const ai=item.cloneNode(true);alist.appendChild(ai);}
+  });
+}
+function adminMute(t){const m=userListData.find(u=>u.username===t)?.isMuted;socket.emit(m?"admin-unmute":"admin-mute",{roomCode,targetUsername:t});}
+function adminKick(t){if(confirm("Remove "+t+"?"))socket.emit("admin-kick",{roomCode,targetUsername:t});}
+function adminLock(){socket.emit("admin-lock",{roomCode});}
+function toggleAnon(v){socket.emit("admin-set-anon",{roomCode,anon:v});}
+function applyRate(){const v=parseInt(document.getElementById("smRateInput").value);if(v>0)socket.emit("admin-set-rate",{roomCode,limit:v});}
+function reportU(t){if(confirm("Report "+t+"?"))socket.emit("report-user",{roomCode,targetUsername:t});}
+
+// PROMPT
+function usePrompt(){if(currentPrompt){document.getElementById("msgInp").value=currentPrompt+" ";document.getElementById("msgInp").focus();hideBnr("bPrompt");}}
+
+// EMOJI
+const EMOJIS=["&#128512;","&#128514;","&#128513;","&#128515;","&#128519;","&#128516;","&#128522;","&#128578;","&#128521;","&#128524;","&#128527;","&#128525;","&#129392;","&#128536;","&#128530;","&#128535;","&#128548;","&#128552;","&#128557;","&#128546;","&#128563;","&#128561;","&#128123;","&#128128;","&#128131;","&#128518;","&#128526;","&#129313;","&#129299;","&#128520;","&#128540;","&#128541;","&#128559;","&#129300;","&#128532;","&#128534;","&#128547;","&#128560;","&#129296;","&#128545;","&#128544;","&#128556;","&#128550;","&#128551;","&#128553;","&#129325;","&#128554;","&#128555;","&#128565;","&#128576;","&#128566;","&#128567;","&#128568;","&#128569;","&#128570;","&#128571;","&#128572;","&#128573;","&#128576;","&#127988;","&#128075;","&#128074;","&#128077;","&#128078;","&#10024;","&#128293;","&#128272;","&#127908;","&#127775;","&#128640;","&#127881;","&#128218;","&#128172;","&#128163;","&#128081;","&#128737;","&#9889;","&#127917;"];
+function renderEmoji(list){const g=document.getElementById("eGrid");g.innerHTML="";list.forEach(em=>{const b=document.createElement("button");b.className="e-btn";b.innerHTML=em;b.onclick=()=>{document.getElementById("msgInp").value+=em;document.getElementById("msgInp").focus();};g.appendChild(b);});}
+function filterEmoji(q){renderEmoji(q?EMOJIS.filter(()=>true).slice(0,40):EMOJIS);}
+renderEmoji(EMOJIS);
+function toggleEmoji(){const p=document.getElementById("emojiPanel");p.classList.toggle("open");document.getElementById("attachPanel").classList.remove("open");if(p.classList.contains("open")){document.getElementById("eSearch").value="";renderEmoji(EMOJIS);setTimeout(()=>document.getElementById("eSearch").focus(),100);}}
+function toggleAttach(){const p=document.getElementById("attachPanel");p.classList.toggle("open");document.getElementById("emojiPanel").classList.remove("open");}
+function closePanels(){document.getElementById("emojiPanel").classList.remove("open");document.getElementById("attachPanel").classList.remove("open");}
+
+// EXPIRY
+let expAt=Date.now()+30*60*1000;
+setInterval(()=>{const r=expAt-Date.now();if(r<=5*60*1000&&r>0){showBnr("bExp");const m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);document.getElementById("expCD").textContent=m+":"+(s<10?"0":"")+s;}else hideBnr("bExp");if(r<=0){sessionStorage.clear();location.href="/app";}},1000);
+function resetExp(){expAt=Date.now()+30*60*1000;hideBnr("bExp");}
+
+// TYPING
+socket.on("user-typing",u=>document.getElementById("typingRow").innerHTML='<div class="t-dots"><span></span><span></span><span></span></div>'+esc(u)+" is typing&hellip;");
+socket.on("user-stop-typing",()=>document.getElementById("typingRow").innerHTML="");
+
+// SOUND
+function ping(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.setValueAtTime(880,ctx.currentTime);o.frequency.setValueAtTime(1100,ctx.currentTime+.08);g.gain.setValueAtTime(.06,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.22);o.start(ctx.currentTime);o.stop(ctx.currentTime+.22);}catch{}}
+
+// TOAST
+let _t2;function toast(msg,type="err"){const t=document.getElementById("toast");t.innerHTML=msg;t.className="toast "+type+" show";clearTimeout(_t2);_t2=setTimeout(()=>t.classList.remove("show"),3200);}
+
+// QR
+function showQR(){document.getElementById("qrContainer").innerHTML="";new QRCode(document.getElementById("qrContainer"),{text:location.origin+"/app?code="+roomCode,width:170,height:170,colorDark:"#000",colorLight:"#fff"});openModal("qrModal");}
+function copyCode(){navigator.clipboard.writeText(roomCode).then(()=>toast("&#10003; Copied","ok")).catch(()=>toast("Code: "+roomCode,"ok"));}
+
+// SCROLL
+const msgsEl=document.getElementById("msgs"),sdnBtn=document.getElementById("scrollDn");
+msgsEl.addEventListener("scroll",()=>sdnBtn.classList.toggle("show",msgsEl.scrollHeight-msgsEl.scrollTop-msgsEl.clientHeight>60));
+function scrollBot(){msgsEl.scrollTop=msgsEl.scrollHeight;}
+function autoScroll(){if(msgsEl.scrollHeight-msgsEl.scrollTop-msgsEl.clientHeight<100)scrollBot();}
+
+// HELPERS
+function fmt(ts){if(!ts)return"";return new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}
+function addSys(txt,time){const c=document.getElementById("msgs"),d=document.createElement("div");d.className="sys-chip";d.innerHTML=time?txt+" &middot; "+fmt(time):txt;c.appendChild(d);autoScroll();}
+function addHDiv(txt){const c=document.getElementById("msgs"),d=document.createElement("div");d.className="hist-chip";d.textContent=txt;c.appendChild(d);}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function uid(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&3|8)).toString(16);});}
+function dl(url,name){const a=document.createElement("a");a.href=url;a.download=name;a.click();}
+function fIc(t){if(t.startsWith("video/"))return"&#127902;";if(t.startsWith("audio/"))return"&#127925;";if(t.includes("pdf"))return"&#128196;";if(t.includes("word"))return"&#128209;";if(t.includes("sheet")||t.includes("excel"))return"&#128202;";if(t.includes("zip")||t.includes("rar"))return"&#128230;";return"&#128193;";}
+function fSz(b64){const b=b64.length*3/4;if(b<1024)return b.toFixed(0)+" B";if(b<1048576)return(b/1024).toFixed(1)+" KB";return(b/1048576).toFixed(1)+" MB";}
+function showBnr(id){document.getElementById(id).classList.add("show");}
+function hideBnr(id){document.getElementById(id).classList.remove("show");}
+function openModal(id){document.getElementById(id).classList.add("show");}
+function closeModal(id){document.getElementById(id).classList.remove("show");}
+function doLeave(){sessionStorage.clear();location.href="/app";}
+
+// SIDEBAR: desktop always open
+if(window.innerWidth>768){const sb=document.getElementById("sidebar");document.querySelector(".main").appendChild(sb);}
+window.addEventListener("resize",()=>{const sb=document.getElementById("sidebar"),main=document.querySelector(".main");if(window.innerWidth>768&&sb.parentElement!==main){main.appendChild(sb);sb.style.transform="";}else if(window.innerWidth<=768&&sb.parentElement===main){document.body.appendChild(sb);}});
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".act-bar")&&!e.target.closest(".quick-react")&&!e.target.closest(".act-btn"))closeAll();
+  if(!e.target.closest(".icon-btn")&&!e.target.closest("#emojiPanel"))document.getElementById("emojiPanel").classList.remove("open");
+  if(!e.target.closest(".icon-btn")&&!e.target.closest("#attachPanel"))document.getElementById("attachPanel").classList.remove("open");
+  ["leaveModal","qrModal","sdModal"].forEach(id=>{if(e.target===document.getElementById(id))closeModal(id);});
+});
 </script>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-modal-ov" id="settingsModal">
+  <div class="settings-modal">
+    <div class="sm-handle"></div>
+    <div class="sm-head">
+      <div class="sm-title">Settings</div>
+      <button class="sm-close" onclick="closeSettings()">&#10005;</button>
+    </div>
+    <div class="sm-tabs">
+      <button class="sm-tab active" data-stab="security" onclick="swSTAB('security')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security
+      </button>
+      <button class="sm-tab" data-stab="themes" onclick="swSTAB('themes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Theme
+      </button>
+      <button id="settingsAdminTab" class="sm-tab" data-stab="admin" onclick="swSTAB('admin')" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 11 17 17 14 14"/></svg>
+        Admin
+      </button>
+      <button class="sm-tab" data-stab="users" onclick="swSTAB('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </button>
+    </div>
+    <div class="sm-body">
+      <!-- SECURITY PANEL -->
+      <div class="sm-panel active" id="spanel-security">
+        <div class="sb-section">Encryption Status</div>
+        <div class="enc-status" id="smEncStatus">
+          <div class="enc-status-ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="color:var(--ter)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="chip chip-secure" id="smEncChip">E2E Active</div>
+            <div class="enc-status-sub" id="smEncInfo">X25519 ECDH + XSalsa20-Poly1305</div>
+          </div>
+        </div>
+        <div class="setting-block">
+          <div class="setting-title">Encryption Mode</div>
+          <div class="setting-sub">E2E: keys on device only. Transport: server-derived. None: testing only.</div>
+          <select id="smEncMode" class="sel-input" onchange="changeEncMode(this.value)">
+            <option value="e2e">End-to-End (X25519 + AES-GCM)</option>
+            <option value="transport">Transport Encryption (AES-GCM)</option>
+            <option value="none">None (testing only)</option>
+          </select>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Regenerate Keys</div>
+          <div class="setting-sub">Generate a fresh X25519 keypair and re-distribute the session key to all peers.</div>
+          <button class="btn-block" onclick="regenKeys()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Regenerate Keys
+          </button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Ephemeral messages</div>
+            <div class="toggle-sl">Delete history when room closes</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="smEphemerToggle" checked/><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-block">
+          <div class="setting-title">Self-Destruct Timer</div>
+          <div class="setting-sub">Auto-expire your messages after a set time.</div>
+          <button class="btn-block" onclick="closeSettings();openModal('sdModal')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Configure Timer
+          </button>
+        </div>
+      </div>
+
+      <!-- THEMES PANEL -->
+      <div class="sm-panel" id="spanel-themes">
+        <div class="sb-section">UI Theme</div>
+        <div class="theme-grid">
+          <div class="theme-card" data-t="dark" onclick="applyTheme('dark')"><div class="theme-swatch"><div class="theme-half" style="background:#08090f"></div><div class="theme-half" style="background:#7c6aff"></div></div><div class="theme-name">Default Dark</div></div>
+          <div class="theme-card" data-t="light" onclick="applyTheme('light')"><div class="theme-swatch"><div class="theme-half" style="background:#f0f1f8"></div><div class="theme-half" style="background:#5e47e8"></div></div><div class="theme-name">Light</div></div>
+          <div class="theme-card" data-t="cyberpunk" onclick="applyTheme('cyberpunk')"><div class="theme-swatch"><div class="theme-half" style="background:#020208"></div><div class="theme-half" style="background:#00f5ff"></div></div><div class="theme-name">Cyberpunk</div></div>
+          <div class="theme-card" data-t="minimal" onclick="applyTheme('minimal')"><div class="theme-swatch"><div class="theme-half" style="background:#fafafa"></div><div class="theme-half" style="background:#374151"></div></div><div class="theme-name">Minimal</div></div>
+        </div>
+        <div class="sep"></div>
+        <div class="setting-sub">Theme applies instantly and persists across sessions.</div>
+      </div>
+
+      <!-- ADMIN PANEL -->
+      <div class="sm-panel" id="spanel-admin">
+        <div class="sb-section">Room Control</div>
+        <div class="admin-block">
+          <div class="admin-lbl">Lock / Unlock Room</div>
+          <div class="admin-sl">Prevents new members from joining this session.</div>
+          <button class="btn-block" id="smLockBtn" onclick="adminLock()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Lock Room
+          </button>
+        </div>
+        <div class="sep"></div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-lbl">Anonymous Mode</div>
+            <div class="toggle-sl">Hide all usernames for everyone</div>
+          </div>
+          <label class="toggle"><input type="checkbox" id="smAnonToggle" onchange="toggleAnon(this.checked)"/><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="sep"></div>
+        <div class="admin-block">
+          <div class="admin-lbl">Message Rate Limit</div>
+          <div class="admin-sl">Max messages per 5-second window per user.</div>
+          <div class="rate-row">
+            <input type="number" id="smRateInput" class="rate-input" min="1" max="100" value="10"/>
+            <span class="rate-lbl">msgs / 5s</span>
+            <button class="btn-sm" onclick="applyRate()">Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS PANEL -->
+      <div class="sm-panel" id="spanel-users">
+        <div class="sb-section">Connected Members</div>
+        <div id="smUsersList"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

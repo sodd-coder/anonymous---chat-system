@@ -1,12 +1,415 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Landing</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Midnight Protocol — Encrypted. Anonymous. Untraceable.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-html,body{overflow-x:hidden;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08090f;--sl:#0d0e1a;--sc:#111221;--sch:#161728;--scx:#1c1d30;
+  --pr:#7c6aff;--sec:#ff5fa0;--ter:#00e5a0;
+  --os:#eeeeff;--osv:#9090b0;--out:#52526a;
+  --grad:linear-gradient(135deg,#7c6aff,#ff5fa0);
+  --f:'Inter',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--f);background:var(--bg);color:var(--os);overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:4px}
+
+/* ambient */
+.orb{position:fixed;border-radius:50%;filter:blur(140px);pointer-events:none;opacity:.6}
+.orb1{width:500px;height:500px;background:rgba(124,106,255,.12);top:-200px;left:-200px;animation:of 18s ease-in-out infinite}
+.orb2{width:400px;height:400px;background:rgba(255,95,160,.1);bottom:-150px;right:-150px;animation:of 18s ease-in-out infinite;animation-delay:-8s}
+@keyframes of{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,9,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.04)}
+.n-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--os)}
+.n-glyph{width:28px;height:28px;background:var(--grad);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.n-name{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.n-sub{font-size:10px;color:var(--out);font-weight:400;margin-left:2px}
+.n-links{display:flex;align-items:center;gap:1px}
+.n-link{padding:6px 12px;border-radius:8px;font-size:13px;color:var(--osv);text-decoration:none;transition:all .2s;font-weight:500}
+.n-link:hover{color:var(--os);background:rgba(255,255,255,.05)}
+.n-actions{display:flex;align-items:center;gap:8px}
+.btn-ghost{padding:8px 16px;background:transparent;border:1px solid rgba(124,106,255,.3);color:var(--pr);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;display:flex;align-items:center}
+.btn-ghost:hover{border-color:var(--pr);background:rgba(124,106,255,.06)}
+.btn-primary{padding:8px 18px;background:var(--grad);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;display:flex;align-items:center;position:relative;overflow:hidden}
+.btn-primary::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.25)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,255,.35)}
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:8px;-webkit-tap-highlight-color:transparent}
+.ham span{width:20px;height:2px;background:var(--os);border-radius:2px;transition:all .3s;display:block}
+.ham.o span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.ham.o span:nth-child(2){opacity:0}
+.ham.o span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mnav{position:fixed;top:56px;left:0;right:0;z-index:99;background:rgba(8,9,15,.98);backdrop-filter:blur(20px);padding:12px 16px;flex-direction:column;gap:2px;display:none}
+.mnav.o{display:flex}
+.mnav a{padding:12px 16px;border-radius:8px;font-size:15px;color:var(--os);text-decoration:none;display:block;transition:background .2s;font-weight:500}
+.mnav a:hover{background:rgba(255,255,255,.05)}
+@media(max-width:768px){.n-links{display:none}.ham{display:flex}.n-actions .btn-ghost{display:none}}
+@media(max-width:480px){.n-actions .btn-primary{display:none}}
+
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px 60px;text-align:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:40px;border:1px solid rgba(0,229,160,.2);background:rgba(0,229,160,.05);font-size:11px;font-weight:600;color:var(--ter);letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--ter);box-shadow:0 0 6px var(--ter);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.hero-title{font-size:clamp(38px,7.5vw,88px);font-weight:700;line-height:.97;letter-spacing:-2.5px;margin-bottom:20px}
+.hero-title .line1{display:block;color:var(--os)}
+.hero-title .line2{display:block;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:clamp(14px,2vw,17px);color:var(--osv);max-width:480px;line-height:1.7;margin-bottom:32px;font-weight:400}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+.hero-btn-p{padding:14px 28px;background:var(--grad);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .3s;box-shadow:0 6px 24px rgba(124,106,255,.3);position:relative;overflow:hidden}
+.hero-btn-p::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.25)}
+.hero-btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,106,255,.45)}
+.hero-btn-g{padding:13px 28px;background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--os);border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .3s}
+.hero-btn-g:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.04)}
+.trust-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.trust-pill{padding:4px 11px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:40px;font-size:11px;color:var(--out);font-weight:500;display:flex;align-items:center;gap:4px}
+.trust-pill::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--ter)}
+
+/* chat mockup */
+.hero-visual{margin-top:48px;width:100%;max-width:720px;position:relative;z-index:1;animation:hvfloat 7s ease-in-out infinite}
+@keyframes hvfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.mockup{background:var(--sc);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.mock-hdr{background:var(--sch);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.04)}
+.mock-dots{display:flex;gap:4px}
+.mock-dot{width:8px;height:8px;border-radius:50%}
+.d1{background:#ff5f57}.d2{background:#febc2e}.d3{background:#28c840}
+.mock-room{font-size:10px;font-weight:700;color:var(--pr);letter-spacing:1.5px;background:rgba(124,106,255,.08);border:1px solid rgba(124,106,255,.15);padding:3px 10px;border-radius:40px;margin-left:auto}
+.mock-online{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ter);font-weight:600}
+.mock-online-dot{width:4px;height:4px;border-radius:50%;background:var(--ter);animation:blink 2s infinite}
+.mock-sys{background:var(--sl);padding:5px 16px;text-align:center;font-size:9px;color:var(--out);letter-spacing:.5px;text-transform:uppercase}
+.mock-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-height:180px}
+.msg-them,.msg-me{display:flex;flex-direction:column;gap:2px;max-width:70%}
+.msg-them{align-self:flex-start}
+.msg-me{align-self:flex-end;align-items:flex-end}
+.msg-name{font-size:9px;color:var(--out);font-weight:600;padding:0 3px}
+.msg-bub{padding:8px 12px;font-size:12px;line-height:1.5}
+.msg-them .msg-bub{background:var(--scx);color:var(--os);border-radius:3px 12px 12px 12px}
+.msg-me .msg-bub{background:rgba(124,106,255,.22);border:1px solid rgba(124,106,255,.2);color:var(--os);border-radius:12px 3px 12px 12px}
+.msg-sd{align-self:center;font-size:9px;color:var(--out);background:rgba(255,255,255,.03);padding:2px 10px;border-radius:40px;letter-spacing:.5px;text-transform:uppercase}
+.mock-typing{padding:0 16px 8px;font-size:10px;color:var(--out);display:flex;align-items:center;gap:5px}
+.mock-dots-anim{display:flex;gap:2px}
+.mock-dots-anim span{width:3px;height:3px;border-radius:50%;background:var(--pr);opacity:.5;animation:td 1.2s infinite}
+.mock-dots-anim span:nth-child(2){animation-delay:.2s}
+.mock-dots-anim span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.mock-inp{background:rgba(0,0,0,.3);padding:8px 16px 12px;display:flex;gap:8px;align-items:center;border-top:1px solid rgba(255,255,255,.04)}
+.mock-inp-field{flex:1;background:var(--scx);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--osv);border:1px solid rgba(255,255,255,.06)}
+.mock-send{width:28px;height:28px;background:var(--grad);border-radius:7px;border:none;color:#fff;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* stats */
+.stats-bar{padding:18px 20px;position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
+.stats-inner{max-width:800px;margin:0 auto;display:flex;justify-content:center;align-items:center;flex-wrap:wrap}
+.stat{flex:1;min-width:80px;text-align:center;padding:6px 12px;position:relative}
+.stat+.stat::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:22px;background:rgba(255,255,255,.06)}
+@media(max-width:480px){.stat+.stat::before{display:none}.stat{min-width:50%;padding:8px}}
+.stat-val{font-size:clamp(14px,2.5vw,20px);font-weight:700;letter-spacing:-.5px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:9px;color:var(--out);margin-top:2px;letter-spacing:.4px;text-transform:uppercase;font-weight:600}
+
+/* sections */
+.section{padding:80px 20px;max-width:1060px;margin:0 auto;position:relative;z-index:1}
+.sec-eyebrow{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--ter);margin-bottom:10px;display:block}
+.sec-title{font-size:clamp(22px,3.5vw,40px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px;color:var(--os)}
+.sec-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sec-sub{font-size:14px;color:var(--osv);max-width:440px;line-height:1.7;margin-bottom:44px}
+
+/* feature grid — tonal, no borders */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:rgba(255,255,255,.04)}
+.feat-card{background:var(--sc);padding:26px;cursor:default;transition:background .25s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(124,106,255,.05),transparent 55%);opacity:0;transition:opacity .3s}
+.feat-card:hover{background:var(--sch)}
+.feat-card:hover::before{opacity:1}
+.feat-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px}
+.fi-p{background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.1)}
+.fi-s{background:rgba(255,95,160,.09);border:1px solid rgba(255,95,160,.09)}
+.fi-t{background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.07)}
+.fi-o{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.07)}
+.fi-b{background:rgba(99,143,237,.07);border:1px solid rgba(99,143,237,.07)}
+.fi-g{background:rgba(52,199,89,.07);border:1px solid rgba(52,199,89,.07)}
+.feat-title{font-size:14px;font-weight:700;color:var(--os);margin-bottom:6px;letter-spacing:-.2px}
+.feat-desc{font-size:12px;color:var(--osv);line-height:1.65}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;background:rgba(255,255,255,.04)}
+.step{background:var(--sc);padding:28px;position:relative;cursor:default;transition:background .25s}
+.step:hover{background:var(--sch)}
+.step-num{width:42px;height:42px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#fff;margin-bottom:14px;box-shadow:0 6px 20px rgba(124,106,255,.25)}
+.step-title{font-size:14px;font-weight:700;color:var(--os);margin-bottom:6px;letter-spacing:-.2px}
+.step-desc{font-size:12px;color:var(--osv);line-height:1.65}
+.step-tag{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;color:var(--ter);background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.14);padding:3px 8px;border-radius:40px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+
+/* compare table */
+.cmp-wrap{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,.05)}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--sc);padding:12px 16px;text-align:left;font-size:12px;font-weight:700;letter-spacing:-.1px}
+thead th.us{color:var(--pr)}
+thead th.th{color:var(--osv)}
+thead th:first-child{color:var(--osv);width:38%}
+tbody td{background:var(--sc);padding:11px 16px;font-size:12px;border-top:2px solid var(--sl);color:var(--osv);transition:background .2s}
+tbody tr:hover td{background:var(--sch)}
+tbody td:first-child{color:var(--os);font-weight:600;font-size:11px}
+.cy{color:var(--ter);font-weight:700}
+.cn{color:#3a3a52}
+.bdg{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:1px 6px;border-radius:40px;margin-left:5px;vertical-align:middle}
+.bdg-u{background:rgba(124,106,255,.1);color:var(--pr);border:1px solid rgba(124,106,255,.15)}
+.bdg-t{background:rgba(255,255,255,.04);color:var(--out);border:1px solid rgba(255,255,255,.06)}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.04)}
+.faq-item{background:var(--sc);overflow:hidden;transition:background .2s}
+.faq-item:hover{background:var(--sch)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 20px;background:none;border:none;color:var(--os);cursor:pointer;font-size:13px;font-weight:700;text-align:left;gap:10px;transition:color .2s;-webkit-tap-highlight-color:transparent;min-height:52px;letter-spacing:-.1px;font-family:inherit}
+.faq-q:hover,.faq-q.open{color:var(--pr)}
+.faq-ic{font-size:16px;flex-shrink:0;transition:transform .3s;color:var(--out)}
+.faq-q.open .faq-ic{transform:rotate(45deg);color:var(--pr)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.faq-a.open{max-height:180px;padding-bottom:14px}
+.faq-ai{padding:0 20px;font-size:13px;color:var(--osv);line-height:1.7}
+.faq-ai strong{color:var(--os);font-weight:600}
+
+/* quotes */
+.q-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;background:rgba(255,255,255,.04)}
+.q-card{background:var(--sc);padding:22px;cursor:default;transition:background .25s;position:relative}
+.q-card:hover{background:var(--sch)}
+.q-stars{color:var(--pr);font-size:12px;margin-bottom:10px;letter-spacing:1.5px}
+.q-text{font-size:13px;color:var(--osv);line-height:1.7;margin-bottom:14px;font-style:italic}
+.q-text em{color:var(--os);font-style:normal;font-weight:600}
+.q-author{display:flex;align-items:center;gap:8px}
+.q-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.q-name{font-size:12px;font-weight:700;color:var(--os)}
+.q-role{font-size:11px;color:var(--out);margin-top:1px}
+.q-badge{position:absolute;top:16px;right:16px;font-size:9px;color:var(--ter);background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.14);padding:2px 7px;border-radius:40px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+
+/* CTA */
+.cta-sec{padding:80px 20px;text-align:center;position:relative;z-index:1}
+.cta-box{max-width:600px;margin:0 auto;background:var(--sc);border-radius:18px;padding:52px 28px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,255,.08),transparent 55%);pointer-events:none}
+.cta-box::after{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--pr),var(--sec),transparent)}
+.cta-title{font-size:clamp(22px,4vw,40px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px;position:relative;z-index:1;color:var(--os)}
+.cta-sub{font-size:14px;color:var(--osv);line-height:1.7;margin:0 auto 28px;max-width:380px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.cta-note{font-size:10px;color:var(--out);letter-spacing:.8px;text-transform:uppercase;margin-top:16px;position:relative;z-index:1}
+
+/* footer */
+footer{padding:18px 24px;background:var(--sl);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.04)}
+.f-logo{display:flex;align-items:center;gap:7px;text-decoration:none}
+.f-glyph{width:22px;height:22px;border-radius:6px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:10px}
+.f-name{font-size:12px;font-weight:700;color:var(--os)}
+.f-copy{font-size:10px;color:var(--out)}
+.f-links{display:flex;gap:14px;flex-wrap:wrap}
+.f-link{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s}
+.f-link:hover{color:var(--pr)}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.rv.vs{opacity:1;transform:translateY(0)}
+.rv2{opacity:0;transform:translateY(24px);transition:opacity .65s ease .1s,transform .65s ease .1s}
+.rv2.vs{opacity:1;transform:translateY(0)}
+
+/* sl bg for sections */
+.bg-sl{background:var(--sl)}
 </style>
 </head>
 <body>
-<h1>Clean Landing</h1>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<nav>
+  <a href="/" class="n-logo">
+    <div class="n-glyph" style="background:transparent;padding:0;width:44px;height:29px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
+    <div>
+      <span class="n-name">Midnight Protocol</span>
+      <span class="n-sub">&nbsp;by AnonChat</span>
+    </div>
+  </a>
+  <div class="n-links">
+    <a href="#how" class="n-link">How It Works</a>
+    <a href="#features" class="n-link">Features</a>
+    <a href="#faq" class="n-link">FAQ</a>
+  </div>
+  <div class="n-actions">
+    <a href="/app" class="btn-ghost">Join Room</a>
+    <a href="/app" class="btn-primary">Start a Room</a>
+    <div class="ham" id="ham" onclick="tM()"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mnav" id="mnav">
+  <a href="#how" onclick="cM()">How It Works</a>
+  <a href="#features" onclick="cM()">Features</a>
+  <a href="#faq" onclick="cM()">FAQ</a>
+  <a href="/app" onclick="cM()">Join Room</a>
+  <a href="/app">Start a Room</a>
+</div>
+
+<section class="hero">
+  <div class="hero-eyebrow"><div class="eyebrow-dot"></div>X25519 ECDH &middot; Zero logs &middot; No accounts</div>
+  <h1 class="hero-title">
+    <span class="line1">Encrypted. Anonymous.</span>
+    <span class="line2">Untraceable.</span>
+  </h1>
+  <p class="hero-sub">Create a private room in seconds. Messages are encrypted on your device before they leave it. The server sees only ciphertext.</p>
+  <div class="hero-btns">
+    <a href="/app" class="hero-btn-p">Start a Room Free</a>
+    <a href="#how" class="hero-btn-g">How it works &darr;</a>
+  </div>
+  <div class="trust-row">
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>No sign-up</div>
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Keys stay on device</div>
+    <div class="trust-pill"><svg style="width:9px;height:9px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Room vanishes on exit</div>
+  </div>
+  <div class="hero-visual">
+    <div class="mockup">
+      <div class="mock-hdr">
+        <div class="mock-dots"><div class="mock-dot d1"></div><div class="mock-dot d2"></div><div class="mock-dot d3"></div></div>
+        <div class="mock-online"><div class="mock-online-dot"></div>3 online</div>
+        <div class="mock-room">MP&#183;X7K</div>
+      </div>
+      <div class="mock-sys">Secure session active &middot; X25519+AES-GCM &middot; 21:04</div>
+      <div class="mock-body">
+        <div class="msg-them"><div class="msg-name">Vesper_88</div><div class="msg-bub">did you audit the new handshake? proofs look solid</div></div>
+        <div class="msg-me"><div class="msg-name">You</div><div class="msg-bub">just finished. no metadata leaks at all &#128274;</div></div>
+        <div class="msg-them"><div class="msg-name">GhostCode</div><div class="msg-bub">confirmed. latency barely noticeable too</div></div>
+        <div class="msg-sd"> Self-destructs in 5:00</div>
+      </div>
+      <div class="mock-typing"><div class="mock-dots-anim"><span></span><span></span><span></span></div>NeonShadow is typing&hellip;</div>
+      <div class="mock-inp">
+        <div class="mock-inp-field">Whisper something secure&hellip;</div>
+        <div class="mock-send">&#8593;</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar rv">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-val">X25519</div><div class="stat-lbl">Key Exchange</div></div>
+    <div class="stat"><div class="stat-val">AES-GCM</div><div class="stat-lbl">Cipher</div></div>
+    <div class="stat"><div class="stat-val">0 logs</div><div class="stat-lbl">Server Stores</div></div>
+    <div class="stat"><div class="stat-val">40MB</div><div class="stat-lbl">File Limit</div></div>
+    <div class="stat"><div class="stat-val">5 modes</div><div class="stat-lbl">Room Types</div></div>
+  </div>
+</div>
+
+<section class="section" id="how">
+  <div class="rv">
+    <span class="sec-eyebrow">Simple Flow</span>
+    <h2 class="sec-title">Encrypted in <em>under 10 seconds.</em></h2>
+    <p class="sec-sub">No app, no account, no friction.</p>
+  </div>
+  <div class="steps rv2">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Pick a Room Type</div><div class="step-desc">Normal, Vanish, Rapid, Confession, or Study. You&apos;re assigned a random identity instantly.</div><div class="step-tag">5 modes</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Keys Exchange Silently</div><div class="step-desc">X25519 keypairs generated on each device. Server relays public keys only — your secret never leaves.</div><div class="step-tag">Device-only keys</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Share the Code</div><div class="step-desc">6-character code or QR. Anyone can join instantly — no account, no download.</div><div class="step-tag">QR built in</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Ghost When Done</div><div class="step-desc">Room, messages, and keys vanish permanently when everyone leaves. Zero forensic trace.</div><div class="step-tag">No trail</div></div>
+  </div>
+</section>
+
+<div class="bg-sl">
+<section class="section" id="features">
+  <div class="rv">
+    <span class="sec-eyebrow">Every Feature</span>
+    <h2 class="sec-title">Built-in. <em>All encrypted.</em></h2>
+    <p class="sec-sub">No third-party services. Every feature runs through the same E2E pipeline.</p>
+  </div>
+  <div class="feat-grid rv2">
+    <div class="feat-card"><div class="feat-icon fi-p"><svg viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v1H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a3 3 0 0 0-3-3z"/><circle cx="12" cy="13" r="2" fill="#7c6aff" stroke="none"/></svg></div><div class="feat-title">Encrypted Voice Messages</div><div class="feat-desc">Record in-browser. Encrypted with AES-GCM before leaving your device.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-s"><svg viewBox="0 0 24 24" fill="none" stroke="#ff5fa0" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="feat-title">File Sharing up to 40MB</div><div class="feat-desc">Images, docs, videos — all encrypted client-side. Server never sees contents.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-t"><svg viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="feat-title">Self-Destruct Timers</div><div class="feat-desc">10s, 30s, 1min, 5min, or 1hr. Messages dissolve automatically.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-o"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/></svg></div><div class="feat-title">Reply Threading</div><div class="feat-desc">Long-press to reply inline. Quoted preview, no re-transmission of encrypted data.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-b"><svg viewBox="0 0 24 24" fill="none" stroke="#638fdd" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><div class="feat-title">Settings Panel</div><div class="feat-desc">Switch encryption modes, regenerate keys, configure ephemeral vs stored messages.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-g"><svg viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg></div><div class="feat-title">Themes System</div><div class="feat-desc">Dark, Light, Cyberpunk, Minimal. Instant apply, persisted in localStorage.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-p"><svg viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="feat-title">Admin Controls</div><div class="feat-desc">Mute, kick, lock, rate limit, anonymous mode. All validated server-side.</div></div>
+    <div class="feat-card"><div class="feat-icon fi-s"><svg viewBox="0 0 24 24" fill="none" stroke="#ff5fa0" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="feat-title">QR Sharing</div><div class="feat-desc">Tap room code to generate QR. Scannable to join instantly on any device.</div></div>
+  </div>
+</section>
+</div>
+
+<section class="section">
+  <div class="rv">
+    <span class="sec-eyebrow">Why Midnight Protocol?</span>
+    <h2 class="sec-title">Not all &ldquo;private&rdquo; chat is <em>actually private.</em></h2>
+    <p class="sec-sub" style="margin-bottom:28px">Most apps claim privacy. Here&apos;s what actually matters.</p>
+  </div>
+  <div class="cmp-wrap rv2">
+    <table>
+      <thead><tr><th>Feature</th><th class="us">Midnight Protocol<span class="bdg bdg-u">Us</span></th><th class="th">Typical App<span class="bdg bdg-t">Them</span></th></tr></thead>
+      <tbody>
+        <tr><td>Keys generated on server?</td><td><span class="cy">&#10003;</span> Never &mdash; device only</td><td><span class="cn">&#10007;</span> Server holds keys</td></tr>
+        <tr><td>Account required</td><td><span class="cy">&#10003;</span> Zero accounts</td><td><span class="cn">&#10007;</span> Phone / email needed</td></tr>
+        <tr><td>Message logs stored</td><td><span class="cy">&#10003;</span> 0 &mdash; never written</td><td><span class="cn">&#10007;</span> Stored indefinitely</td></tr>
+        <tr><td>Metadata collected</td><td><span class="cy">&#10003;</span> No IP, device, timing</td><td><span class="cn">&#10007;</span> Extensive telemetry</td></tr>
+        <tr><td>Self-destruct messages</td><td><span class="cy">&#10003;</span> Built-in, 5 timers</td><td><span class="cn">&#10007;</span> Rare or paywalled</td></tr>
+        <tr><td>Themes &amp; settings UI</td><td><span class="cy">&#10003;</span> 4 themes, full panel</td><td><span class="cn">&#10007;</span> Usually none</td></tr>
+        <tr><td>Works without install</td><td><span class="cy">&#10003;</span> Browser-only</td><td><span class="cn">&#10007;</span> App required</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="bg-sl">
+<section class="section">
+  <div class="rv">
+    <span class="sec-eyebrow">From Users</span>
+    <h2 class="sec-title">People who needed <em>real privacy.</em></h2>
+  </div>
+  <div class="q-grid rv2">
+    <div class="q-card"><div class="q-badge">Verified</div><div class="q-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q-text">&ldquo;First anonymous retro where anyone <em>actually told the truth.</em> Used Confession mode, zero bias.&rdquo;</div><div class="q-author"><div class="q-av" style="background:rgba(124,106,255,.1)">&#128105;</div><div><div class="q-name">SilentHawk29</div><div class="q-role">Engineering Lead</div></div></div></div>
+    <div class="q-card"><div class="q-badge">Verified</div><div class="q-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q-text">&ldquo;<em>Vanish mode is perfect.</em> Say what needs to be said. 30 seconds later it&apos;s gone like it never happened.&rdquo;</div><div class="q-author"><div class="q-av" style="background:rgba(0,229,160,.08)">&#129489;</div><div><div class="q-name">CipherVibe88</div><div class="q-role">Security Researcher</div></div></div></div>
+    <div class="q-card"><div class="q-badge">Verified</div><div class="q-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q-text">&ldquo;Verified the X25519 key exchange in DevTools. <em>It actually works exactly as claimed.</em> Impressive.&rdquo;</div><div class="q-author"><div class="q-av" style="background:rgba(255,95,160,.08)">&#129489;&#8205;&#128187;</div><div><div class="q-name">GhostByte404</div><div class="q-role">CS Student</div></div></div></div>
+  </div>
+</section>
+</div>
+
+<section class="section" id="faq">
+  <div class="rv">
+    <span class="sec-eyebrow">Questions</span>
+    <h2 class="sec-title">Frequently asked. <em>Technically answered.</em></h2>
+    <p class="sec-sub" style="margin-bottom:24px">No marketing fluff.</p>
+  </div>
+  <div class="faq-list rv2">
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">Can the server read my messages?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">No &mdash; mathematically impossible. Messages are encrypted with <strong>AES-256-GCM</strong> using a shared key derived via X25519 ECDH. That key never reaches the server. The server only sees opaque ciphertext. Even with full database access, messages are unreadable.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">What happens when a room closes?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">The room object is immediately deleted from server memory. Messages were <strong>never written to a database</strong> &mdash; only runtime memory during the session. Keypairs are discarded. There is no recovery path.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">Is my IP address logged?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">Your IP is used to derive a device hash for abuse prevention (rate limiting, reputation scoring) but is <strong>never stored</strong> after the session. No analytics, no tracking pixels, no third-party scripts in the chat interface.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">What does the Settings panel do?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">The Settings tab lets you <strong>switch encryption modes</strong> (E2E, Transport, or None for testing), regenerate your ECDH keypair mid-session, toggle ephemeral message mode, and configure self-destruct timers &mdash; all from within the chat sidebar.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="faq(this)">How do themes work?<span class="faq-ic">+</span></button><div class="faq-a"><div class="faq-ai">Themes are applied via <strong>CSS variables</strong> on the root element and persisted to localStorage instantly. No reload required. Available themes: Default Dark, Light, Cyberpunk, and Minimal. Each ensures accessible contrast ratios.</div></div></div>
+  </div>
+</section>
+
+<section class="cta-sec">
+  <div class="cta-box rv">
+    <h2 class="cta-title">Chat off the record.</h2>
+    <p class="cta-sub">No data collected. No accounts. No installs. The room disappears when you do.</p>
+    <div class="cta-btns">
+      <a href="/app" class="hero-btn-p">Start a Room Free</a>
+      <a href="/app" class="hero-btn-g">Join with Code</a>
+    </div>
+    <p class="cta-note">Available on all browsers &middot; No installation required &middot; OJT 2024</p>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="f-logo"><div class="f-glyph" style="background:transparent;padding:0;width:38px;height:25px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div><div class="f-name">Midnight Protocol</div></a>
+  <div class="f-copy">&copy; 2024 Midnight Protocol &middot; OJT Cybersecurity Project</div>
+  <div class="f-links">
+    <a href="#" class="f-link">Privacy</a>
+    <a href="#" class="f-link">Terms</a>
+    <a href="#" class="f-link">Bug Report</a>
+    <a href="#" class="f-link">Status</a>
+  </div>
+</footer>
+
+<script>
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add("vs");});},{threshold:.07});
+document.querySelectorAll(".rv,.rv2").forEach(el=>obs.observe(el));
+function tM(){document.getElementById("ham").classList.toggle("o");document.getElementById("mnav").classList.toggle("o");}
+function cM(){document.getElementById("ham").classList.remove("o");document.getElementById("mnav").classList.remove("o");}
+document.addEventListener("click",e=>{if(!e.target.closest("nav"))cM();});
+function faq(btn){const o=btn.classList.contains("open");document.querySelectorAll(".faq-q").forEach(b=>{b.classList.remove("open");b.nextElementSibling.classList.remove("open");});if(!o){btn.classList.add("open");btn.nextElementSibling.classList.add("open");}}
+window.addEventListener("scroll",()=>{document.querySelector("nav").style.background=scrollY>10?"rgba(8,9,15,.95)":"rgba(8,9,15,.85)";},{passive:true});
+</script>
 </body>
 </html>

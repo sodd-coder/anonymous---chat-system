@@ -2,29 +2,440 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Fixed Index</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>Midnight Protocol — Secure Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-html, body {
-  height:100%;
-  overflow-x:hidden;
-  isolation:isolate;
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07080e;--sl:#0c0d18;--sc:#10111f;--sch:#151626;--scx:#1a1b2c;
+  --pr:#7c6aff;--sec:#ff5fa0;--ter:#00e5a0;
+  --os:#eeeeff;--osv:#9090b0;--out:#52526a;
+  --grad:linear-gradient(135deg,#7c6aff,#ff5fa0);
+  --f:'Inter',system-ui,sans-serif;--err:#ff5f5f;
 }
-.split {
-  display:flex;
-  height:100%;
-  isolation:isolate;
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative;display:flex}
+
+/* ── ambient orbs ── */
+.orb{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;animation:of 12s ease-in-out infinite}
+.o1{width:500px;height:500px;background:rgba(124,106,255,.11);top:-200px;left:-100px}
+.o2{width:400px;height:400px;background:rgba(255,95,160,.09);bottom:-150px;right:-100px;animation-delay:-6s}
+@keyframes of{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
+
+/* ── LAYOUT: left panel + right form ── */
+.split{display:flex;width:100%;height:100%}
+.left{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:48px 56px;
+  position:relative;z-index:1;
+  background:linear-gradient(160deg,rgba(124,106,255,.06) 0%,transparent 60%);
+  border-right:1px solid rgba(255,255,255,.04);
 }
-.right {
-  overflow-x:hidden;
-  contain:layout paint;
+.right{
+  width:440px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:32px 36px;
+  position:relative;z-index:1;
+  overflow-y:auto;
 }
+/* mobile: stack vertically */
+@media(max-width:820px){
+  .split{flex-direction:column}
+  .left{display:none}
+  .right{width:100%;height:100%;padding:24px 20px;justify-content:center}
+}
+@media(max-width:820px) and (max-height:700px){
+  .right{padding:16px 18px}
+}
+
+/* ── LEFT PANEL ── */
+.left-logo{display:flex;align-items:center;gap:14px;margin-bottom:52px}
+.left-owl{width:56px;height:38px;color:white;flex-shrink:0}
+.left-logo-text{}
+.left-logo-name{font-size:18px;font-weight:700;letter-spacing:-.4px;color:var(--os)}
+.left-logo-tagline{font-size:11px;color:var(--out);margin-top:2px}
+
+.left-headline{font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-1.5px;line-height:1.05;margin-bottom:20px;color:var(--os)}
+.left-headline em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.left-sub{font-size:14px;color:var(--osv);line-height:1.72;max-width:400px;margin-bottom:48px}
+
+/* feature list */
+.feat-list{display:flex;flex-direction:column;gap:16px;margin-bottom:52px}
+.feat-item{display:flex;align-items:flex-start;gap:14px}
+.feat-icon-wrap{
+  width:40px;height:40px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.fi-p{background:rgba(124,106,255,.12);border:1px solid rgba(124,106,255,.15)}
+.fi-s{background:rgba(255,95,160,.1);border:1px solid rgba(255,95,160,.12)}
+.fi-t{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.1)}
+.feat-icon-svg{width:20px;height:20px}
+.feat-body{}
+.feat-title{font-size:13px;font-weight:700;color:var(--os);letter-spacing:-.1px;margin-bottom:2px}
+.feat-desc{font-size:12px;color:var(--out);line-height:1.55}
+
+/* illustration */
+.left-illustration{
+  width:100%;max-width:380px;
+  position:relative;
+}
+.illu-window{
+  background:var(--sc);border-radius:14px;
+  border:1px solid rgba(255,255,255,.07);
+  overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(124,106,255,.08);
+}
+.illu-bar{background:var(--sch);padding:10px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(255,255,255,.04)}
+.illu-dot{width:8px;height:8px;border-radius:50%}
+.illu-enc-chip{margin-left:auto;font-size:9px;font-weight:700;color:var(--ter);background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.15);padding:2px 8px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase}
+.illu-msgs{padding:14px 14px 10px;display:flex;flex-direction:column;gap:8px}
+.illu-msg-them{align-self:flex-start;max-width:72%}
+.illu-msg-me{align-self:flex-end;max-width:72%}
+.illu-name{font-size:9px;color:var(--out);font-weight:600;padding:0 3px;margin-bottom:2px}
+.illu-bub{padding:8px 11px;font-size:11.5px;line-height:1.45;color:var(--os)}
+.illu-msg-them .illu-bub{background:var(--scx);border-radius:3px 12px 12px 12px}
+.illu-msg-me .illu-bub{background:rgba(124,106,255,.22);border:1px solid rgba(124,106,255,.2);border-radius:12px 3px 12px 12px}
+.illu-sd{align-self:center;font-size:9px;color:var(--out);background:rgba(255,255,255,.04);padding:2px 9px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase;margin:2px 0}
+.illu-inp{background:rgba(0,0,0,.25);padding:8px 14px 10px;display:flex;gap:7px;align-items:center;border-top:1px solid rgba(255,255,255,.04)}
+.illu-inp-f{flex:1;background:var(--scx);border-radius:7px;padding:7px 10px;font-size:10px;color:var(--out);border:1px solid rgba(255,255,255,.05)}
+.illu-send{width:26px;height:26px;background:var(--grad);border-radius:7px;border:none;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* floating status badges on illustration */
+.illu-badge{
+  position:absolute;
+  background:var(--sc);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;padding:8px 11px;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+  font-size:11px;font-weight:600;
+  display:flex;align-items:center;gap:7px;
+  white-space:nowrap;
+}
+.ib-enc{top:-16px;right:20px;color:var(--ter);border-color:rgba(0,229,160,.2);background:rgba(0,229,160,.05)}
+.ib-anon{bottom:12px;left:-24px;color:var(--pr);border-color:rgba(124,106,255,.2);background:rgba(124,106,255,.06);animation:ibfl 4s ease-in-out infinite .5s}
+.ib-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ib-dot-t{background:var(--ter);box-shadow:0 0 6px var(--ter)}
+.ib-dot-p{background:var(--pr)}
+@keyframes ibfl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* left footer stats */
+.left-stats{display:flex;gap:28px;flex-wrap:wrap}
+.ls-item{}
+.ls-val{font-size:20px;font-weight:700;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ls-lbl{font-size:10px;color:var(--out);margin-top:1px;text-transform:uppercase;letter-spacing:.4px;font-weight:500}
+
+/* ── RIGHT PANEL (form) ── */
+.form-head{margin-bottom:24px}
+.form-logo{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.form-owl{width:44px;height:30px;color:white}
+.form-logo-name{font-size:16px;font-weight:700;letter-spacing:-.3px;color:var(--os)}
+.form-logo-sub{font-size:10px;color:var(--out);margin-top:1px}
+.form-title{font-size:22px;font-weight:700;letter-spacing:-.8px;color:var(--os);margin-bottom:5px}
+.form-sub{font-size:13px;color:var(--osv);line-height:1.55}
+
+/* fields */
+.f-lbl{font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--osv);display:block;margin-bottom:5px}
+.f-row{display:flex;gap:7px;margin-bottom:14px}
+.f-inp{width:100%;padding:11px 13px;background:var(--scx);border:1px solid rgba(255,255,255,.07);border-radius:10px;color:var(--os);font-size:15px;font-family:var(--f);outline:none;transition:all .2s;-webkit-appearance:none}
+.f-inp:focus{border-color:rgba(124,106,255,.4);box-shadow:0 0 0 3px rgba(124,106,255,.09)}
+.f-inp::placeholder{color:var(--out);font-size:13px}
+.btn-rnd{padding:11px 12px;background:var(--scx);border:1px solid rgba(255,255,255,.07);border-radius:10px;color:var(--pr);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;-webkit-tap-highlight-color:transparent;min-height:44px;font-family:var(--f)}
+.btn-rnd:hover{border-color:rgba(124,106,255,.3);background:rgba(124,106,255,.07)}
+.btn-rnd:active{transform:scale(.93)}
+
+/* room types grid — 5 compact cards */
+.type-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:16px}
+.tc{
+  padding:10px 4px;background:var(--sch);border-radius:10px;
+  cursor:pointer;text-align:center;border:1.5px solid transparent;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  transition:all .18s;-webkit-tap-highlight-color:transparent;min-height:68px;
+}
+.tc:hover{background:var(--scx);transform:translateY(-2px)}
+.tc.sel{border-color:rgba(124,106,255,.35);background:rgba(124,106,255,.09);transform:translateY(-2px);box-shadow:0 4px 16px rgba(124,106,255,.14)}
+.tc[data-type=vanish].sel{border-color:rgba(255,95,160,.3);background:rgba(255,95,160,.09)}
+.tc[data-type=rapid].sel{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.07)}
+.tc[data-type=confession].sel{border-color:rgba(255,95,160,.28);background:rgba(255,95,160,.08)}
+.tc[data-type=study].sel{border-color:rgba(0,229,160,.25);background:rgba(0,229,160,.07)}
+.tc:active{transform:scale(.92)}
+/* SVG icons for room types instead of emojis */
+.tc-icon{width:22px;height:22px;flex-shrink:0}
+.tc-nm{font-size:8px;font-weight:700;color:var(--os);letter-spacing:.1px}
+.tc-ds{font-size:7px;color:var(--out);line-height:1.2}
+
+/* buttons */
+.btn-create{
+  width:100%;padding:14px;background:var(--grad);color:#fff;border:none;
+  border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;
+  margin-bottom:12px;transition:all .22s;
+  box-shadow:0 6px 22px rgba(124,106,255,.32);
+  position:relative;overflow:hidden;min-height:50px;font-family:var(--f);
+}
+.btn-create::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:rgba(255,255,255,.22)}
+.btn-create:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(124,106,255,.48)}
+.btn-create:active{transform:scale(.97)}
+.btn-create:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.divider{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--sch)}
+.divider span{font-size:10px;color:var(--out);white-space:nowrap}
+.join-row{display:flex;gap:6px;margin-bottom:12px}
+.code-inp{
+  flex:1;padding:12px 13px;background:var(--scx);
+  border:1px solid rgba(255,255,255,.07);border-radius:10px;
+  color:var(--os);font-size:18px;font-weight:700;letter-spacing:4px;
+  text-align:center;text-transform:uppercase;
+  outline:none;transition:all .2s;-webkit-appearance:none;min-height:48px;font-family:var(--f);
+}
+.code-inp::placeholder{letter-spacing:0;text-transform:none;color:var(--out);font-size:12px;font-weight:400}
+.code-inp:focus{border-color:rgba(124,106,255,.4);box-shadow:0 0 0 3px rgba(124,106,255,.09)}
+.btn-join{
+  padding:12px 18px;background:var(--scx);color:var(--pr);
+  border:1px solid rgba(124,106,255,.18);border-radius:10px;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;
+  white-space:nowrap;min-height:48px;-webkit-tap-highlight-color:transparent;font-family:var(--f);
+}
+.btn-join:hover{border-color:rgba(124,106,255,.4);background:rgba(124,106,255,.07)}
+.btn-join:active{transform:scale(.95)}
+.btn-join:disabled{opacity:.4;cursor:not-allowed}
+
+/* recent */
+.rec-sec{margin-bottom:8px}
+.rec-lbl{font-size:9px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--out);display:block;margin-bottom:5px}
+.rec-list{display:flex;flex-direction:column;gap:3px}
+.rec-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--sch);border-radius:10px;cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent;min-height:46px}
+.rec-item:hover{background:var(--scx);transform:translateX(3px)}
+.rec-item:active{transform:scale(.98)}
+.rec-l{display:flex;align-items:center;gap:9px}
+.rec-type-dot{width:7px;height:7px;border-radius:50%;background:var(--pr);flex-shrink:0}
+.rec-code{font-size:12px;font-weight:700;color:var(--pr);letter-spacing:1.5px}
+.rec-info{font-size:10px;color:var(--out);margin-top:1px}
+.rec-go{font-size:11px;color:var(--ter);font-weight:700}
+
+/* feedback */
+.fb{font-size:11px;display:none;padding:7px 12px;border-radius:9px;text-align:center;margin-top:5px}
+.fb.err{color:var(--err);background:rgba(255,95,95,.07);border:1px solid rgba(255,95,95,.14)}
+.fb.load{color:var(--pr);background:rgba(124,106,255,.07);border:1px solid rgba(124,106,255,.13)}
+
+/* bottom row */
+.form-btm{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 0 0;margin-top:6px;
+  border-top:1px solid rgba(255,255,255,.05);
+  flex-wrap:wrap;gap:6px;
+}
+.sec-pills{display:flex;gap:5px;flex-wrap:wrap}
+.sec-pill{
+  display:flex;align-items:center;gap:4px;
+  font-size:9px;color:var(--out);font-weight:500;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  padding:3px 9px;border-radius:20px;
+}
+.sec-pill-dot{width:4px;height:4px;border-radius:50%;background:var(--ter)}
+.back-link{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s;font-weight:500}
+.back-link:hover{color:var(--pr)}
 </style>
 </head>
 <body>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
 <div class="split">
-<div class="left">LEFT</div>
-<div class="right">RIGHT</div>
+  <!-- ── LEFT PANEL ── -->
+  <div class="left">
+    <div class="left-logo">
+      <div class="left-owl"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#08090f"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#08090f"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
+      <div class="left-logo-text">
+        <div class="left-logo-name">Midnight Protocol</div>
+        <div class="left-logo-tagline">Encrypted Anonymous Chat</div>
+      </div>
+    </div>
+
+    <h1 class="left-headline">Chat without<br>leaving <em>a trace.</em></h1>
+    <p class="left-sub">End-to-end encrypted. No accounts. No logs. Your messages vanish the moment you leave — and the server never had the keys to begin with.</p>
+
+    <!-- feature list -->
+    <div class="feat-list">
+      <div class="feat-item">
+        <div class="feat-icon-wrap fi-p">
+          <svg class="feat-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#7c6aff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">X25519 End-to-End Encryption</div>
+          <div class="feat-desc">Keys generated on your device, never sent to the server. Mathematically unreadable.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon-wrap fi-s">
+          <svg class="feat-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#ff5fa0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">Zero Identity Required</div>
+          <div class="feat-desc">No email, no phone number, no sign-up. Get a random name and start chatting.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-icon-wrap fi-t">
+          <svg class="feat-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#00e5a0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <div class="feat-body">
+          <div class="feat-title">Room Vanishes on Exit</div>
+          <div class="feat-desc">When everyone leaves the room is deleted entirely. No database entry, no history.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- chat illustration -->
+    <div class="left-illustration">
+      <div class="illu-badge ib-enc">
+        <div class="ib-dot ib-dot-t"></div>
+        X25519 Secured
+      </div>
+      <div class="illu-badge ib-anon">
+        <div class="ib-dot ib-dot-p"></div>
+        Fully Anonymous
+      </div>
+      <div class="illu-window">
+        <div class="illu-bar">
+          <div class="illu-dot" style="background:#ff5f57"></div>
+          <div class="illu-dot" style="background:#febc2e"></div>
+          <div class="illu-dot" style="background:#28c840"></div>
+          <div class="illu-enc-chip">Encrypted</div>
+        </div>
+        <div class="illu-msgs">
+          <div class="illu-msg-them"><div class="illu-name">GhostHawk91</div><div class="illu-bub">did you audit the key exchange? proofs look solid</div></div>
+          <div class="illu-msg-me"><div class="illu-name">You</div><div class="illu-bub">just checked — no metadata leaks at all</div></div>
+          <div class="illu-sd">Self-destructs in 4:32</div>
+        </div>
+        <div class="illu-inp">
+          <div class="illu-inp-f">Whisper something secure...</div>
+          <div class="illu-send">&#8593;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL (form) ── -->
+  <div class="right">
+    <div class="form-head">
+      <div class="form-logo">
+        <div class="form-owl"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#08090f"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#08090f"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
+        <div>
+          <div class="form-logo-name">Midnight Protocol</div>
+          <div class="form-logo-sub">Secure Anonymous Chat</div>
+        </div>
+      </div>
+      <div class="form-title">Start or join a room</div>
+      <div class="form-sub">Create a private encrypted room in seconds, or enter a code to join one.</div>
+    </div>
+
+    <label class="f-lbl" for="nickInp">Your nickname (optional)</label>
+    <div class="f-row" style="margin-bottom:16px">
+      <input type="text" id="nickInp" class="f-inp" style="flex:1" placeholder="Leave blank for random name..." maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      <button class="btn-rnd" onclick="genRandom()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Random
+      </button>
+    </div>
+
+    <label class="f-lbl">Choose room type</label>
+    <div class="type-grid" id="typeGrid">
+      <div class="tc sel" data-type="normal" onclick="pick('normal')">
+        <svg class="tc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="tc-nm">Normal</span><span class="tc-ds">Standard</span>
+      </div>
+      <div class="tc" data-type="vanish" onclick="pick('vanish')">
+        <svg class="tc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8v4l3 3"/></svg>
+        <span class="tc-nm">Vanish</span><span class="tc-ds">30s delete</span>
+      </div>
+      <div class="tc" data-type="rapid" onclick="pick('rapid')">
+        <svg class="tc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="tc-nm">Rapid</span><span class="tc-ds">100 chars</span>
+      </div>
+      <div class="tc" data-type="confession" onclick="pick('confession')">
+        <svg class="tc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 6-6v0a6 6 0 0 1 6 6v2"/><line x1="12" y1="12" x2="12" y2="12"/></svg>
+        <span class="tc-nm">Confess</span><span class="tc-ds">No names</span>
+      </div>
+      <div class="tc" data-type="study" onclick="pick('study')">
+        <svg class="tc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="tc-nm">Study</span><span class="tc-ds">Prompts</span>
+      </div>
+    </div>
+
+    <button class="btn-create" id="createBtn" onclick="createRoom()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:7px;position:relative;top:-1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Create Secure Room
+    </button>
+
+    <div class="divider"><span>or join with a code</span></div>
+
+    <div class="join-row">
+      <input type="text" id="codeInp" class="code-inp" placeholder="Enter code" maxlength="6" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" inputmode="text"/>
+      <button class="btn-join" id="joinBtn" onclick="joinRoom()">Join &rarr;</button>
+    </div>
+
+    <div id="recsWrap" class="rec-sec" style="display:none">
+      <span class="rec-lbl">Recent sessions</span>
+      <div class="rec-list" id="recsList"></div>
+    </div>
+
+    <div class="fb err" id="errMsg"></div>
+    <div class="fb load" id="loadMsg"></div>
+
+    <div class="form-btm">
+      <div class="sec-pills">
+        <div class="sec-pill"><div class="sec-pill-dot"></div>Encrypted</div>
+        <div class="sec-pill"><div class="sec-pill-dot" style="background:var(--pr)"></div>Anonymous</div>
+        <div class="sec-pill"><div class="sec-pill-dot" style="background:var(--sec)"></div>Zero Logs</div>
+      </div>
+      <a href="/" class="back-link">&larr; Home</a>
+    </div>
+  </div>
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket=io();
+let busy=false,selType="normal";
+const ADJS=["Silent","Ghost","Shadow","Anon","Stealth","Phantom","Cipher","Mystic","Neon","Glitch","Blaze","Void","Dark","Pixel","Fuzzy"];
+const NOUNS=["Fox","Wolf","Hawk","Bear","Lynx","Raven","Tiger","Eagle","Vibe","Comet","Nova","Storm","Quasar","Byte","Spark"];
+function rnd(){return ADJS[Math.random()*ADJS.length|0]+NOUNS[Math.random()*NOUNS.length|0]+(10+Math.random()*90|0);}
+function getU(){const v=document.getElementById("nickInp").value.trim().replace(/[^a-zA-Z0-9_]/g,"").substring(0,20);return v||rnd();}
+function genRandom(){document.getElementById("nickInp").value=rnd();}
+function pick(t){selType=t;document.querySelectorAll(".tc").forEach(c=>c.classList.toggle("sel",c.dataset.type===t));}
+function loadRecent(){
+  try{const arr=JSON.parse(localStorage.getItem("mp_recent")||"[]").filter(r=>Date.now()-r.t<7200000);
+  if(!arr.length)return;document.getElementById("recsWrap").style.display="block";
+  const list=document.getElementById("recsList");list.innerHTML="";
+  arr.slice(0,2).forEach(r=>{const el=document.createElement("div");el.className="rec-item";
+  const mins=Math.floor((Date.now()-r.t)/60000);
+  el.innerHTML='<div class="rec-l"><div class="rec-type-dot"></div><div><div class="rec-code">'+r.code+'</div><div class="rec-info">'+r.type+' &middot; '+(mins<1?"just now":mins+"m ago")+'</div></div></div><span class="rec-go">Rejoin &rarr;</span>';
+  el.onclick=()=>{document.getElementById("codeInp").value=r.code;joinRoom();};list.appendChild(el);});}catch(e){}
+}
+function saveRecent(code,type){try{const arr=JSON.parse(localStorage.getItem("mp_recent")||"[]").filter(r=>r.code!==code);arr.unshift({code,type,t:Date.now()});localStorage.setItem("mp_recent",JSON.stringify(arr.slice(0,5)));}catch(e){}}
+loadRecent();
+function lock(){busy=true;["createBtn","joinBtn"].forEach(id=>document.getElementById(id).disabled=true);}
+function unlock(){busy=false;["createBtn","joinBtn"].forEach(id=>document.getElementById(id).disabled=false);}
+function showErr(m){unlock();const e=document.getElementById("errMsg");e.textContent=m;e.style.display="block";document.getElementById("loadMsg").style.display="none";}
+function showLoad(m){document.getElementById("errMsg").style.display="none";const l=document.getElementById("loadMsg");l.textContent=m;l.style.display="block";}
+function clearFb(){["errMsg","loadMsg"].forEach(id=>document.getElementById(id).style.display="none");}
+function redirect(code,isCreator,type){
+  sessionStorage.setItem("mp_user",getU());sessionStorage.setItem("mp_room",code);
+  sessionStorage.setItem("mp_creator",isCreator?"1":"0");sessionStorage.setItem("mp_type",type||"normal");
+  saveRecent(code,type||"normal");
+  const split=document.querySelector(".split");split.style.transition="all .25s ease";split.style.opacity="0";split.style.transform="translateY(-8px)";
+  setTimeout(()=>location.href="/room/"+code,240);
+}
+function createRoom(){if(busy)return;lock();clearFb();showLoad("Establishing secure session...");socket.emit("generate-code");}
+socket.on("code-generated",code=>redirect(code,true,selType));
+function joinRoom(){if(busy)return;const code=document.getElementById("codeInp").value.trim().toUpperCase();if(!code)return showErr("Please enter a room code.");if(code.length<6)return showErr("Code must be 6 characters.");lock();clearFb();showLoad("Joining secure session...");socket.emit("check-room",{roomCode:code});}
+socket.on("room-valid",({roomType})=>{const code=document.getElementById("codeInp").value.trim().toUpperCase();redirect(code,false,roomType);});
+socket.on("join-error",m=>showErr(m));
+socket.on("temp-blocked",m=>showErr(m));
+document.getElementById("codeInp").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom();});
+document.getElementById("nickInp").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("createBtn").click();});
+document.getElementById("codeInp").addEventListener("input",e=>{clearFb();const p=e.target.selectionStart;e.target.value=e.target.value.toUpperCase();e.target.setSelectionRange(p,p);});
+document.getElementById("nickInp").addEventListener("input",e=>{e.target.value=e.target.value.replace(/[^a-zA-Z0-9_]/g,"");});
+const qc=new URLSearchParams(location.search).get("code");
+if(qc)document.getElementById("codeInp").value=qc.toUpperCase();
+</script>
 </body>
 </html>
