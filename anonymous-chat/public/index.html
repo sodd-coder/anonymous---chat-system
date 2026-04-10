@@ -233,6 +233,8 @@ body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative
 .sec-pill-dot{width:4px;height:4px;border-radius:50%;background:var(--ter)}
 .back-link{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s;font-weight:500}
 .back-link:hover{color:var(--pr)}
+.split.in-room .left{display:none!important}
+.split.in-room .right{width:100%;max-width:100%}
 </style>
 </head>
 <body>
@@ -421,7 +423,9 @@ function redirect(code,isCreator,type){
   sessionStorage.setItem("mp_user",getU());sessionStorage.setItem("mp_room",code);
   sessionStorage.setItem("mp_creator",isCreator?"1":"0");sessionStorage.setItem("mp_type",type||"normal");
   saveRecent(code,type||"normal");
-  const split=document.querySelector(".split");split.style.transition="all .25s ease";split.style.opacity="0";split.style.transform="translateY(-8px)";
+  const split=document.querySelector(".split");
+  split.classList.add("in-room");
+  split.style.transition="all .25s ease";split.style.opacity="0";split.style.transform="translateY(-8px)";
   setTimeout(()=>location.href="/room/"+code,240);
 }
 function createRoom(){if(busy)return;lock();clearFb();showLoad("Establishing secure session...");socket.emit("generate-code");}
@@ -436,6 +440,12 @@ document.getElementById("codeInp").addEventListener("input",e=>{clearFb();const 
 document.getElementById("nickInp").addEventListener("input",e=>{e.target.value=e.target.value.replace(/[^a-zA-Z0-9_]/g,"");});
 const qc=new URLSearchParams(location.search).get("code");
 if(qc)document.getElementById("codeInp").value=qc.toUpperCase();
+
+// Check if we're viewing a room page
+if(location.pathname.startsWith('/room/')){
+  document.querySelector('.split').classList.add('in-room');
+}
+
 </script>
 </body>
 </html>
