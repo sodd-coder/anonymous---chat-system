@@ -15,7 +15,7 @@
   --f:'Inter',system-ui,sans-serif;--err:#ff5f5f;
 }
 html,body{height:100%;overflow:hidden}
-body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative;display:flex}
+body{font-family:var(--f);background:var(--bg);color:var(--os);position:fixed;inset:0;display:flex;isolation:isolate}
 
 /* ── ambient orbs ── */
 .orb{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;animation:of 12s ease-in-out infinite}
@@ -24,22 +24,25 @@ body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative
 @keyframes of{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-20px)}}
 
 /* ── LAYOUT: left panel + right form ── */
-.split{display:flex;width:100%;height:100%}
+.split{display:flex;width:100%;height:100%;overflow:hidden;isolation:isolate}
 .left{
   flex:1;min-width:0;
   display:flex;flex-direction:column;justify-content:center;
-  padding:48px 56px;
+  padding:48px 56px;overflow:hidden;
   position:relative;z-index:1;
-  background:linear-gradient(160deg,rgba(124,106,255,.06) 0%,transparent 60%);
-  border-right:1px solid rgba(255,255,255,.04);
+  background:linear-gradient(160deg,rgba(124,106,255,.08) 0%,var(--bg) 70%);
+  border-right:1px solid rgba(255,255,255,.05);
 }
 .right{
   width:440px;flex-shrink:0;
   display:flex;flex-direction:column;justify-content:center;
-  padding:32px 36px;
+  padding:28px 32px;
   position:relative;z-index:1;
   overflow-y:auto;
+  overflow-x:hidden;
 }
+/* Fix: prevent any bleed-through from landing page */
+html,body{isolation:isolate}
 /* mobile: stack vertically */
 @media(max-width:820px){
   .split{flex-direction:column}
@@ -233,8 +236,6 @@ body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative
 .sec-pill-dot{width:4px;height:4px;border-radius:50%;background:var(--ter)}
 .back-link{font-size:11px;color:var(--out);text-decoration:none;transition:color .2s;font-weight:500}
 .back-link:hover{color:var(--pr)}
-.split.in-room .left{display:none!important}
-.split.in-room .right{width:100%;max-width:100%}
 </style>
 </head>
 <body>
@@ -245,7 +246,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative
   <!-- ── LEFT PANEL ── -->
   <div class="left">
     <div class="left-logo">
-      <div class="left-owl"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#08090f"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#08090f"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
+      <div class="left-owl" style="color:white"><svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg"><g><line x1="3" y1="42" x2="34" y2="42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity=".75"/><line x1="9" y1="52" x2="34" y2="52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><line x1="16" y1="62" x2="34" y2="62" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".35"/><path d="M38 12 C52 2 64 8 72 22" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M88 22 C96 8 108 2 122 12" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="68" cy="52" rx="30" ry="33" fill="currentColor"/><ellipse cx="92" cy="52" rx="30" ry="33" fill="currentColor"/><path d="M44 38 Q68 26 82 38 Q82 68 68 74 Q44 68 44 38Z" fill="#07080e"/><path d="M78 38 Q92 26 116 38 Q116 68 92 74 Q78 68 78 38Z" fill="#07080e"/><ellipse cx="68" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><ellipse cx="92" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><path d="M76 68 L80 76 L84 68 Z" fill="currentColor"/></g></svg></div>
       <div class="left-logo-text">
         <div class="left-logo-name">Midnight Protocol</div>
         <div class="left-logo-tagline">Encrypted Anonymous Chat</div>
@@ -320,7 +321,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--os);position:relative
   <div class="right">
     <div class="form-head">
       <div class="form-logo">
-        <div class="form-owl"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#08090f"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#08090f"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div>
+        <div class="form-owl" style="color:white"><svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg"><g><line x1="3" y1="42" x2="34" y2="42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity=".75"/><line x1="9" y1="52" x2="34" y2="52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><line x1="16" y1="62" x2="34" y2="62" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".35"/><path d="M38 12 C52 2 64 8 72 22" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M88 22 C96 8 108 2 122 12" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="68" cy="52" rx="30" ry="33" fill="currentColor"/><ellipse cx="92" cy="52" rx="30" ry="33" fill="currentColor"/><path d="M44 38 Q68 26 82 38 Q82 68 68 74 Q44 68 44 38Z" fill="#07080e"/><path d="M78 38 Q92 26 116 38 Q116 68 92 74 Q78 68 78 38Z" fill="#07080e"/><ellipse cx="68" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><ellipse cx="92" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><path d="M76 68 L80 76 L84 68 Z" fill="currentColor"/></g></svg></div>
         <div>
           <div class="form-logo-name">Midnight Protocol</div>
           <div class="form-logo-sub">Secure Anonymous Chat</div>
@@ -423,9 +424,7 @@ function redirect(code,isCreator,type){
   sessionStorage.setItem("mp_user",getU());sessionStorage.setItem("mp_room",code);
   sessionStorage.setItem("mp_creator",isCreator?"1":"0");sessionStorage.setItem("mp_type",type||"normal");
   saveRecent(code,type||"normal");
-  const split=document.querySelector(".split");
-  split.classList.add("in-room");
-  split.style.transition="all .25s ease";split.style.opacity="0";split.style.transform="translateY(-8px)";
+  const split=document.querySelector(".split");split.style.transition="all .25s ease";split.style.opacity="0";split.style.transform="translateY(-8px)";
   setTimeout(()=>location.href="/room/"+code,240);
 }
 function createRoom(){if(busy)return;lock();clearFb();showLoad("Establishing secure session...");socket.emit("generate-code");}
@@ -440,12 +439,6 @@ document.getElementById("codeInp").addEventListener("input",e=>{clearFb();const 
 document.getElementById("nickInp").addEventListener("input",e=>{e.target.value=e.target.value.replace(/[^a-zA-Z0-9_]/g,"");});
 const qc=new URLSearchParams(location.search).get("code");
 if(qc)document.getElementById("codeInp").value=qc.toUpperCase();
-
-// Check if we're viewing a room page
-if(location.pathname.startsWith('/room/')){
-  document.querySelector('.split').classList.add('in-room');
-}
-
 </script>
 </body>
 </html>

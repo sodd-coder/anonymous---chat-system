@@ -75,10 +75,12 @@ body{
    HEADER
    ============================================= */
 .hdr{
-  flex-shrink:0;height:52px;padding:0 12px;
-  background:var(--sl);border-bottom:1px solid rgba(255,255,255,.04);
+  flex-shrink:0;height:54px;padding:0 14px;
+  background:var(--sl);
+  border-bottom:1px solid rgba(255,255,255,.05);
   display:grid;grid-template-columns:auto 1fr auto;
   align-items:center;gap:8px;position:relative;z-index:50;
+  box-shadow:0 2px 12px rgba(0,0,0,.15);
 }
 [data-theme="light"] .hdr,[data-theme="minimal"] .hdr{border-bottom-color:rgba(0,0,0,.08)}
 .hdr-brand{display:flex;align-items:center;gap:7px;text-decoration:none;flex-shrink:0}
@@ -104,9 +106,17 @@ body{
 .online-count{display:flex;align-items:center;gap:4px;padding:5px 9px;border-radius:20px;border:none;cursor:pointer;background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.12);color:var(--ter);font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent;transition:all .2s;min-height:32px}
 .online-count:hover{background:rgba(0,229,160,.12)}
 .online-dot{width:5px;height:5px;border-radius:50%;background:var(--ter);box-shadow:0 0 5px var(--ter);animation:blink 2s infinite}
-.leave-btn{padding:0 13px;height:34px;background:rgba(255,95,95,.08);color:var(--err);border:1px solid rgba(255,95,95,.16);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;white-space:nowrap;font-family:var(--f);min-height:36px}
-.leave-btn:hover{background:rgba(255,95,95,.16);border-color:var(--err)}
-.leave-btn:active{transform:scale(.96)}
+.leave-btn{
+  display:flex;align-items:center;gap:1px;
+  padding:0 14px;height:36px;
+  background:rgba(255,95,95,.1);color:var(--err);
+  border:1px solid rgba(255,95,95,.2);border-radius:9px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  transition:all .22s;-webkit-tap-highlight-color:transparent;
+  white-space:nowrap;font-family:var(--f);min-height:36px;
+}
+.leave-btn:hover{background:rgba(255,95,95,.2);border-color:var(--err);transform:translateY(-1px)}
+.leave-btn:active{transform:scale(.95)}
 
 /* =============================================
    BANNERS
@@ -142,8 +152,17 @@ body{
 }
 [data-theme="light"] .sidebar,[data-theme="minimal"] .sidebar{border-right-color:rgba(0,0,0,.07)}
 @media(max-width:768px){
-  .sidebar{display:none!important}
-  .sb-overlay{display:none!important}
+  .sidebar{
+    position:fixed;left:0;right:0;bottom:0;width:100%;z-index:200;
+    border-radius:18px 18px 0 0;border-right:none;
+    transform:translateY(100%);
+    transition:transform .32s cubic-bezier(.32,.72,0,1);
+    max-height:80vh;
+    border-top:1px solid rgba(255,255,255,.07);
+    padding-bottom:env(safe-area-inset-bottom);
+    box-shadow:0 -8px 40px rgba(0,0,0,.6);
+  }
+  .sidebar.open{transform:translateY(0)}
 }
 .sb-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:10px auto 0;flex-shrink:0}
 @media(min-width:769px){.sb-handle{display:none}}
@@ -250,11 +269,22 @@ body{
 .msg-name{font-size:11px;font-weight:700;color:var(--pr);letter-spacing:-.1px}
 .msg-ts{font-size:10px;color:var(--out)}
 @media(max-width:440px){.msg-g{max-width:min(84%,300px)}}
-.bubble{padding:10px 14px;font-size:15px;line-height:1.55;word-break:break-word;animation:bIn .2s cubic-bezier(.34,1.56,.64,1)}
-@media(max-width:440px){.bubble{font-size:16px;padding:11px 15px}}
-@keyframes bIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.msg-g.them .bubble{background:var(--bubble-them);color:var(--os);border-radius:3px 14px 14px 14px}
-.msg-g.me .bubble{background:var(--bubble-me-bg);border:1px solid var(--bubble-me-bd);color:var(--os);border-radius:14px 3px 14px 14px}
+.bubble{
+  padding:10px 15px;font-size:14.5px;line-height:1.58;word-break:break-word;
+  animation:bIn .18s ease-out;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+@media(max-width:440px){.bubble{font-size:15.5px;padding:11px 15px}}
+@keyframes bIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg-g.them .bubble{
+  background:var(--bubble-them);color:var(--os);
+  border-radius:2px 18px 18px 18px;
+}
+.msg-g.me .bubble{
+  background:var(--bubble-me-bg);border:1px solid var(--bubble-me-bd);
+  color:var(--os);border-radius:18px 2px 18px 18px;
+  box-shadow:0 2px 8px rgba(124,106,255,.12);
+}
 .rp-preview{padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:11px;cursor:pointer;overflow:hidden;max-width:100%}
 .msg-g.them .rp-preview{background:rgba(255,255,255,.06);border-left:3px solid var(--pr)}
 .msg-g.me .rp-preview{background:rgba(0,0,0,.12);border-left:3px solid rgba(255,255,255,.3)}
@@ -364,8 +394,8 @@ body{
 /* upload */
 .uprog{font-size:11px;color:var(--pr);padding:3px 0 2px;display:none;font-weight:600}
 /* input row */
-.inp-row{display:flex;align-items:center;gap:5px;background:var(--inp-bg);border-radius:12px;padding:5px 6px 5px 8px;border:1px solid var(--inp-bd);min-height:48px;transition:border-color .2s}
-.inp-row:focus-within{border-color:rgba(124,106,255,.3)}
+.inp-row{display:flex;align-items:center;gap:5px;background:var(--inp-bg);border-radius:14px;padding:5px 6px 5px 10px;border:1px solid var(--inp-bd);min-height:50px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.inp-row:focus-within{border-color:rgba(124,106,255,.35);box-shadow:0 2px 12px rgba(124,106,255,.1)}
 .icon-btn{background:none;border:none;color:var(--out);cursor:pointer;padding:7px;border-radius:9px;font-size:19px;transition:all .18s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;flex-shrink:0}
 .icon-btn:hover{background:rgba(255,255,255,.06);color:var(--os)}
 [data-theme="light"] .icon-btn:hover,[data-theme="minimal"] .icon-btn:hover{background:rgba(0,0,0,.06)}
@@ -376,9 +406,9 @@ body{
 .char-count{font-size:10px;flex-shrink:0;font-weight:700}
 .char-warn{color:#f59e0b}
 .char-danger{color:var(--err)}
-.send-btn{width:36px;height:36px;background:var(--grad);border:none;border-radius:9px;color:#fff;font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:42px;min-height:42px}
-.send-btn:hover{transform:scale(1.06);box-shadow:0 4px 14px rgba(124,106,255,.4)}
-.send-btn:active{transform:scale(.92)}
+.send-btn{width:40px;height:40px;background:var(--grad);border:none;border-radius:12px;color:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0;min-width:40px;min-height:40px;box-shadow:0 3px 12px rgba(124,106,255,.35)}
+.send-btn:hover{transform:scale(1.06);box-shadow:0 6px 18px rgba(124,106,255,.5)}
+.send-btn:active{transform:scale(.91)}
 .inp-footer{text-align:center;font-size:9px;color:var(--outv);letter-spacing:1px;text-transform:uppercase;padding:6px 0 1px}
 
 /* =============================================
@@ -423,16 +453,10 @@ body{
 .toast.info{background:rgba(124,106,255,.1);border:1px solid rgba(124,106,255,.22);color:var(--pr)}
 
 /* SETTINGS TRIGGER BUTTON */
-.settings-trigger-btn{
-  display:flex;align-items:center;justify-content:center;
-  width:36px;height:36px;border-radius:9px;
-  background:var(--scx);border:1px solid var(--inp-bd);
-  color:var(--osv);cursor:pointer;
-  transition:all .2s;-webkit-tap-highlight-color:transparent;
-  min-width:36px;min-height:36px;
-}
-.settings-trigger-btn:hover{background:rgba(124,106,255,.1);border-color:rgba(124,106,255,.3);color:var(--pr)}
-.settings-trigger-btn:active{transform:scale(.93)}
+
+.settings-gear-btn{width:36px;height:36px;background:var(--scx);border:1px solid var(--inp-bd);border-radius:9px;color:var(--osv);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.settings-gear-btn:hover{background:rgba(124,106,255,.1);border-color:rgba(124,106,255,.3);color:var(--pr)}
+.settings-gear-btn:active{transform:scale(.92)}
 
 /* SETTINGS MODAL */
 .settings-modal-ov{
@@ -451,7 +475,7 @@ body{
   position:relative;
 }
 @media(min-width:540px){.settings-modal{border-radius:18px;max-height:82vh}}
-@keyframes smIn{from{transform:translateY(40px);opacity:.6}to{transform:translateY(0);opacity:1}}
+@keyframes smIn{from{transform:translateY(100%);opacity:.8}to{transform:translateY(0);opacity:1}}
 .settings-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
 .sm-handle{width:32px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);margin:12px auto 0;flex-shrink:0}
 @media(min-width:540px){.sm-handle{display:none}}
@@ -471,11 +495,32 @@ body{
 .sm-body{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
 .sm-panel{display:none}
 .sm-panel.active{display:block}
+
+.leave-modal{overflow:visible!important}
+.leave-modal-body{padding:8px 0 16px;text-align:center}
+.leave-icon-wrap{width:64px;height:64px;border-radius:50%;background:rgba(255,95,95,.1);border:1px solid rgba(255,95,95,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.leave-warning{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(255,95,95,.07);border:1px solid rgba(255,95,95,.14);border-radius:9px;font-size:11px;color:var(--err);margin-top:14px;justify-content:center}
 </style>
 </head>
 <body>
 <!-- MODALS -->
-<div class="modal-ov" id="leaveModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128682;</div><div class="modal-title">Leave session?</div><div class="modal-sub">Messages are permanently deleted. This session cannot be rejoined.</div><div class="modal-btns"><button class="btn-g" onclick="closeModal('leaveModal')">Stay</button><button class="btn-d" onclick="doLeave()">Leave</button></div></div></div>
+<div class="modal-ov" id="leaveModal">
+  <div class="modal leave-modal">
+    <div class="modal-handle"></div>
+    <div class="leave-modal-body">
+      <div class="leave-icon-wrap">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--err)"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <div class="modal-title" style="margin-bottom:8px">Leave this session?</div>
+      <div class="modal-sub">All messages are permanently destroyed when you leave. This room cannot be rejoined once empty.</div>
+      <div class="leave-warning"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>This action cannot be undone</div>
+    </div>
+    <div class="modal-btns" style="gap:10px">
+      <button class="btn-g" onclick="closeModal('leaveModal')" style="flex:1.2">Stay in room</button>
+      <button class="btn-d" onclick="doLeave()" style="flex:1">Leave</button>
+    </div>
+  </div>
+</div>
 <div class="modal-ov" id="qrModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128241;</div><div class="modal-title">Share Room</div><div class="modal-sub">Scan to join or copy the code below</div><div class="qr-wrap"><div id="qrContainer"></div></div><div class="qr-val" id="qrVal"></div><button class="btn-p-full" onclick="copyCode()">&#128203; Copy Room Code</button><button class="btn-g" onclick="closeModal('qrModal')" style="width:100%">Close</button></div></div>
 <div class="modal-ov" id="sdModal"><div class="modal"><div class="modal-handle"></div><div class="modal-ic">&#128163;</div><div class="modal-title">Self-Destruct Timer</div><div class="modal-sub">Messages auto-delete after this time for all participants.</div><div class="sd-opts"><button class="sd-opt" onclick="pickSD(10)">10s</button><button class="sd-opt" onclick="pickSD(30)">30s</button><button class="sd-opt" onclick="pickSD(60)">1 min</button><button class="sd-opt" onclick="pickSD(300)">5 min</button><button class="sd-opt" onclick="pickSD(3600)">1 hr</button></div><button class="sd-off" onclick="pickSD(0)">&#128683; Turn Off</button><div style="margin-top:12px"><button class="btn-g" onclick="closeModal('sdModal')" style="width:100%">Cancel</button></div></div></div>
 <div class="toast" id="toast"></div>
@@ -483,7 +528,7 @@ body{
 <div class="sb-overlay" id="sbOverlay" onclick="closeSb()"></div>
 <!-- HEADER -->
 <header class="hdr">
-  <a href="/" class="hdr-brand"><div class="hdr-glyph" style="background:transparent;padding:0;width:52px;height:34px;color:white;display:flex;align-items:center"><svg viewBox="0 0 110 72" xmlns="http://www.w3.org/2000/svg"><g fill="none"><line x1="2" y1="30" x2="20" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="5" y1="36" x2="20" y2="36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/><line x1="9" y1="42" x2="20" y2="42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".35"/><path d="M26 8 Q36 1 48 13" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M62 13 Q74 1 84 8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="42" cy="35" rx="17" ry="19" fill="currentColor"/><ellipse cx="68" cy="35" rx="17" ry="19" fill="currentColor"/><path d="M31 27 Q42 20 53 27 Q53 44 42 48 Q31 44 31 27Z" fill="#0a0a12"/><path d="M57 27 Q68 20 79 27 Q79 44 68 48 Q57 44 57 27Z" fill="#0a0a12"/><ellipse cx="42" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><ellipse cx="68" cy="35" rx="7" ry="8" fill="currentColor" opacity=".85"/><path d="M53 43 L55.5 49 L58 43 Z" fill="currentColor"/></g></svg></div><span class="hdr-name">Midnight Protocol</span></a>
+  <a href="/" class="hdr-brand" aria-label="Midnight Protocol"><div style="width:46px;height:30px;color:white;flex-shrink:0"><svg viewBox="0 0 160 100" fill="none" xmlns="http://www.w3.org/2000/svg"><g><line x1="3" y1="42" x2="34" y2="42" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" opacity=".75"/><line x1="9" y1="52" x2="34" y2="52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><line x1="16" y1="62" x2="34" y2="62" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".35"/><path d="M38 12 C52 2 64 8 72 22" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M88 22 C96 8 108 2 122 12" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="68" cy="52" rx="30" ry="33" fill="currentColor"/><ellipse cx="92" cy="52" rx="30" ry="33" fill="currentColor"/><path d="M44 38 Q68 26 82 38 Q82 68 68 74 Q44 68 44 38Z" fill="#080810"/><path d="M78 38 Q92 26 116 38 Q116 68 92 74 Q78 68 78 38Z" fill="#080810"/><ellipse cx="68" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><ellipse cx="92" cy="52" rx="11" ry="13" fill="currentColor" opacity=".88"/><path d="M76 68 L80 76 L84 68 Z" fill="currentColor"/></g></svg></div><span class="hdr-name">Midnight Protocol</span></a>
   <div class="hdr-mid">
     <div class="room-pill" onclick="showQR()">
       <span class="room-pill-lbl">Room</span>
@@ -494,10 +539,12 @@ body{
   <div class="hdr-r">
     <div class="enc-badge connecting" id="encBadge"><div class="enc-badge-dot"></div><span class="enc-badge-text" id="encBadgeTxt">Connecting</span></div>
     <button class="online-count" onclick="toggleSb()"><div class="online-dot"></div><span id="uCount">1</span></button>
-    <button class="settings-trigger-btn" onclick="openSettings()" aria-label="Settings" title="Settings">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M17.66 2.34a14 14 0 0 1 0 19.32M6.34 2.34a14 14 0 0 0 0 19.32"/></svg>
-</button>
-<button class="leave-btn" onclick="openModal('leaveModal')">Leave</button>
+    <button class="settings-gear-btn" onclick="openSettings()" aria-label="Settings" title="Settings">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  </button>
+  <button class="leave-btn" onclick="openModal('leaveModal')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;display:inline-block;vertical-align:middle;position:relative;top:-1px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Leave
+  </button>
   </div>
 </header>
 <!-- BANNERS -->
@@ -727,10 +774,12 @@ function changeEncMode(m){
   toast(m==="e2e"?"&#128272; E2E encryption active":m==="transport"?"&#9888;&#65039; Transport mode":"&#128683; Encryption disabled",m==="e2e"?"ok":m==="transport"?"info":"err");
 }
 function updateEncUI(){
-  // sync settings modal chips
-  ["smEncChip","smEncInfo"].forEach(id=>{const el=document.getElementById(id);if(!el)return;});
   const smC=document.getElementById("smEncChip"),smI=document.getElementById("smEncInfo");
-  if(smC){if(encMode==="e2e"&&roomKey){smC.className="chip chip-secure";smC.textContent="E2E Active";if(smI)smI.textContent="X25519 ECDH + XSalsa20-Poly1305";}else if(encMode==="transport"){smC.className="chip chip-warn";smC.textContent="Transport";}else{smC.className="chip chip-off";smC.textContent="Unencrypted";}}
+  if(smC){
+    if(encMode==="e2e"&&roomKey){smC.className="chip chip-secure";smC.textContent="E2E Active";if(smI)smI.textContent="X25519 + XSalsa20-Poly1305";}
+    else if(encMode==="transport"){smC.className="chip chip-warn";smC.textContent="Transport";if(smI)smI.textContent="Server-relayed AES-GCM";}
+    else{smC.className="chip chip-off";smC.textContent="Unencrypted";if(smI)smI.textContent="Testing mode only";}
+  }
   const chip=document.getElementById("encChip"),info=document.getElementById("encInfo"),badge=document.getElementById("encBadge"),btxt=document.getElementById("encBadgeTxt"),bmode=document.getElementById("bEncMode");
   if(encMode==="e2e"&&roomKey){
     chip.className="chip chip-secure";chip.textContent="E2E Active";
@@ -819,7 +868,11 @@ socket.on("you-were-kicked",()=>{alert("You were removed.");sessionStorage.clear
 socket.on("user-muted",u=>addSys(u+" was muted"));
 socket.on("user-unmuted",u=>addSys(u+" was unmuted"));
 socket.on("user-kicked",u=>addSys(u+" was removed"));
-socket.on("room-lock-changed",locked=>{const btn=document.getElementById("lockBtn");if(btn)btn.innerHTML=locked?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5v4"/></svg>Unlock Room':'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline-block;vertical-align:middle;margin-right:6px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Lock Room';const btn2=document.getElementById("smLockBtn");if(btn2)btn2.textContent=locked?"Unlock Room":"Lock Room";locked?showBnr("bLocked"):hideBnr("bLocked");toast(locked?"Room locked":"Room unlocked","info");});
+socket.on("room-lock-changed",locked=>{
+  ['lockBtn','smLockBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=locked?"Unlock Room":"Lock Room";});
+  locked?showBnr("bLocked"):hideBnr("bLocked");
+  toast(locked?"Room locked":"Room unlocked","info");
+});
 socket.on("admin-anon-changed",anon=>{document.getElementById("smAnonToggle").checked=anon;toast(anon?"&#127917; Anonymous mode on":"&#127917; Anonymous mode off","info");});
 socket.on("admin-rate-changed",({limit})=>toast("Rate limit: "+limit+"/5s","info"));
 socket.on("report-received",()=>toast("&#10003; Report submitted","ok"));
@@ -917,18 +970,49 @@ function adminMute(t){const m=userListData.find(u=>u.username===t)?.isMuted;sock
 function adminKick(t){if(confirm("Remove "+t+"?"))socket.emit("admin-kick",{roomCode,targetUsername:t});}
 function adminLock(){socket.emit("admin-lock",{roomCode});}
 function toggleAnon(v){socket.emit("admin-set-anon",{roomCode,anon:v});}
-function applyRate(){const v=parseInt(document.getElementById("smRateInput").value);if(v>0)socket.emit("admin-set-rate",{roomCode,limit:v});}
+function applyRate(){const el=document.getElementById('smRateInput')||document.getElementById('rateInput');const v=parseInt(el?el.value:10);if(v>0)socket.emit('admin-set-rate',{roomCode,limit:v});}
 function reportU(t){if(confirm("Report "+t+"?"))socket.emit("report-user",{roomCode,targetUsername:t});}
 
 // PROMPT
 function usePrompt(){if(currentPrompt){document.getElementById("msgInp").value=currentPrompt+" ";document.getElementById("msgInp").focus();hideBnr("bPrompt");}}
 
 // EMOJI
-const EMOJIS=["&#128512;","&#128514;","&#128513;","&#128515;","&#128519;","&#128516;","&#128522;","&#128578;","&#128521;","&#128524;","&#128527;","&#128525;","&#129392;","&#128536;","&#128530;","&#128535;","&#128548;","&#128552;","&#128557;","&#128546;","&#128563;","&#128561;","&#128123;","&#128128;","&#128131;","&#128518;","&#128526;","&#129313;","&#129299;","&#128520;","&#128540;","&#128541;","&#128559;","&#129300;","&#128532;","&#128534;","&#128547;","&#128560;","&#129296;","&#128545;","&#128544;","&#128556;","&#128550;","&#128551;","&#128553;","&#129325;","&#128554;","&#128555;","&#128565;","&#128576;","&#128566;","&#128567;","&#128568;","&#128569;","&#128570;","&#128571;","&#128572;","&#128573;","&#128576;","&#127988;","&#128075;","&#128074;","&#128077;","&#128078;","&#10024;","&#128293;","&#128272;","&#127908;","&#127775;","&#128640;","&#127881;","&#128218;","&#128172;","&#128163;","&#128081;","&#128737;","&#9889;","&#127917;"];
-function renderEmoji(list){const g=document.getElementById("eGrid");g.innerHTML="";list.forEach(em=>{const b=document.createElement("button");b.className="e-btn";b.innerHTML=em;b.onclick=()=>{document.getElementById("msgInp").value+=em;document.getElementById("msgInp").focus();};g.appendChild(b);});}
-function filterEmoji(q){renderEmoji(q?EMOJIS.filter(()=>true).slice(0,40):EMOJIS);}
-renderEmoji(EMOJIS);
-function toggleEmoji(){const p=document.getElementById("emojiPanel");p.classList.toggle("open");document.getElementById("attachPanel").classList.remove("open");if(p.classList.contains("open")){document.getElementById("eSearch").value="";renderEmoji(EMOJIS);setTimeout(()=>document.getElementById("eSearch").focus(),100);}}
+// Emoji data: [char, keywords]
+const EMOJI_DATA=[
+  ["😀","happy grin face"],["😂","laugh tears funny"],["😍","love eyes heart"],["🥰","love smile heart"],["😎","cool sunglasses"],["🤔","think hmm"],["😅","sweat nervous"],["😭","cry sob"],["😡","angry mad"],["👍","good thumbs up ok yes"],["👎","bad thumbs down no"],["👏","clap applause"],["🙌","raise hands"],["💪","strong muscle flex"],["🔥","fire hot"],["❤️","heart love"],["💀","skull dead"],["✅","check yes done"],["😈","devil evil"],["🤣","laugh rofl"],["😱","shock scared"],["🤯","mind blown"],["🥳","party celebrate"],["🤙","hang loose call"],["👀","eyes look see"],["💯","100 perfect"],["🫶","heart hands love"],["✨","sparkle shine"],["🌈","rainbow"],["🤝","handshake deal"],["🚀","rocket launch fast"],["🎉","party celebrate"],["🔐","lock secure encrypt"],["🔑","key"],["🛡️","shield protect"],["⚡","lightning fast"],["💥","boom explosion"],["🎯","target"],["💬","chat message"],["🎵","music note"],["🎶","music notes"],["🤖","robot bot"],["👾","game alien"],["🕊️","peace dove"],["🌍","world earth"],["🦋","butterfly"],["🦊","fox"],["🐺","wolf"],["🦁","lion"],["🌙","moon night"],["☀️","sun day"],["🌊","wave ocean"],["🍕","pizza food"],["🎮","game controller"],["🏆","trophy win"],["💎","diamond gem"],["🌸","flower pink"],["⭐","star"],["🎊","confetti party"],["😇","angel halo"],["😴","sleep tired"],["🤗","hug"],["😤","mad frustrated"]
+];
+function renderEmoji(list){
+  const g=document.getElementById("eGrid");
+  if(!g)return;
+  g.innerHTML="";
+  list.forEach(([em])=>{
+    const b=document.createElement("button");
+    b.className="e-btn";
+    b.textContent=em;
+    b.onclick=()=>{
+      const inp=document.getElementById("msgInp");
+      inp.value+=em;inp.focus();
+    };
+    g.appendChild(b);
+  });
+}
+function filterEmoji(q){
+  if(!q||!q.trim()){renderEmoji(EMOJI_DATA);return;}
+  const ql=q.toLowerCase().trim();
+  renderEmoji(EMOJI_DATA.filter(([,k])=>k.includes(ql)));
+}
+renderEmoji(EMOJI_DATA);
+function toggleEmoji(){
+  const p=document.getElementById("emojiPanel");
+  p.classList.toggle("open");
+  document.getElementById("attachPanel").classList.remove("open");
+  if(p.classList.contains("open")){
+    const es=document.getElementById("eSearch");
+    if(es){es.value="";}
+    renderEmoji(EMOJI_DATA);
+    setTimeout(()=>{if(es)es.focus();},100);
+  }
+}
 function toggleAttach(){const p=document.getElementById("attachPanel");p.classList.toggle("open");document.getElementById("emojiPanel").classList.remove("open");}
 function closePanels(){document.getElementById("emojiPanel").classList.remove("open");document.getElementById("attachPanel").classList.remove("open");}
 
@@ -1112,6 +1196,58 @@ document.addEventListener("click",e=>{
     </div>
   </div>
 </div>
+
+
+<script>
+// ── SETTINGS MODAL JS ──
+function openSettings(){
+  document.getElementById("settingsModal").classList.add("show");
+  const at=document.getElementById("settingsAdminTab");
+  if(at)at.style.display=isAdmin?"flex":"none";
+  const em=document.getElementById("smEncMode");
+  if(em)em.value=encMode;
+  renderSmUsers(userListData);
+  updateEncUI();
+}
+function closeSettings(){
+  document.getElementById("settingsModal").classList.remove("show");
+}
+function swSTAB(t){
+  document.querySelectorAll(".sm-tab").forEach(b=>b.classList.toggle("active",b.dataset.stab===t));
+  document.querySelectorAll(".sm-panel").forEach(p=>p.classList.toggle("active",p.id==="spanel-"+t));
+  if(t==="users")renderSmUsers(userListData);
+}
+function renderSmUsers(users){
+  const list=document.getElementById("smUsersList");
+  if(!list)return;
+  list.innerHTML="";
+  (users||[]).forEach(u=>{
+    const item=document.createElement("div");item.className="u-item";
+    const canAdmin=isAdmin&&u.username!==username;
+    const canReport=u.username!==username;
+    item.innerHTML='<div class="u-av" style="font-size:14px">&#128100;</div>'
+      +'<div class="u-info"><div class="u-name'+(u.isMuted?" muted":"")+'">'+esc(u.username)
+      +(u.username===username?" (you)":"")+'</div>'
+      +'<div class="u-role">'+(u.isCreator?"Room Creator":"Member")+(u.isMuted?" · Muted":"")+'</div></div>'
+      +'<div class="u-acts" style="opacity:1">'
+      +(canAdmin?'<button class="u-act" onclick="adminMute(''+esc(u.username)+'')">'
+        +(u.isMuted?"&#128266;":"&#128264;")+'</button>'
+        +'<button class="u-act" onclick="adminKick(''+esc(u.username)+'')">&#128683;</button>':"")
+      +(canReport?'<button class="u-act" onclick="reportU(''+esc(u.username)+'')">&#9870;</button>':"")
+      +"</div>";
+    list.appendChild(item);
+  });
+}
+// Close settings on backdrop click
+document.getElementById("settingsModal").addEventListener("click",function(e){
+  if(e.target===this)closeSettings();
+});
+// Sync settings enc mode when changed
+const smEncModeEl=document.getElementById("smEncMode");
+if(smEncModeEl)smEncModeEl.addEventListener("change",function(){changeEncMode(this.value);});
+// Sync lock btn in settings
+// room-lock-changed handled in main JS
+</script>
 
 </body>
 </html>

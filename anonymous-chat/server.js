@@ -141,22 +141,26 @@ io.on('connection', (socket) => {
   });
 
   socket.on('register-in-room', ({ roomCode, username, isCreator, roomType }) => {
-    if (isCreator) {
+    // Only create the room if it doesn't already exist
+    // This prevents the creator from accidentally overwriting an active room on rejoin
+    if (isCreator && !rooms[roomCode]) {
       const type = ROOM_TYPES[roomType] || ROOM_TYPES.normal;
       rooms[roomCode] = {
         users: [], expiryTimer: null, createdAt: Date.now(),
         messageHistory: [], roomType: roomType || 'normal',
         config: type, creator: username, mutedUsers: new Set(),
         locked: false, badges: {}, messageCounts: {},
-        publicKeys: {},      // E2E: username → base64 public key
+        publicKeys: {},
         currentPrompt: type.promptEnabled ? PROMPTS[Math.floor(Math.random() * PROMPTS.length)] : null,
       };
       resetExpiry(roomCode);
     }
 
-    if (!rooms[roomCode]) { socket.emit('join-error', 'Room not found or expired.'); return; }
-    if (rooms[roomCode].locked && username !== rooms[roomCode].creator) { socket.emit('join-error', 'Room is locked.'); return; }
-    if (!isCreator && rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', 'Room is full.'); return; }
+    if (!rooms[roomCode]) { socket.emit('join-error', 'Room not found or has expired.'); return; }
+    // Determine actual creator status from server data
+    const actuallyCreator = username === rooms[roomCode].creator || isCreator;
+    if (rooms[roomCode].locked && !actuallyCreator) { socket.emit('join-error', 'Room is locked by the admin.'); return; }
+    if (!actuallyCreator && rooms[roomCode].users.length >= MAX_USERS) { socket.emit('join-error', 'Room is full.'); return; }
 
     socket.join(roomCode);
     socket.roomCode = roomCode;
@@ -168,7 +172,7 @@ io.on('connection', (socket) => {
     if (!rooms[roomCode].users.includes(username)) {
       rooms[roomCode].users.push(username);
       rooms[roomCode].messageCounts[username] = 0;
-      rooms[roomCode].badges[username] = isCreator ? '👑' : '👤';
+      rooms[roomCode].badges[username] = actuallyCreator ? '👑' : '👤';
       io.to(roomCode).emit('user-joined', { username, time: Date.now() });
     }
 
@@ -179,7 +183,7 @@ io.on('connection', (socket) => {
       history: rooms[roomCode].messageHistory,
       roomType: rooms[roomCode].roomType,
       config: rooms[roomCode].config,
-      isAdmin: username === rooms[roomCode].creator,
+      isAdmin: username === rooms[roomCode].creator || actuallyCreator,
       prompt: rooms[roomCode].currentPrompt,
       creator: rooms[roomCode].creator,
       // Send existing public keys to this new joiner
@@ -350,8 +354,6 @@ io.on('connection', (socket) => {
     }
   });
 });
-
-
 
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, '0.0.0.0', () => console.log(`AnonChat running on port ${PORT}`));
